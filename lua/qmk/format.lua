@@ -105,7 +105,7 @@ local function format_layout(options, layout)
 	return output
 end
 
-local function print_layout(layout) vim.pretty_print(layout) end
+-- local function print_layout(layout) vim.pretty_print(layout) end
 
 ---format_qmk_keymaps
 ---@param options qmk.Config
