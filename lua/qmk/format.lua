@@ -22,7 +22,7 @@ local keymap_query = ts.parse_query(
 	'c',
 	[[
 (initializer_pair
-    designator: (subscript_designator (identifier) @keymap_name) 
+    designator: (subscript_designator (identifier) @keymap_name)
     value: (call_expression
              function: (identifier) @id (#eq? @id "LAYOUT_preonic_grid")
              arguments: (argument_list) @key_list))
