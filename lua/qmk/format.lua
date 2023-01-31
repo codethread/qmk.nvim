@@ -107,6 +107,9 @@ end
 
 local function print_layout(layout) vim.pretty_print(layout) end
 
+---format_qmk_keymaps
+---@param options qmk.Config
+---@param buf? number
 local function format_qmk_keymaps(options, buf)
 	local bufnr = buf or vim.api.nvim_get_current_buf()
 	local parser = ts.get_parser(bufnr, 'c')
