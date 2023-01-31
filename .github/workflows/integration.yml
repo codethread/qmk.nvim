@@ -35,10 +35,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        make -C ./test prepare
+        make prepare
 
     - name: Run linter
       run: luacheck lua/ test/spec/
 
     - name: Run tests
-      run: make -C ./test test
+      run: make  test
