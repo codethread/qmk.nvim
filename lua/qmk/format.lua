@@ -43,7 +43,7 @@ local key_query = ts.parse_query(
 -- each row is a long string representation of the keys with even spacing adjusted columnwise
 local function format_layout(options, layout)
 	print 'hey'
-	local width = options.columns
+	local width = options.columns or 12
 
 	assert(
 		#layout % width == 0,
@@ -56,7 +56,8 @@ local function format_layout(options, layout)
 	local current_row = 1
 	local max_rows = #layout / width
 
-	assert(max_rows == options.rows, 'rows be wrong' .. max_rows)
+	local s = options.rows or 5
+	assert(max_rows == s, 'rows be wrong' .. max_rows)
 
 	-- split layout into rows
 	for i, key in ipairs(layout) do
@@ -91,11 +92,8 @@ local function format_layout(options, layout)
 				output[row] = output[row] .. ' , ' .. key .. ','
 			elseif col == width / 2 then
 				-- show middle of keyboard
-				output[row] = output[row]
-					.. ' , '
-					.. key
-					.. string.rep(' ', longest_key - #key)
-					.. ' /* | */'
+				output[row] = output[row] .. ' , ' .. key .. string.rep(' ', longest_key - #key)
+				-- .. ' /* | */'
 			else
 				output[row] = output[row] .. ' , ' .. key .. string.rep(' ', longest_key - #key)
 			end

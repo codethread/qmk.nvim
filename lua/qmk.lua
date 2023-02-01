@@ -12,7 +12,8 @@ local function with_defaults(options)
 	return vim.tbl_deep_extend('force', config.default_config, options)
 end
 
---- setup QMK plugin
+-- setup QMK plugin
+-- creates user commands and autocmds to autoformat
 ---@param options qmk.UserConfig
 function qmk.setup(options)
 	qmk.options = with_defaults(options)
@@ -49,6 +50,17 @@ function qmk.format(buf)
 	end
 
 	format(qmk.options, buf)
+end
+
+-- display all QMK keymaps in a floating window
+---@param buf? buffer number
+function qmk.display(buf)
+	if not qmk.is_configured() then
+		vim.notify(const.configured_warning, vim.log.levels.WARN)
+		return
+	end
+
+	vim.notify 'WIP'
 end
 
 qmk.options = nil
