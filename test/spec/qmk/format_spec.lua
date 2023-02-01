@@ -1,5 +1,4 @@
 require 'matcher_combinators.luassert'
-local array = require 'matcher_combinators.matchers.array'
 local Path = require 'plenary.path'
 
 local simple_config = {

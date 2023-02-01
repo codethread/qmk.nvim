@@ -23,4 +23,7 @@ watch:
 	@find ./test/spec/ ./lua/ -name '*.lua' \
 	  | entr make test SPEC=$(SPEC)
 
+lint:
+	@luacheck lua/ test/spec/
+
 all: prepare test
