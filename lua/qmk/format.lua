@@ -42,7 +42,6 @@ local key_query = ts.parse_query(
 -- breaks into a table where each item represents a row (starting top left)
 -- each row is a long string representation of the keys with even spacing adjusted columnwise
 local function format_layout(options, layout)
-	print 'hey'
 	local width = options.columns or 12
 
 	assert(
