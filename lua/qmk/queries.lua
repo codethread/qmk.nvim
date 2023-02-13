@@ -39,13 +39,11 @@ M.keymap_ids = {
 
 ---@param name string
 ---@param root tsnode
+---@param content string
 ---@param visitors table<string, fun(node: tsnode): nil>
----@param content? string
----@param start? integer,
----@param final? integer
-function M.keymap_visitor(name, root, visitors, content, start, final)
+function M.keymap_visitor(name, root, content, visitors)
 	local query = keymap_query_for(name)
-	visitor(query, root, visitors, content, start, final)
+	visitor(query, root, visitors, content)
 end
 
 ---get all individual keys inside a layout
@@ -64,12 +62,11 @@ M.key_ids = {
 }
 
 ---@param root tsnode
+---@param content string
+---@param pos qmk.Position
 ---@param visitors table<string, fun(node: tsnode): nil>
----@param content? string
----@param start? integer,
----@param final? integer
-function M.key_visitor(root, visitors, content, start, final) --
-	visitor(key_query, root, visitors, content, start, final)
+function M.key_visitor(root, content, pos, visitors) --
+	visitor(key_query, root, visitors, content, pos.start, pos.final)
 end
 
 M.declaration_ids = {
@@ -93,11 +90,8 @@ local keymap_declaration_query = ts.parse_query(
 
 ---@param root tsnode
 ---@param visitors table<string, fun(node: tsnode): nil>
----@param content? string
----@param start? integer,
----@param final? integer
-function M.declaration_visitor(root, visitors, content, start, final)
-	visitor(keymap_declaration_query, root, visitors, content, start, final)
+function M.declaration_visitor(root, visitors) --
+	visitor(keymap_declaration_query, root, visitors)
 end
 
 return M

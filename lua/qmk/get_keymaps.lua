@@ -35,20 +35,22 @@ local function get_keymaps(name, root, content)
 	}
 	local ids = queries.keymap_ids
 
-	queries.keymap_visitor(name, root, {
+	queries.keymap_visitor(name, root, content, {
 		[ids.keymap_name] = function(node) --
 			current_keymap.layer_name = ts.get_node_text(node, content)
 		end,
+
 		[ids.key_list] = function(node)
 			local row_start, _, row_end = node:range()
 			current_keymap.pos = { start = row_start, final = row_end }
 
-			queries.key_visitor(root, {
+			queries.key_visitor(root, content, current_keymap.pos, {
 				key = function(key_node)
 					table.insert(current_keymap.keys, ts.get_node_text(key_node, content))
 				end,
-			}, content, row_start, row_end)
+			})
 		end,
+
 		[ids.final] = function(_)
 			table.insert(keymaps, current_keymap)
 			current_keymap = {
@@ -56,7 +58,7 @@ local function get_keymaps(name, root, content)
 				keys = {},
 			}
 		end,
-	}, content)
+	})
 
 	return keymaps
 end
