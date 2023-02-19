@@ -27,7 +27,7 @@ local function keymap_query_for(name)
     designator: (subscript_designator (identifier) @keymap_name)
     value: (call_expression
              function: (identifier) @id (#eq? @id ]] .. name .. [[)
-             arguments: (argument_list ")" @final) @key_list))
+             arguments: (argument_list ")" @final))) @key_list
 ]])
 end
 
@@ -52,9 +52,9 @@ local key_query = ts.parse_query(
 	'c',
 	[[
 (initializer_pair
-    value: (call_expression
-            arguments: (argument_list [(identifier) (call_expression)] @key)))
-]]
+	value: (call_expression
+	arguments: (argument_list [(identifier) (call_expression)] @key)))
+	]]
 )
 
 M.key_ids = {
@@ -63,10 +63,9 @@ M.key_ids = {
 
 ---@param root tsnode
 ---@param content string
----@param pos qmk.Position
 ---@param visitors table<string, fun(node: tsnode): nil>
-function M.key_visitor(root, content, pos, visitors) --
-	visitor(key_query, root, visitors, content, pos.start, pos.final)
+function M.key_visitor(root, content, visitors) --
+	visitor(key_query, root, visitors, content)
 end
 
 M.declaration_ids = {

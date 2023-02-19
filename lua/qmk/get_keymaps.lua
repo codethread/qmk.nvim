@@ -2,9 +2,27 @@ local ts = vim.treesitter
 local queries = require 'qmk.queries'
 local E = require 'qmk.errors'
 
+---assert all keymaps don't overlap with the declaration itself
+---@param keymaps qmk.Keymaps
+---@throws string
+local function validate(keymaps)
+	local start, final = keymaps.pos.start, keymaps.pos.final
+
+	assert(#keymaps.keymaps > 0, E.keymaps_none)
+
+	-- iterate over all keymaps
+	for _, keymap in pairs(keymaps.keymaps) do
+		local keymap_start, keymap_final = keymap.pos.start, keymap.pos.final
+		assert(keymap_start > start, E.keymaps_overlap)
+		assert(keymap_final < final, E.keymaps_overlap)
+
+		assert(#keymap.keys > 0, E.keymap_empty(keymap.layer_name))
+	end
+end
+
 ---@return qmk.Position
 local function get_keymaps_position(root)
-	local start, final
+	local start, final = nil, nil
 	local count = 0
 
 	queries.declaration_visitor(root, {
@@ -20,6 +38,7 @@ local function get_keymaps_position(root)
 	assert(count <= 1, E.keymaps_too_many)
 	assert(count >= 1, E.keymaps_none)
 	assert(start and final, E.keymaps_none)
+	assert(start ~= final, E.keymaps_overlap)
 
 	return { start = start, final = final }
 end
@@ -44,9 +63,12 @@ local function get_keymaps(name, root, content)
 			local row_start, _, row_end = node:range()
 			current_keymap.pos = { start = row_start, final = row_end }
 
-			queries.key_visitor(root, content, current_keymap.pos, {
+			queries.key_visitor(node, content, {
 				key = function(key_node)
-					table.insert(current_keymap.keys, ts.get_node_text(key_node, content))
+					local key_text = ts.get_node_text(key_node, content)
+					if key_text ~= '' then
+						table.insert(current_keymap.keys, ts.get_node_text(key_node, content))
+					end
 				end,
 			})
 		end,
@@ -69,7 +91,6 @@ end
 ---@return qmk.Keymaps
 local function get_keymap(content, options)
 	local parser = ts.get_string_parser(content, 'c', {})
-	---@diagnostic disable-next-line: undefined-field
 	local root = parser:parse()[1]:root()
 
 	---@type qmk.Keymaps
@@ -77,6 +98,8 @@ local function get_keymap(content, options)
 		pos = get_keymaps_position(root),
 		keymaps = get_keymaps(options.name, root, content),
 	}
+
+	validate(info)
 
 	return info
 end
@@ -91,7 +114,7 @@ return get_keymap
 ---@field keymaps qmk.KeymapDict
 ---@field pos qmk.Position
 
----@alias qmk.KeymapDict { [string]: qmk.Keymap }
+---@alias qmk.KeymapDict { [string]: qmk.Keymap } # dictionary of keymaps
 
 ---@class qmk.Keymap
 ---@field layer_name string
