@@ -62,10 +62,9 @@ M.key_ids = {
 }
 
 ---@param root tsnode
----@param content string
 ---@param visitors table<string, fun(node: tsnode): nil>
-function M.key_visitor(root, content, visitors) --
-	visitor(key_query, root, visitors, content)
+function M.key_visitor(root, visitors) --
+	visitor(key_query, root, visitors)
 end
 
 M.declaration_ids = {

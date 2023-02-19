@@ -89,6 +89,44 @@ describe('get_keymaps:', function()
 				},
 			},
 		},
+		{
+			msg = 'many lines',
+			input = [[
+                const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+                    [_FOO]
+                    =
+                    LAYOUT(
+                    KC_A,
+                    KC_B,
+                    MT(MOD_LALT,
+                    KC_ENT),
+                    KC_C),
+                    [_BOO]
+                    =
+                    LAYOUT(
+                    KC_A,
+                    KC_B,
+                    KC_C,),
+                };
+                ]],
+			output = {
+				pos = { start = 0, final = 15 },
+				keymaps = {
+					{
+						layer_name = '_FOO',
+						pos = { start = 1, final = 8 },
+						layout_name = 'LAYOUT',
+						keys = { 'KC_A', 'KC_B', 'MT(MOD_LALT, KC_ENT)', 'KC_C' },
+					},
+					{
+						layer_name = '_BOO',
+						layout_name = 'LAYOUT',
+						keys = { 'KC_A', 'KC_B', 'KC_C' },
+						pos = { start = 9, final = 14 },
+					},
+				},
+			},
+		},
 	}
 
 	for _, test in pairs(tests) do
@@ -107,7 +145,7 @@ describe('get_keymaps:', function()
 					.. '" layer "'
 					.. (expected.layer_name or 'NOT_FOUND')
 					.. '"',
-				function() match(keymap, expected) end
+				function() match(expected, keymap) end
 			)
 		end
 	end
@@ -125,6 +163,11 @@ describe('get_keymaps abuse:', function()
 			msg = 'no keymaps, but the overlap triggers first',
 			err = E.keymaps_overlap,
 			input = 'const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = { };',
+		},
+		{
+			msg = 'no keymaps, but the overlap triggers first',
+			err = E.keymaps_none,
+			input = 'const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {\n};',
 		},
 		{
 			msg = 'malformed',

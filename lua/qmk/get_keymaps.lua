@@ -63,12 +63,13 @@ local function get_keymaps(name, root, content)
 			local row_start, _, row_end = node:range()
 			current_keymap.pos = { start = row_start, final = row_end }
 
-			queries.key_visitor(node, content, {
+			queries.key_visitor(node, {
 				key = function(key_node)
+					---@type string
 					local key_text = ts.get_node_text(key_node, content)
-					if key_text ~= '' then
-						table.insert(current_keymap.keys, ts.get_node_text(key_node, content))
-					end
+					-- replace all newlines with a space in key_text
+					local newlines_removed = key_text:gsub('%s', ''):gsub(',', ', ')
+					if key_text ~= '' then table.insert(current_keymap.keys, newlines_removed) end
 				end,
 			})
 		end,
