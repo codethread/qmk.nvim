@@ -1,6 +1,7 @@
 local const = require 'qmk.const'
 local config = require 'qmk.config'
 local format = require 'qmk.format'
+local validate = require 'qmk.validate'
 
 local qmk = {}
 
@@ -9,7 +10,9 @@ local qmk = {}
 local function with_defaults(options)
 	if not options.name or not options.layout then error 'name and layout are required' end
 
-	return vim.tbl_deep_extend('force', config.default_config, options)
+	local merged_config = vim.tbl_deep_extend('force', config.default_config, options)
+	validate(merged_config, config.default_config)
+	return merged_config
 end
 
 -- setup QMK plugin

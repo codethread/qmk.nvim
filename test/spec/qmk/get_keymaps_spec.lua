@@ -106,11 +106,15 @@ describe('get_keymaps:', function()
                     LAYOUT(
                     KC_A,
                     KC_B,
+                    A(
+                     B, C(
+                        D   , E() )
+                        )
                     KC_C,),
                 };
                 ]],
 			output = {
-				pos = { start = 0, final = 15 },
+				pos = { start = 0, final = 19 },
 				keymaps = {
 					{
 						layer_name = '_FOO',
@@ -121,7 +125,7 @@ describe('get_keymaps:', function()
 					{
 						layer_name = '_BOO',
 						layout_name = 'LAYOUT',
-						keys = { 'KC_A', 'KC_B', 'KC_C' },
+						keys = { 'KC_A', 'KC_B', 'A(B, C(D, E()))', 'KC_C' },
 						pos = { start = 9, final = 14 },
 					},
 				},
@@ -134,7 +138,7 @@ describe('get_keymaps:', function()
 
 		it(
 			'for layout "' .. test.msg .. '" gets the correct pos',
-			function() match(all_keymaps.pos, test.output.pos) end
+			function() match(test.output.pos, all_keymaps.pos) end
 		)
 
 		for i, keymap in pairs(all_keymaps.keymaps) do
@@ -155,7 +159,7 @@ describe('get_keymaps abuse:', function()
 	---@type { msg: string, err: string, input: string }[]
 	local tests = {
 		{
-			msg = 'no keymaps',
+			msg = 'no code',
 			err = E.keymaps_none,
 			input = '',
 		},
@@ -165,7 +169,7 @@ describe('get_keymaps abuse:', function()
 			input = 'const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = { };',
 		},
 		{
-			msg = 'no keymaps, but the overlap triggers first',
+			msg = 'no keymaps',
 			err = E.keymaps_none,
 			input = 'const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {\n};',
 		},
@@ -183,7 +187,7 @@ describe('get_keymaps abuse:', function()
               }; ]],
 		},
 		{
-			msg = 'empty keymap',
+			msg = 'empty keymap amoungst valid ones',
 			err = E.keymap_empty '_FOO',
 			input = [[
               const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =  {

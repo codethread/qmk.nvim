@@ -1,4 +1,8 @@
+local get_keymaps = require 'qmk.get_keymaps'
+local format_keymap = require 'qmk.format_keymap'
+local format_keymaps = require 'qmk.format_keymaps'
 local ts = vim.treesitter
+local api = vim.api
 --[[
   ┌──────┬──────┬──────┬──────┬──────┬──────┬──────┬──────┬──────┬──────┬──────┬──────┐
   │//││││F│G/*|*/│H│J│││││
@@ -15,28 +19,6 @@ local ts = vim.treesitter
   └──────┴──────┴──────┴──────┴──────┴──────┴──────┴──────┴──────┴──────┴──────┴──────┴──────┴──────┴──────┘
 
 --]]
-
--- look through the keymap file and find all layouts, capturing
--- the keymap name and a list of all keys for formatting
-local keymap_query = ts.parse_query(
-	'c',
-	[[
-(initializer_pair
-    designator: (subscript_designator (identifier) @keymap_name)
-    value: (call_expression
-             function: (identifier) @id (#eq? @id "LAYOUT_preonic_grid")
-             arguments: (argument_list) @key_list))
-]]
-)
-
-local key_query = ts.parse_query(
-	'c',
-	[[
-(initializer_pair
-    value: (call_expression
-            arguments: (argument_list [(identifier) (call_expression)] @key)))
-]]
-)
 
 -- take a layout, which is a list of keycodes
 -- breaks into a table where each item represents a row (starting top left)
@@ -108,37 +90,11 @@ end
 ---@param options qmk.Config
 ---@param buf? number
 local function format_qmk_keymaps(options, buf)
-	local bufnr = buf or vim.api.nvim_get_current_buf()
-	local parser = ts.get_parser(bufnr, 'c')
-	local root = parser:parse()[1]:root()
-
-	for keymap_id, keymap_node in keymap_query:iter_captures(root, bufnr, 0, -1) do
-		local capture_name = keymap_query.captures[keymap_id]
-
-		-- if capture_name == "keymap_name" then
-		-- 	local keymap_name = ts.get_node_text(keymap_node, bufnr)
-		-- end
-
-		if capture_name == 'key_list' then
-			local start, _, final = keymap_node:range()
-			local layout = {}
-
-			for _, key_node in key_query:iter_captures(root, bufnr, start, final) do
-				local key_txt = ts.get_node_text(key_node, bufnr)
-				table.insert(layout, key_txt)
-			end
-
-			vim.api.nvim_buf_set_lines(
-				bufnr,
-				start + 1,
-				final,
-				false,
-				format_layout(options, layout)
-			)
-			-- print_layout(layout)
-			-- vim.api.nvim_buf_set_lines(bufnr, start + 1, final, false, print_layout(layout))
-		end
-	end
+	local bufnr = buf or api.nvim_get_current_buf()
+	local content = api.nvim_buf_get_lines(bufnr, 0, -1, false)
+	local keymaps = get_keymaps(table.concat(content, '\n'), options)
+	local formatted = format_keymaps(keymaps, options)
+	api.nvim_buf_set_lines(bufnr, keymaps.pos.start + 1, keymaps.pos.final, false, formatted)
 end
 
 return format_qmk_keymaps

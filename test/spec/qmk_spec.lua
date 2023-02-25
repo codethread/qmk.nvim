@@ -1,4 +1,6 @@
 require 'matcher_combinators.luassert'
+local stub = require 'luassert.stub'
+local match = require 'luassert.match'
 local Path = require 'plenary.path'
 
 -- TODO: will need to set this up per test most likely
@@ -34,6 +36,17 @@ describe('qmk', function()
 			local qmk = require 'qmk'
 			qmk.setup(simple_config)
 			assert.is_true(qmk.is_configured())
+		end)
+
+		it('warns of invalid config', function()
+			local qmk = require 'qmk'
+			stub(vim, 'notify')
+			qmk.setup { name = 'test', layout = '' }
+			assert.stub(vim.notify).was_called_with(
+				'[QMK] invalid option: layout expected: table actual: string | see :help qmk-setup for available configuration options',
+				match._,
+				match._
+			)
 		end)
 	end)
 
