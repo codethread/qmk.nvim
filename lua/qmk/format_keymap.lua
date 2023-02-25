@@ -1,3 +1,37 @@
+--- maps keys into the layout
+--- e.g
+--- ```
+--- keys = { 'A', 'Some', 'Key', 'B', 'Foo', Bar', 'S', 'M' },
+--- layout = {
+---   { 'x', 'x', '_', 'x', 'x' },
+---   { 'x', 'x', '_', 'x', 'x' },
+--- }
+--- ```
+--- becomes
+--- ```
+--- {
+---   { 'A', 'Some', ' ', 'Key', 'B' },
+---   { 'Foo', Bar', ' ', 'S', 'M' },
+--- }
+--- ```
+---@param layout qmk.UserLayout
+---@param keys string[]
+---@return string[][]
+local function map_keys_to_layout(layout, keys)
+	local i = 0
+
+	return vim.tbl_map(function(row)
+		return vim.tbl_map(function(key)
+			if key == '_' then
+				return '_'
+			else
+				i = i + 1
+				return keys[i]
+			end
+		end, row)
+	end, layout)
+end
+
 ---@param options qmk.Config
 ---@param keymap qmk.Keymap
 ---@return string[]
@@ -8,35 +42,51 @@ local function format_keymap(options, keymap)
 
 	local layout = options.layout
 
-	local result = {}
-	-- keep track of which key in our keymap we are using, as it's a single list
-	local key_i = 0
+	local output = {}
 
-	for i_row, row in ipairs(layout) do
-		-- create a new string starting with a space
-		local cur = space
+	local key_layout = map_keys_to_layout(layout, keymap.keys)
 
-		for i_key, key in ipairs(row) do
-			if key == '_' then
-				cur = cur .. space
-			else
-				-- advance to the next key
-				key_i = key_i + 1
+	local width = #key_layout[1]
+	local height = #key_layout
 
-				-- last key in row, don't add a comma
-				local trailing = i_key == #row and '' or ' , '
-				cur = cur .. keymap.keys[key_i] .. trailing
-			end
+	-- move through all rows at the same time by colum, padding width by longest key
+	local current_row = 1
+
+	for col = 1, width do
+		local longest_key = 1
+
+		for row = 1, height do
+			local key = key_layout[row][col]
+			if #key > longest_key then longest_key = #key end
 		end
 
-		-- last row in a keymap so no comma
-		local trailing = i_row == #layout and '' or ','
-		result[i_row] = cur .. trailing
+		for row = 1, height, 1 do
+			local key = key_layout[row][col]
+
+			if key == '_' then
+				output[row] = output[row] .. space
+			else
+				if col == 1 then
+					-- start with space
+					output[row] = space
+				end
+
+				if col == width then
+					-- first column so no comma
+					output[row] = output[row] .. key .. string.rep(' ', longest_key - #key)
+				elseif col == 1 then
+					-- last column so trailing comma
+					output[row] = output[row] .. ' , ' .. key .. ','
+				else
+					output[row] = output[row] .. ' , ' .. key .. string.rep(' ', longest_key - #key)
+				end
+			end
+		end
 	end
 
 	return {
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
-		result,
+		output,
 	}
 end
 

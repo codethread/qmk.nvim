@@ -11,6 +11,7 @@ local function format_keymaps(keymaps, options)
 		if key == #keymaps.keymaps then
 			table.insert(row, ')')
 		else
+			---@diagnostic disable-next-line: missing-parameter
 			vim.list_extend(row, { '),', '' })
 		end
 		table.insert(result, row)
