@@ -1,5 +1,6 @@
 local E = require 'qmk.errors'
 local validate = require 'qmk.validate'
+local key_map = require('qmk.key_map').key_map
 
 local M = {}
 
@@ -26,7 +27,7 @@ M.default_config = {
 	keymap_path = '',
 	comment_preview = {
 		position = 'none',
-		keymap_overrides = {},
+		keymap_overrides = key_map,
 	},
 }
 
@@ -84,7 +85,7 @@ end
 ---@field keymap_path string # path to the keymap file, must be absolute, used for rendering the layout as a popup
 ---@field layout qmk.LayoutKeyInfo[][]
 ---@field spacing number
----@field comment_preview qmk.UserPreview
+---@field comment_preview qmk.Preview
 
 ---@class qmk.Preview
 ---@field position 'top' | 'bottom' | 'none'

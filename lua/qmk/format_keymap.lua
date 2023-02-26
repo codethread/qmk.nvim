@@ -76,8 +76,8 @@ local function join_row(row, divide)
 			end
 
 			-- peak ahead and see if next key is the same
+			-- if not this is the last key in the span
 			if not (i + 1 <= #row and row[i + 1].key_index == key.key_index) then
-				-- this is the last key in the span
 				-- alignment is a string like 1/3 or 2/3
 				---@diagnostic disable-next-line: missing-parameter
 				local ratio = vim.split(key.align, '/')
@@ -112,6 +112,61 @@ local function join_row(row, divide)
 	return str
 end
 
+---find all matching key codes from the key string and replace them with the keymap value
+---@param key string
+---@param keymap qmk.KeymapList
+---@return string
+local function get_key_text(key, keymap)
+	local str = key
+	for _, k in ipairs(keymap) do
+		-- replace the key with the override
+		str = string.gsub(str, k.key, k.value)
+	end
+	return str
+end
+
+---@param row qmk.LayoutKeyMapInfo[]
+---@param preview qmk.Preview
+---@return string
+local function join_comment_row(row, preview)
+	local separator = ' │  '
+	local str = '// ' .. separator
+	local current_key = { key_index = 0 }
+	for i, key in pairs(row) do
+		-- local text = preview.keymap_overrides[key.key] or key.key
+		-- TODO quick hack on gap
+		if key.type == 'gap' then str = str .. string.rep(' ', 4) end
+
+		-- simple case, just print the key
+		if key.type == 'key' then
+			local text = get_key_text(key.key, preview.keymap_overrides)
+			str = str
+				.. text
+				.. string.rep(' ', key.span - #key.key)
+				.. (i == #row and '' or separator)
+		end
+		if key.type == 'span' then
+			local text = get_key_text(key.key, preview.keymap_overrides)
+			if current_key.key_index ~= key.key_index then
+				-- new key
+				current_key = key
+			else
+				current_key.span = current_key.span + key.span + #separator
+			end
+
+			-- peak ahead and see if next key is the same
+			-- if not this is the last key in the span
+			if not (i + 1 <= #row and row[i + 1].key_index == key.key_index) then
+				str = str
+					.. text
+					.. string.rep(' ', current_key.span - #current_key.key)
+					.. (i == #row and '' or separator)
+			end
+		end
+	end
+	return str
+end
+
 ---@param options qmk.Config
 ---@param keymap qmk.Keymap
 ---@return string[]
@@ -126,6 +181,17 @@ local function format_keymap(options, keymap)
 		end
 	end
 
+	local comment = {}
+	if options.comment_preview.position ~= 'none' then
+		for _, row in pairs(layout_grid) do
+			local str = join_comment_row(row, options.comment_preview)
+			-- str = idx ~= #layout_grid and str .. ',' or str
+			table.insert(comment, str)
+			local divider = '─'
+			table.insert(comment, '//' .. string.rep(divider, #str))
+		end
+	end
+
 	local output = {}
 	for idx, row in pairs(layout_grid) do
 		local str = join_row(row, options.spacing)
@@ -134,6 +200,7 @@ local function format_keymap(options, keymap)
 	end
 
 	return vim.tbl_flatten {
+		comment,
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
 		output,
 	}
