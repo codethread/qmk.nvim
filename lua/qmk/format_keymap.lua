@@ -1,3 +1,4 @@
+local E = require 'qmk.errors'
 local P = vim.pretty_print
 
 ---@param layout qmk.UserLayout
@@ -7,14 +8,13 @@ local function parse_layout(layout)
 	for _, row in pairs(layout) do
 		local keys = vim.split(row, ' ')
 		local row_info = vim.tbl_map(function(key)
-			-- if key == '.' then return { width = 1, type = 'empty' } end
+			if key == '|' then return { width = 1, type = 'gap' } end
 			if key == 'x' then return { width = 1, type = 'key' } end
 
 			local invalid = string.find(key, '[^x^]')
-			assert(invalid == nil, 'invalid layout, expected x, . or ^')
-			-- TODO fix find index isnt right
+			assert(invalid == nil, E.config_invalid_symbol)
 			local i = string.find(key, '^', 1, true)
-			assert(i, 'invalid layout, expected a ^ in the key')
+			assert(i, E.config_invalid_span)
 			return {
 				width = (string.len(key) + 1) / 2,
 				type = 'span',
@@ -29,12 +29,12 @@ end
 ---@class qmk.LayoutKeyInfo
 ---@field width number
 ---@field align? string
----@field type 'key' | 'span''
+---@field type 'key' | 'span' | 'gap'
 
 ---@class qmk.LayoutKeyMapInfo
 ---@field width number
 ---@field align? string
----@field type 'key' | 'span''
+---@field type 'key' | 'span' | 'gap'
 ---@field key string
 ---@field key_index number
 ---@field span? number
@@ -42,23 +42,27 @@ end
 ---@param layout qmk.LayoutKeyInfo[][]
 ---@param keys string[]
 ---@return qmk.LayoutKeyMapInfo[][]
-local function map_keys_to_layout(layout, keys)
+local function map_keys_to_grid(layout, keys)
 	local key_idx = 0
 	local mapped = {}
 	for row_i, row in pairs(layout) do
 		mapped[row_i] = {}
 		for _, key in pairs(row) do
-			key_idx = key_idx + 1
-			for _ = 1, key.width do
-				local info = vim.tbl_deep_extend('force', key, {
-					key = keys[key_idx],
-					key_index = key_idx,
-				})
-				table.insert(mapped[row_i], info)
+			if key.type == 'gap' then
+				table.insert(mapped[row_i], key)
+			else
+				key_idx = key_idx + 1
+				for _ = 1, key.width do
+					local info = vim.tbl_deep_extend('force', key, {
+						key = keys[key_idx],
+						key_index = key_idx,
+					})
+					table.insert(mapped[row_i], info)
+				end
 			end
 		end
 	end
-	assert(key_idx == #keys, 'not enough keys for layout')
+	assert(key_idx == #keys, E.config_mismatch)
 	return mapped
 end
 
@@ -82,8 +86,9 @@ local function get_largest_per_column(layout)
 end
 
 ---@param row qmk.LayoutKeyMapInfo[]
+---@param divide number
 ---@return string
-local function join_row(row)
+local function join_row(row, divide)
 	local str = ''
 	local current_key = { key_index = 0 }
 	local comma = ' , '
@@ -101,6 +106,9 @@ local function join_row(row)
 				.. string.rep(' ', key.span - #key.key)
 				.. (i == #row and '' or comma)
 		end
+
+		if key.type == 'gap' then str = str .. string.rep(' ', divide) end
+
 		if key.type == 'span' then
 			if current_key.key_index ~= key.key_index then
 				-- new key
@@ -151,10 +159,10 @@ end
 local function format_keymap(options, keymap)
 	local keys = keymap.keys
 	local layout = parse_layout(options.layout)
-	local layout_map = map_keys_to_layout(layout, keys)
-	local largest_in_column = get_largest_per_column(layout_map)
+	local layout_grid = map_keys_to_grid(layout, keys)
+	local largest_in_column = get_largest_per_column(layout_grid)
 
-	for _, row in pairs(layout_map) do
+	for _, row in pairs(layout_grid) do
 		for col_i, key in pairs(row) do
 			key.span = largest_in_column[col_i]
 		end
@@ -162,7 +170,7 @@ local function format_keymap(options, keymap)
 
 	return vim.tbl_flatten {
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
-		vim.tbl_map(join_row, layout_map),
+		vim.tbl_map(function(row) return join_row(row, options.spacing) end, layout_grid),
 	}
 end
 

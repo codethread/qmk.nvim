@@ -3,6 +3,9 @@ local E = {
 	keymaps_too_many = 'E02: Found more than one keymap declaration',
 	keymaps_overlap = 'E03: One ore more keymap declarations overlap with the start and or end of the keymaps "const" declaration',
 	keymap_empty = function(name) return 'E04: No keys found in keymap ' .. name end,
+	config_mismatch = 'E05: no enough keys for layout',
+	config_invalid_symbol = 'E06: invalid layout, expected "x", "|" or "^"',
+	config_invalid_span = 'E07: invalid layout, expected a ^ in the key',
 }
 
 return E

@@ -23,6 +23,17 @@ describe('format_keymaps', function()
 			},
 		},
 		{
+			msg = 'a single row keymap with gap',
+			input = {
+				options = create_options { 'x x | x x' },
+				keys = { 'KC_A', 'KC_B', 'MT(MOD_LALT, KC_ENT)', 'KC_C' },
+			},
+			output = {
+				'[_FOO] = LAYOUT(',
+				'KC_A , KC_B ,     MT(MOD_LALT, KC_ENT) , KC_C',
+			},
+		},
+		{
 			msg = 'simple double row',
 			input = {
 				options = create_options {
@@ -98,9 +109,9 @@ describe('format_keymaps', function()
 			msg = 'complex',
 			input = {
 				options = create_options {
-					'x x x x x x',
-					'xx^ x xx^xx',
-					'x x x x x x',
+					'x x x | x x x',
+					'xx^ x | xx^xx',
+					'x x x | x x x',
 				},
 				keys = {
 					'KC_A',
@@ -122,9 +133,9 @@ describe('format_keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) , KC_C , KC_5 , KC_6',
-				'       KC_7 , KC_8                 ,        KC_9       ',
-				'KC_C , KC_5 , KC_6                 , KC_7 , KC_8 , KC_9',
+				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) ,     KC_C , KC_5 , KC_6',
+				'       KC_7 , KC_8                 ,            KC_9       ',
+				'KC_C , KC_5 , KC_6                 ,     KC_7 , KC_8 , KC_9',
 			},
 		},
 	}
