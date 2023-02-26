@@ -2,8 +2,7 @@ local Layout = require 'qmk/Layout'
 
 local M = {}
 
----@alias qmk.UserKey ('x' | '_')
----@alias qmk.UserLayout qmk.UserKey[][]
+---@alias qmk.UserLayout string[]
 
 ---@class qmk.UserConfig
 ---@field name string # name of the layout macro, this is used to find the layout in the keymap
@@ -20,7 +19,7 @@ local M = {}
 ---@type qmk.Config
 M.default_config = {
 	name = '',
-	layout = {},
+	layout = { '' },
 	spacing = 4, -- this can likely be pulled from the buffer
 	auto_format_pattern = '*keymap.c',
 	keymap_path = '',
