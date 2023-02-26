@@ -1,6 +1,6 @@
 require 'matcher_combinators.luassert'
-local stub = require 'luassert.stub'
-local match = require 'luassert.match'
+local E = require 'qmk.errors'
+local match_string = require 'matcher_combinators.matchers.string'
 local Path = require 'plenary.path'
 
 local function snapshot(input, final)
@@ -34,13 +34,9 @@ describe('qmk', function()
 
 		it('warns of invalid config', function()
 			local qmk = require 'qmk'
-			stub(vim, 'notify')
-			qmk.setup { name = 'test', layout = '' }
-			assert.stub(vim.notify).was_called_with(
-				'[QMK] invalid option: layout expected: table actual: string | see :help qmk-setup for available configuration options',
-				match._,
-				match._
-			)
+			local ok, err = pcall(qmk.setup)
+			assert(not ok, 'no error thrown')
+			assert.combinators.match(match_string.regex(E.config_missing), err)
 		end)
 	end)
 
@@ -71,11 +67,11 @@ describe('qmk', function()
 			qmk.setup {
 				name = 'LAYOUT_preonic_grid',
 				layout = {
-					'| x x x x x x x x x x x x',
-					'| x x x x x x x x x x x x',
-					'| x x x x x x x x x x x x',
-					'| x x x x x x x x x x x x',
-					'| x x x x x x x x x x x x',
+					'x x x x x x | x x x x x x',
+					'x x x x x x | x x x x x x',
+					'x x x x x x | x x x x x x',
+					'x x x x x x | x x x x x x',
+					'x x x x x x | x x x x x x',
 				},
 			}
 			qmk.format(T.buff)

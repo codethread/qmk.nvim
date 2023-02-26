@@ -1,8 +1,8 @@
-local const = require 'qmk.const'
 local config = require 'qmk.config'
 local format = require 'qmk.format'
 
 local qmk = {}
+local configured_warning = 'QMK plugin is not configured. Please call qmk.setup() first'
 
 -- setup QMK plugin
 -- creates user commands and autocmds to autoformat
@@ -37,7 +37,7 @@ function qmk.is_configured() return qmk.options ~= nil end
 ---@param buf? buffer number
 function qmk.format(buf)
 	if not qmk.is_configured() then
-		vim.notify(const.configured_warning, vim.log.levels.WARN)
+		vim.notify(configured_warning, vim.log.levels.WARN)
 		return
 	end
 
@@ -48,7 +48,7 @@ end
 ---@param buf? buffer number
 function qmk.display(buf)
 	if not qmk.is_configured() then
-		vim.notify(const.configured_warning, vim.log.levels.WARN)
+		vim.notify(configured_warning, vim.log.levels.WARN)
 		return
 	end
 

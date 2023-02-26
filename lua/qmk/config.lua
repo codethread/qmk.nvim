@@ -35,13 +35,20 @@ M.default_config = {
 function M.parse_layout(layout)
 	local result = {}
 	for _, row in pairs(layout) do
+		-- check for trailing whitespace
+		assert(not vim.startswith(row, ' '), E.layout_trailing_whitespace)
+		assert(not vim.endswith(row, ' '), E.layout_trailing_whitespace)
+		-- check for two white spaces in a row
+		local invalid_whitespace = string.find(row, '  ', 1, true)
+		assert(not invalid_whitespace, E.layout_double_whitespace)
+
 		local keys = vim.split(row, ' ')
 		local row_info = vim.tbl_map(function(key)
 			if key == '|' then return { width = 1, type = 'gap' } end
 			if key == 'x' then return { width = 1, type = 'key' } end
 
 			local invalid = string.find(key, '[^x^]')
-			assert(invalid == nil, E.config_invalid_symbol)
+			assert(not invalid, E.config_invalid_symbol)
 			local i = string.find(key, '^', 1, true)
 			assert(i, E.config_invalid_span)
 			return {
@@ -58,6 +65,7 @@ end
 ---@param user_config qmk.UserConfig
 ---@return qmk.Config
 function M.parse(user_config)
+	if not user_config then error(E.config_missing) end
 	if not user_config.name or not user_config.layout then error 'name and layout are required' end
 	local merged_config = vim.tbl_deep_extend('force', M.default_config, user_config)
 	merged_config.layout = M.parse_layout(merged_config.layout)
