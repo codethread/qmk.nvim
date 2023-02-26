@@ -65,3 +65,10 @@ branch and also on Pull Request. Tests will be run using
 [integration-runs]: https://github.com/m00qek/plugin-template.nvim/actions/workflows/integration.yml
 [neovim-test-versions]: .github/workflows/integration.yml#L17
 [help]: doc/qmk.txt
+
+
+```c
+//Aliases for longer keycodes
+#define NUMPAD  TG(_NUMPAD)
+```
+

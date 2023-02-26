@@ -16,8 +16,8 @@ local function parse_layout(layout)
 			local i = string.find(key, '^')
 			assert(i, 'invalid layout, expected a ^ in the key')
 			return {
-				width = string.len(key),
-				type = 'key',
+				width = (string.len(key) + 1) / 2,
+				type = 'span',
 				align = tostring(i) .. '/' .. tostring(string.len(key)),
 			}
 		end, keys)
@@ -29,38 +29,40 @@ end
 ---@class qmk.LayoutKeyInfo
 ---@field width number
 ---@field align? string
----@field type 'key' | 'empty''
+---@field type 'key' | 'span''
+
+---@class qmk.LayoutKeyMapInfo
+---@field width number
+---@field align? string
+---@field type 'key' | 'span''
+---@field key string
+---@field key_index number
+---@field span? number
 
 ---@param layout qmk.LayoutKeyInfo[][]
 ---@param keys string[]
----@return string[][]
+---@return qmk.LayoutKeyMapInfo[][]
 local function map_keys_to_layout(layout, keys)
-	local i = 0
-	local mapped = vim.tbl_map(function(row)
-		return vim.tbl_flatten(vim.tbl_map(
-			---@param key qmk.LayoutKeyInfo
-			---@return string | string[]
-			function(key)
-				if key.type == 'empty' then
-					return '_'
-				else
-					local s = {}
-					i = i + 1
-					for j = 1, (key.width + 1) / 2 do
-						table.insert(s, j, keys[i])
-					end
-
-					return s
-				end
-			end,
-			row
-		))
-	end, layout)
-	assert(i == #keys, 'not enough keys for layout')
+	local key_idx = 0
+	local mapped = {}
+	for row_i, row in pairs(layout) do
+		mapped[row_i] = {}
+		for _, key in pairs(row) do
+			key_idx = key_idx + 1
+			for _ = 1, key.width do
+				local info = vim.tbl_deep_extend('force', key, {
+					key = keys[key_idx],
+					key_index = key_idx,
+				})
+				table.insert(mapped[row_i], info)
+			end
+		end
+	end
+	assert(key_idx == #keys, 'not enough keys for layout')
 	return mapped
 end
 
----@param layout string[][]
+---@param layout qmk.LayoutKeyMapInfo[][]
 ---@return number[]
 local function get_largest_per_column(layout)
 	local current_row = 1
@@ -70,8 +72,9 @@ local function get_largest_per_column(layout)
 		local longest_key = 1
 		for row = 1, current_row do
 			local key = layout[row][col]
-
-			if #key > longest_key then longest_key = #key end
+			if key.type == 'key' then
+				if #key.key > longest_key then longest_key = #key.key end
+			end
 		end
 		column_sizes[col] = longest_key
 	end
@@ -86,29 +89,40 @@ local function position_cell(cell_width, align, key_text)
 	return key_text .. string.rep(' ', cell_width - #key_text)
 end
 
----@param row string[]
+---@param row qmk.LayoutKeyMapInfo[]
 ---@return string
 local function join_row(row)
 	local str = ''
+	local current_key = { key_index = 0 }
+	local comma = ' , '
+	local comma_width = #comma
+
+	local function print_key(text, span, isLast)
+		return text .. string.rep(' ', span - #text) .. (isLast and '' or comma)
+	end
+
 	for i, key in pairs(row) do
-		str = str .. key .. (i == #row and '' or ' , ')
+		-- simple case, just print the key
+		if key.type == 'key' then str = str .. print_key(key.key, key.span, i == #row) end
+		if key.type == 'span' then
+			-- new key
+			if current_key.key_index ~= key.key_index then
+				current_key = key
+			else
+				current_key.span = current_key.span + key.span + comma_width
+			end
+
+			-- peak ahead and see if next key is the same
+			if i + 1 <= #row and row[i + 1].key_index == key.key_index then
+				-- do nothing
+			else
+				-- this is the last key in the span
+
+				str = str .. print_key(current_key.key, current_key.span, i == #row)
+			end
+		end
 	end
 	return str
-end
-
----@param col_i number
----@param key qmk.LayoutKeyInfo
----@param largest_in_column number[]
----@return number
-local function get_cell_width(col_i, key, largest_in_column)
-	local width = 0
-	local key_width = (key.width + 1) / 2
-	local comma_width = (key_width - 1) * 2
-	for i = 1, key_width do
-		local lookup = col_i + i - 1
-		if lookup <= #largest_in_column then width = width + largest_in_column[lookup] end
-	end
-	return width + comma_width + 1
 end
 
 ---@param options qmk.Config
@@ -120,28 +134,15 @@ local function format_keymap(options, keymap)
 	local layout_map = map_keys_to_layout(layout, keys)
 	local largest_in_column = get_largest_per_column(layout_map)
 
-	local output = {}
-	local idx = 0
-
-	for row_i, row in pairs(layout) do
-		output[row_i] = {}
+	for _, row in pairs(layout_map) do
 		for col_i, key in pairs(row) do
-			if key.type == 'key' then
-				local cell_width = get_cell_width(col_i, key, largest_in_column)
-				idx = idx + 1
-				local key_text = keys[idx]
-				local cell = key.align and position_cell(cell_width, key.align, key_text)
-					or key_text
-				output[row_i][col_i] = cell
-			else
-				error 'invalid layout, expected key or empty (dev error)'
-			end
+			key.span = largest_in_column[col_i]
 		end
 	end
 
 	return vim.tbl_flatten {
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
-		vim.tbl_map(join_row, output),
+		vim.tbl_map(join_row, layout_map),
 	}
 end
 
