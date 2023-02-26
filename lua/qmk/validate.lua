@@ -1,6 +1,7 @@
 local FIELD_SKIP_VALIDATE = {}
 local FIELD_OVERRIDE_TYPECHECK = {}
 
+-- borrowed with love from nvim-tree
 local function validate_options(user_config, default_config)
 	local msg
 

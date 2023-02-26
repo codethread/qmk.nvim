@@ -38,6 +38,23 @@ describe('format_keymaps', function()
 			},
 		},
 		{
+			msg = 'simple multiple rows',
+			input = {
+				options = create_options {
+					'x x',
+					'x x',
+					'x^x',
+				},
+				keys = { 'KC_A', 'KC_B', 'KC_E', 'KC_D(Mod)', 'KC_C' },
+			},
+			output = {
+				'[_FOO] = LAYOUT(',
+				'KC_A , KC_B',
+				'KC_E , KC_D(Mod)',
+				'   KC_C    ',
+			},
+		},
+		{
 			msg = 'simple double row',
 			input = {
 				options = create_options {
@@ -75,6 +92,39 @@ describe('format_keymaps', function()
 				'[_FOO] = LAYOUT(',
 				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) , KC_C , KC_5 , KC_6',
 				'       KC_7 , KC_8                 ,        KC_9       ',
+			},
+		},
+		{
+			msg = 'complex',
+			input = {
+				options = create_options {
+					'x x x x x x',
+					'xx^ x xx^xx',
+					'x x x x x x',
+				},
+				keys = {
+					'KC_A',
+					'KC_B',
+					'MT(MOD_LALT, KC_ENT)',
+					'KC_C',
+					'KC_5',
+					'KC_6',
+					'KC_7',
+					'KC_8',
+					'KC_9',
+					'KC_C',
+					'KC_5',
+					'KC_6',
+					'KC_7',
+					'KC_8',
+					'KC_9',
+				},
+			},
+			output = {
+				'[_FOO] = LAYOUT(',
+				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) , KC_C , KC_5 , KC_6',
+				'       KC_7 , KC_8                 ,        KC_9       ',
+				'KC_C , KC_5 , KC_6                 , KC_7 , KC_8 , KC_9',
 			},
 		},
 	}

@@ -1,5 +1,3 @@
-local Layout = require 'qmk/Layout'
-
 local M = {}
 
 ---@alias qmk.UserLayout string[]
@@ -28,19 +26,6 @@ M.default_config = {
 		keymap_overrides = {},
 	},
 }
-
----parse the user config into qmk config
----@param user_config qmk.UserConfig
----@return qmk.Config
-function M.parse(user_config)
-	return {
-		name = user_config.name,
-		auto_format_pattern = user_config.auto_format_pattern,
-		keymap_path = user_config.keymap_path,
-		comment_preview = user_config.comment_preview,
-		layout = Layout:new(user_config.layout),
-	}
-end
 
 ---@class qmk.Config
 ---@field name string # name of the layout macro, this is used to find the layout in the keymap
