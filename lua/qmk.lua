@@ -1,25 +1,14 @@
 local const = require 'qmk.const'
 local config = require 'qmk.config'
 local format = require 'qmk.format'
-local validate = require 'qmk.validate'
 
 local qmk = {}
-
----@param options qmk.UserConfig
----@return qmk.Config
-local function with_defaults(options)
-	if not options.name or not options.layout then error 'name and layout are required' end
-
-	local merged_config = vim.tbl_deep_extend('force', config.default_config, options)
-	validate(merged_config, config.default_config)
-	return merged_config
-end
 
 -- setup QMK plugin
 -- creates user commands and autocmds to autoformat
 ---@param options qmk.UserConfig
 function qmk.setup(options)
-	qmk.options = with_defaults(options)
+	qmk.options = config.parse(options)
 
 	vim.api.nvim_create_user_command(
 		'QMKFormat',

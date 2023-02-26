@@ -5,7 +5,10 @@ local config = require 'qmk.config'
 ---@param layout qmk.UserLayout
 ---@return qmk.Config
 local function create_options(layout)
-	return vim.tbl_deep_extend('force', config.default_config, { layout = layout })
+	return config.parse {
+		name = 'test',
+		layout = layout,
+	}
 end
 
 describe('format_keymaps', function()
@@ -50,19 +53,19 @@ describe('format_keymaps', function()
 					},
 				},
 				options = create_options {
-					{ 'x', 'x', '_', 'x', 'x' },
-					{ 'x', 'x', '_', 'x', 'x' },
+					'x x x x',
+					'x x x x',
 				},
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'    KC_A , KC_B                     , MT(MOD_LALT, KC_ENT) , KC_C,',
-				'    KC_A , MT(MOD_LALT, KC_ENT)     , KC_B                 , KC_C',
+				'KC_A , KC_B                 , MT(MOD_LALT, KC_ENT) , KC_C,',
+				'KC_A , MT(MOD_LALT, KC_ENT) , KC_B                 , KC_C',
 				'),',
 				'',
 				'[_BOO] = LAYOUT(',
-				'    KC_A , KC_B     , KC_C , KC_D,',
-				'    KC_A , KC_B     , KC_C , KC_D',
+				'KC_A , KC_B , KC_C , KC_D,',
+				'KC_A , KC_B , KC_C , KC_D',
 				')',
 			},
 		},

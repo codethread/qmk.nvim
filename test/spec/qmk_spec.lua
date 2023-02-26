@@ -3,12 +3,6 @@ local stub = require 'luassert.stub'
 local match = require 'luassert.match'
 local Path = require 'plenary.path'
 
--- TODO: will need to set this up per test most likely
-local simple_config = {
-	name = 'test',
-	layout = { { 'x' } },
-}
-
 local function snapshot(input, final)
 	local content = Path:new('test', 'fixtures', input):read()
 	local out = Path:new('test', 'fixtures', final):read()
@@ -34,7 +28,7 @@ describe('qmk', function()
 
 		it('is configured after setup', function()
 			local qmk = require 'qmk'
-			qmk.setup(simple_config)
+			qmk.setup { name = 'test', layout = { 'x' } }
 			assert.is_true(qmk.is_configured())
 		end)
 
@@ -55,7 +49,16 @@ describe('qmk', function()
 			local T = snapshot('simple.c', 'simple_out.c')
 
 			local qmk = require 'qmk'
-			qmk.setup(simple_config)
+			qmk.setup {
+				name = 'LAYOUT_preonic_grid',
+				layout = {
+					'| x x x x x x x x x x x x',
+					'| x x x x x x x x x x x x',
+					'| x x x x x x x x x x x x',
+					'| x x x x x x x x x x x x',
+					'| x x x x x x x x x x x x',
+				},
+			}
 			qmk.format(T.buff)
 
 			assert.combinators.match(T.expected, T.buff_content())
@@ -65,7 +68,16 @@ describe('qmk', function()
 			local T = snapshot('multiple.c', 'multiple_out.c')
 
 			local qmk = require 'qmk'
-			qmk.setup(simple_config)
+			qmk.setup {
+				name = 'LAYOUT_preonic_grid',
+				layout = {
+					'| x x x x x x x x x x x x',
+					'| x x x x x x x x x x x x',
+					'| x x x x x x x x x x x x',
+					'| x x x x x x x x x x x x',
+					'| x x x x x x x x x x x x',
+				},
+			}
 			qmk.format(T.buff)
 
 			assert.combinators.match(T.expected, T.buff_content())
@@ -75,7 +87,10 @@ describe('qmk', function()
 			local T = snapshot('overlap.c', 'overlap_out.c')
 
 			local qmk = require 'qmk'
-			qmk.setup(simple_config)
+			qmk.setup {
+				name = 'LAYOUT_preonic_grid',
+				layout = { '| x x x x x' },
+			}
 			qmk.format(T.buff)
 
 			assert.combinators.match(T.expected, T.buff_content())

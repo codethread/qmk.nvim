@@ -5,12 +5,38 @@ local config = require 'qmk.config'
 ---@param layout qmk.UserLayout
 ---@return qmk.Config
 local function create_options(layout)
-	return vim.tbl_deep_extend('force', config.default_config, { layout = layout })
+	return config.parse {
+		name = 'test',
+		layout = layout,
+	}
 end
 
 describe('format_keymaps', function()
 	---@type { msg: string, input: { keys: string[], options: qmk.Config }, output: string[] }[]
 	local tests = {
+		{
+			msg = 'a single space',
+			input = {
+				options = create_options { '| x' },
+				keys = { 'KC_A' },
+			},
+			output = {
+				'[_FOO] = LAYOUT(',
+				'    KC_A',
+			},
+		},
+		{
+			msg = 'wide keys',
+			input = {
+				options = create_options { 'x x', 'x x' },
+				keys = { 'KC_A', 'MT(MOD_LALT)', 'MT(MOD_LALT)', 'KC_D' },
+			},
+			output = {
+				'[_FOO] = LAYOUT(',
+				'KC_A         , MT(MOD_LALT),',
+				'MT(MOD_LALT) , KC_D        ',
+			},
+		},
 		{
 			msg = 'a single row keymap',
 			input = {
@@ -44,7 +70,7 @@ describe('format_keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B',
+				'KC_A , KC_B,',
 				'   KC_C    ',
 			},
 		},
@@ -60,9 +86,9 @@ describe('format_keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B',
-				'KC_E , KC_D(Mod)',
-				'   KC_C    ',
+				'KC_A , KC_B     ,',
+				'KC_E , KC_D(Mod),',
+				'      KC_C      ',
 			},
 		},
 		{
@@ -76,7 +102,7 @@ describe('format_keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B , KC_C',
+				'KC_A , KC_B , KC_C,',
 				'   KC_A     , KC_A',
 			},
 		},
@@ -101,7 +127,7 @@ describe('format_keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) , KC_C , KC_5 , KC_6',
+				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) , KC_C , KC_5 , KC_6,',
 				'       KC_7 , KC_8                 ,        KC_9       ',
 			},
 		},
@@ -133,8 +159,8 @@ describe('format_keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) ,     KC_C , KC_5 , KC_6',
-				'       KC_7 , KC_8                 ,            KC_9       ',
+				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) ,     KC_C , KC_5 , KC_6,',
+				'       KC_7 , KC_8                 ,            KC_9       ,',
 				'KC_C , KC_5 , KC_6                 ,     KC_7 , KC_8 , KC_9',
 			},
 		},

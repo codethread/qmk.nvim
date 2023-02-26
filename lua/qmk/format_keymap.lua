@@ -1,43 +1,4 @@
 local E = require 'qmk.errors'
-local P = vim.pretty_print
-
----@param layout qmk.UserLayout
----@return  qmk.LayoutKeyInfo[][]
-local function parse_layout(layout)
-	local result = {}
-	for _, row in pairs(layout) do
-		local keys = vim.split(row, ' ')
-		local row_info = vim.tbl_map(function(key)
-			if key == '|' then return { width = 1, type = 'gap' } end
-			if key == 'x' then return { width = 1, type = 'key' } end
-
-			local invalid = string.find(key, '[^x^]')
-			assert(invalid == nil, E.config_invalid_symbol)
-			local i = string.find(key, '^', 1, true)
-			assert(i, E.config_invalid_span)
-			return {
-				width = (string.len(key) + 1) / 2,
-				type = 'span',
-				align = tostring(i) .. '/' .. tostring(string.len(key)),
-			}
-		end, keys)
-		result[#result + 1] = row_info
-	end
-	return result
-end
-
----@class qmk.LayoutKeyInfo
----@field width number
----@field align? string
----@field type 'key' | 'span' | 'gap'
-
----@class qmk.LayoutKeyMapInfo
----@field width number
----@field align? string
----@field type 'key' | 'span' | 'gap'
----@field key string
----@field key_index number
----@field span? number
 
 ---@param layout qmk.LayoutKeyInfo[][]
 ---@param keys string[]
@@ -69,12 +30,13 @@ end
 ---@param layout qmk.LayoutKeyMapInfo[][]
 ---@return number[]
 local function get_largest_per_column(layout)
-	local current_row = 1
 	local width = #layout[1]
+	local height = #layout
+
 	local column_sizes = {}
 	for col = 1, width do
 		local longest_key = 1
-		for row = 1, current_row do
+		for row = 1, height do
 			local key = layout[row][col]
 			if key.type == 'key' then
 				if #key.key > longest_key then longest_key = #key.key end
@@ -93,10 +55,6 @@ local function join_row(row, divide)
 	local current_key = { key_index = 0 }
 	local comma = ' , '
 	local comma_width = #comma
-
-	local function print_key(text, span, isLast)
-		return text .. string.rep(' ', span - #text) .. (isLast and '' or comma)
-	end
 
 	for i, key in pairs(row) do
 		-- simple case, just print the key
@@ -121,6 +79,7 @@ local function join_row(row, divide)
 			if not (i + 1 <= #row and row[i + 1].key_index == key.key_index) then
 				-- this is the last key in the span
 				-- alignment is a string like 1/3 or 2/3
+				---@diagnostic disable-next-line: missing-parameter
 				local ratio = vim.split(key.align, '/')
 				local nom = tonumber(ratio[1])
 				local denom = tonumber(ratio[2])
@@ -158,8 +117,7 @@ end
 ---@return string[]
 local function format_keymap(options, keymap)
 	local keys = keymap.keys
-	local layout = parse_layout(options.layout)
-	local layout_grid = map_keys_to_grid(layout, keys)
+	local layout_grid = map_keys_to_grid(options.layout, keys)
 	local largest_in_column = get_largest_per_column(layout_grid)
 
 	for _, row in pairs(layout_grid) do
@@ -168,10 +126,29 @@ local function format_keymap(options, keymap)
 		end
 	end
 
+	local output = {}
+	for idx, row in pairs(layout_grid) do
+		local str = join_row(row, options.spacing)
+		str = idx ~= #layout_grid and str .. ',' or str
+		table.insert(output, str)
+	end
+
 	return vim.tbl_flatten {
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
-		vim.tbl_map(function(row) return join_row(row, options.spacing) end, layout_grid),
+		output,
 	}
 end
 
 return format_keymap
+
+--------------------------------------------------------------------------------
+-- TYPES
+--------------------------------------------------------------------------------
+
+---@class qmk.LayoutKeyMapInfo
+---@field width number
+---@field align? string
+---@field type 'key' | 'span' | 'gap'
+---@field key string
+---@field key_index number
+---@field span? number
