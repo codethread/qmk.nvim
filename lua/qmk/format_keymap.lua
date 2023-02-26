@@ -10,10 +10,10 @@ local function parse_layout(layout)
 			-- if key == '.' then return { width = 1, type = 'empty' } end
 			if key == 'x' then return { width = 1, type = 'key' } end
 
-			local invalid = string.find(key, '[^x.^]')
+			local invalid = string.find(key, '[^x^]')
 			assert(invalid == nil, 'invalid layout, expected x, . or ^')
 			-- TODO fix find index isnt right
-			local i = string.find(key, '^')
+			local i = string.find(key, '^', 1, true)
 			assert(i, 'invalid layout, expected a ^ in the key')
 			return {
 				width = (string.len(key) + 1) / 2,
@@ -81,14 +81,6 @@ local function get_largest_per_column(layout)
 	return column_sizes
 end
 
----@param cell_width number
----@param align string #e.g 1/3 2/5
----@param key_text string
-local function position_cell(cell_width, align, key_text)
-	-- TODO improve
-	return key_text .. string.rep(' ', cell_width - #key_text)
-end
-
 ---@param row qmk.LayoutKeyMapInfo[]
 ---@return string
 local function join_row(row)
@@ -103,22 +95,50 @@ local function join_row(row)
 
 	for i, key in pairs(row) do
 		-- simple case, just print the key
-		if key.type == 'key' then str = str .. print_key(key.key, key.span, i == #row) end
+		if key.type == 'key' then
+			str = str
+				.. key.key
+				.. string.rep(' ', key.span - #key.key)
+				.. (i == #row and '' or comma)
+		end
 		if key.type == 'span' then
-			-- new key
 			if current_key.key_index ~= key.key_index then
+				-- new key
 				current_key = key
 			else
 				current_key.span = current_key.span + key.span + comma_width
 			end
 
 			-- peak ahead and see if next key is the same
-			if i + 1 <= #row and row[i + 1].key_index == key.key_index then
-				-- do nothing
-			else
+			if not (i + 1 <= #row and row[i + 1].key_index == key.key_index) then
 				-- this is the last key in the span
+				-- alignment is a string like 1/3 or 2/3
+				local ratio = vim.split(key.align, '/')
+				local nom = tonumber(ratio[1])
+				local denom = tonumber(ratio[2])
+				if nom == 1 then
+					-- left align
+					str = str
+						.. current_key.key
+						.. string.rep(' ', current_key.span - #current_key.key)
+						.. (i == #row and '' or comma)
+				elseif nom == denom then
+					-- right align
+					str = str
+						.. string.rep(' ', current_key.span - #current_key.key)
+						.. current_key.key
+						.. (i == #row and '' or comma)
+				else
+					-- center align
+					local remainder = current_key.span - #current_key.key
+					local half = math.floor(remainder / 2)
+					local centered = string.rep(' ', half)
+						.. current_key.key
+						.. string.rep(' ', half)
+					local padding = string.rep(' ', current_key.span - string.len(centered))
 
-				str = str .. print_key(current_key.key, current_key.span, i == #row)
+					str = str .. centered .. padding .. (i == #row and '' or comma)
+				end
 			end
 		end
 	end

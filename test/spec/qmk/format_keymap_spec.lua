@@ -7,11 +7,6 @@ local config = require 'qmk.config'
 local function create_options(layout)
 	return vim.tbl_deep_extend('force', config.default_config, { layout = layout })
 end
-local s = {
-	' x x x x x x x x x x x x ',
-	' x x x x x x x x x x x x ',
-	' x x x x x x^x x x x x x ', -- center two keys over one
-}
 
 describe('format_keymaps', function()
 	---@type { msg: string, input: { keys: string[], options: qmk.Config }, output: string[] }[]
@@ -39,7 +34,7 @@ describe('format_keymaps', function()
 			output = {
 				'[_FOO] = LAYOUT(',
 				'KC_A , KC_B',
-				'KC_C       ',
+				'   KC_C    ',
 			},
 		},
 		{
@@ -54,7 +49,7 @@ describe('format_keymaps', function()
 			output = {
 				'[_FOO] = LAYOUT(',
 				'KC_A , KC_B , KC_C',
-				'KC_A        , KC_A',
+				'   KC_A     , KC_A',
 			},
 		},
 		{
@@ -79,8 +74,7 @@ describe('format_keymaps', function()
 			output = {
 				'[_FOO] = LAYOUT(',
 				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) , KC_C , KC_5 , KC_6',
-				'KC_7        , KC_8                 , KC_9              ',
-				-- '     , KC_7 , KC_8                 ,        KC_9       ',
+				'       KC_7 , KC_8                 ,        KC_9       ',
 			},
 		},
 	}
