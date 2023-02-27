@@ -1,70 +1,36 @@
-# plugin-template.nvim
+# qmk.nvim
 
-[![Integration][integration-badge]][integration-runs]
+automatically format your kemap.c qmk files
 
-A template to create Neovim plugins written in [Lua][lua].
+WIP, works but just need to add comment previews and improve error handling for incorrect config
 
-## Using
+for example my config:
 
-Clone/download it locally and change the references to `qmk`, 
-`format` accordingly to your new plugin name. Don't forget to edit the
-[help][help] file accordingly.
-
-You'll need to install [Lua][lua] and [LuaRocks][luarocks] to run the linter.
-
-## Testing
-
-This uses [busted][busted], [luassert][luassert] (both through
-[plenary.nvim][plenary]) and [matcher_combinators][matcher_combinators] to
-define tests in `test/spec/` directory. These dependencies are required only to
-run tests, that's why they are installed as git submodules.
-
-Make sure your shell is in the `./test` directory or, if it is in the root directory,
-replace `make` by `make -C ./test` in the commands below.
-
-To init the dependencies run
-
-```bash
-$ make prepare
+```lua
+local qmk = require('qmk')
+qmk.setup {
+│   name = 'LAYOUT_preonic_grid',
+│   spacing = 8,
+│   layout = {
+│   ┊   '| x x x x x x | | x x x x x x',
+│   ┊   '| x x x x x x | | x x x x x x',
+│   ┊   '| x x x x x x | | x x x x x x',
+│   ┊   '| x x x x x x | | x x x x x x',
+│   ┊   '| x x x x x x | | x x x x x x',
+│   }
+}
 ```
 
-To run all tests just execute
+valid keys are 
+- `x`: indicates presence of key
+- ` `: space used to separete keys (msut be used, and only use single spaces)
+- `|`: indicates an empty space (must go all the way down the board, e.g to split left and right, or adding padding)
+- `x^x`: a key spanning multiple slots on the keyboard, the `^` indicates alignment
+  - `^xx`: left align across two rows
+  - `x^x`: center align
+  - `xx^`: right align
+  - `xx^xx`: center align but across three rows
 
-```bash
-$ make test
-```
-
-If you have [entr(1)][entr] installed you may use it to run all tests whenever a
-file is changed using:
-
-```bash
-$ make watch
-```
-
-In both commands you myght specify a single spec to test/watch using:
-
-```bash
-$ make test SPEC=spec/qmk/format_spec.lua
-$ make watch SPEC=spec/qmk/format_spec.lua
-```
-
-## Github actions
-
-An Action will run all the tests and the linter on every commit on the main
-branch and also on Pull Request. Tests will be run using 
-[stable and nightly][neovim-test-versions] versions of Neovim.
-
-[lua]: https://www.lua.org/
-[entr]: https://eradman.com/entrproject/
-[luarocks]: https://luarocks.org/
-[busted]: https://olivinelabs.com/busted/
-[luassert]: https://github.com/Olivine-Labs/luassert
-[plenary]: https://github.com/nvim-lua/plenary.nvim
-[matcher_combinators]: https://github.com/m00qek/matcher_combinators.lua
-[integration-badge]: https://github.com/m00qek/plugin-template.nvim/actions/workflows/integration.yml/badge.svg
-[integration-runs]: https://github.com/m00qek/plugin-template.nvim/actions/workflows/integration.yml
-[neovim-test-versions]: .github/workflows/integration.yml#L17
-[help]: doc/qmk.txt
 
 
 ```c
