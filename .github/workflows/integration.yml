@@ -18,7 +18,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+
 
     - uses: rhysd/action-setup-vim@v1
       with:
@@ -34,11 +37,10 @@ jobs:
       uses: leafo/gh-actions-luarocks@v4
 
     - name: Install dependencies
-      run: |
-        make -C ./test prepare
+      run: make prepare
 
     - name: Run linter
-      run: luacheck lua/ test/spec/
+      run: make lint
 
     - name: Run tests
-      run: make -C ./test test
+      run: make test
