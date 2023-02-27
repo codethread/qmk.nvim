@@ -46,7 +46,7 @@ end
 
 -- display all QMK keymaps in a floating window
 ---@param buf? buffer number
-function qmk.display(buf)
+function qmk.display()
 	if not qmk.is_configured() then
 		vim.notify(configured_warning, vim.log.levels.WARN)
 		return
