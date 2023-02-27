@@ -1,6 +1,6 @@
 local E = require 'qmk.errors'
 local validate = require 'qmk.validate'
-local key_map = require('qmk.key_map').key_map
+local K = require 'qmk.key_map'
 
 local M = {}
 
@@ -27,7 +27,7 @@ M.default_config = {
 	keymap_path = '',
 	comment_preview = {
 		position = 'none',
-		keymap_overrides = key_map,
+		keymap_overrides = {},
 	},
 }
 
@@ -68,10 +68,17 @@ end
 function M.parse(user_config)
 	if not user_config then error(E.config_missing) end
 	if not user_config.name or not user_config.layout then error 'name and layout are required' end
+	---@type qmk.Config
 	local merged_config = vim.tbl_deep_extend('force', M.default_config, user_config)
+
 	merged_config.layout = M.parse_layout(merged_config.layout)
-	validate(merged_config, M.default_config)
-	return merged_config
+	local keymaps =
+		vim.tbl_extend('force', {}, K.key_map, merged_config.comment_preview.keymap_overrides)
+	return vim.tbl_deep_extend(
+		'force',
+		merged_config,
+		{ comment_preview = { keymap_overrides = K.sort(keymaps) } }
+	)
 end
 
 ---@class qmk.LayoutKeyInfo
@@ -89,6 +96,6 @@ end
 
 ---@class qmk.Preview
 ---@field position 'top' | 'bottom' | 'none'
----@field keymap_overrides table<string, string> # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
+---@field keymap_overrides qmk.KeymapList # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
 
 return M

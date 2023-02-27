@@ -8,6 +8,15 @@ local function create_options(layout)
 	return config.parse {
 		name = 'test',
 		layout = layout,
+	}
+end
+
+---@param layout qmk.UserLayout
+---@return qmk.Config
+local function create_options_preview(layout)
+	return config.parse {
+		name = 'test',
+		layout = layout,
 		comment_preview = { position = 'top' },
 	}
 end
@@ -75,6 +84,25 @@ describe('format_keymaps', function()
 		-- 		'   KC_C    ',
 		-- 	},
 		-- },
+		{
+			msg = 'simple double row with preview',
+			input = {
+				options = create_options_preview {
+					'x x',
+					'x^x',
+				},
+				keys = { 'KC_A', 'KC_B', 'KC_C' },
+			},
+			output = {
+				'// --',
+				'// | a | b |',
+				'// |   c   |',
+				'// --',
+				'[_FOO] = LAYOUT(',
+				'KC_A , KC_B,',
+				'   KC_C    ',
+			},
+		},
 		-- {
 		-- 	msg = 'simple multiple rows',
 		-- 	input = {

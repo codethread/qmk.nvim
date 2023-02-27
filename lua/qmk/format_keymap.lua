@@ -1,4 +1,5 @@
 local E = require 'qmk.errors'
+local preview = require 'qmk.create_preview'
 
 ---@param layout qmk.LayoutKeyInfo[][]
 ---@param keys string[]
@@ -125,48 +126,6 @@ local function get_key_text(key, keymap)
 	return str
 end
 
----@param row qmk.LayoutKeyMapInfo[]
----@param preview qmk.Preview
----@return string
-local function join_comment_row(row, preview)
-	local separator = ' │  '
-	local str = '// ' .. separator
-	local current_key = { key_index = 0 }
-	for i, key in pairs(row) do
-		-- local text = preview.keymap_overrides[key.key] or key.key
-		-- TODO quick hack on gap
-		if key.type == 'gap' then str = str .. string.rep(' ', 4) end
-
-		-- simple case, just print the key
-		if key.type == 'key' then
-			local text = get_key_text(key.key, preview.keymap_overrides)
-			str = str
-				.. text
-				.. string.rep(' ', key.span - #key.key)
-				.. (i == #row and '' or separator)
-		end
-		if key.type == 'span' then
-			local text = get_key_text(key.key, preview.keymap_overrides)
-			if current_key.key_index ~= key.key_index then
-				-- new key
-				current_key = key
-			else
-				current_key.span = current_key.span + key.span + #separator
-			end
-
-			-- peak ahead and see if next key is the same
-			-- if not this is the last key in the span
-			if not (i + 1 <= #row and row[i + 1].key_index == key.key_index) then
-				str = str
-					.. text
-					.. string.rep(' ', current_key.span - #current_key.key)
-					.. (i == #row and '' or separator)
-			end
-		end
-	end
-	return str
-end
-
 ---@param options qmk.Config
 ---@param keymap qmk.Keymap
 ---@return string[]
@@ -181,10 +140,25 @@ local function format_keymap(options, keymap)
 		end
 	end
 
+	-- repeat of block above, refactor someday
+	local preview_layout_grid = map_keys_to_grid(
+		options.layout,
+		vim.tbl_map(
+			function(key) return get_key_text(key, options.comment_preview.keymap_overrides) end,
+			keys
+		)
+	)
+	local largest_in_preview_column = get_largest_per_column(preview_layout_grid)
+	for _, row in pairs(preview_layout_grid) do
+		for col_i, key in pairs(row) do
+			key.span = largest_in_preview_column[col_i]
+		end
+	end
+
 	local comment = {}
 	if options.comment_preview.position ~= 'none' then
-		for _, row in pairs(layout_grid) do
-			local str = join_comment_row(row, options.comment_preview)
+		for _, row in pairs(preview_layout_grid) do
+			local str = preview.join_comment_row(row, options.comment_preview)
 			-- str = idx ~= #layout_grid and str .. ',' or str
 			table.insert(comment, str)
 			local divider = '─'
