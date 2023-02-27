@@ -9,15 +9,15 @@ for example my config:
 ```lua
 local qmk = require('qmk')
 qmk.setup {
-│   name = 'LAYOUT_preonic_grid',
-│   spacing = 8,
-│   layout = {
-│   ┊   '| x x x x x x | | x x x x x x',
-│   ┊   '| x x x x x x | | x x x x x x',
-│   ┊   '| x x x x x x | | x x x x x x',
-│   ┊   '| x x x x x x | | x x x x x x',
-│   ┊   '| x x x x x x | | x x x x x x',
-│   }
+    name = 'LAYOUT_preonic_grid',
+    spacing = 8,
+    layout = {
+        '| x x x x x x | | x x x x x x',
+        '| x x x x x x | | x x x x x x',
+        '| x x x x x x | | x x x x x x',
+        '| x x x x x x | | x x x x x x',
+        '| x x x x x x | | x x x x x x',
+    }
 }
 ```
 
