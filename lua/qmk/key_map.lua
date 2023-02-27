@@ -1,17 +1,17 @@
---another reference https://github.com/2hwk/Q2K/blob/master/q2k/reference.py
-
 ---@alias qmk.KeymapList {key: string, value: string}[]
 
+local empty = ''
 ---@class qmk.KeyMapModule
 ---@field key_map table<string, string>
 ---@field sort fun(key_map: table<string, string>): qmk.KeymapList
 local M = {
+	--borrowed lovingly from reference https://github.com/2hwk/Q2K/blob/master/q2k/reference.py
 	key_map = {
 		KC_NO = 'no', ---giorgio,2018
-		KC_TRNS = '____',
-		KC_TRANSPARENT = '____', --"trans",
+		KC_TRNS = empty,
+		KC_TRANKC_TRNS = empty, --"trans",
 		XXXXXXX = 'no',
-		_______ = '____',
+		_______ = empty,
 		RESET = 'boot',
 		MAGIC_HOST_NKRO = 'kro_n', --FORCENKRO
 		MAGIC_UNHOST_NKRO = 'kro_6', --FORCE6KRO
@@ -19,8 +19,8 @@ local M = {
 		KC_GESC = 'gesc',
 
 		--Alphas
-		KC_GRV = "'`'",
-		KC_GRAVE = "'`'", --"grave",#Grave(~`)kro_6
+		KC_GRV = '`',
+		KC_GRAVE = '`', --"grave",#Grave(~`)kro_6
 		KC_1 = '1',
 		KC_2 = '2',
 		KC_3 = '3',
@@ -31,10 +31,10 @@ local M = {
 		KC_8 = '8',
 		KC_9 = '9',
 		KC_0 = '0',
-		KC_MINS = "'-'",
-		KC_MINUS = "'-'", --"minus",#Minus(-_)
-		KC_EQL = "'='",
-		KC_EQUAL = "'='", --"equal",#Equal(=+)
+		KC_MINS = '-',
+		KC_MINUS = '-', --"minus",#Minus(-_)
+		KC_EQL = '=',
+		KC_EQUAL = '=', --"equal",#Equal(=+)
 		KC_Q = 'q',
 		KC_W = 'w',
 		KC_E = 'e',
@@ -45,10 +45,10 @@ local M = {
 		KC_I = 'i',
 		KC_O = 'o',
 		KC_P = 'p',
-		KC_LBRC = "'['",
-		KC_LBRACKET = "'['", --"left_bracket",#LeftBracket([)
-		KC_RBRC = "']'",
-		KC_RBRACKET = "']'", --"right_bracket",#RightBracket(])
+		KC_LBRC = '[',
+		KC_LBRACKET = '[', --"left_bracket",#LeftBracket([)
+		KC_RBRC = ']',
+		KC_RBRACKET = ']', --"right_bracket",#RightBracket(])
 		KC_BSLS = "'\\'", --"bsls",
 		KC_BSLASH = "'\\'", --Backslash(\|)
 		KC_A = 'a',
@@ -60,8 +60,8 @@ local M = {
 		KC_J = 'j',
 		KC_K = 'k',
 		KC_L = 'l',
-		KC_SCLN = "';'",
-		KC_SCOLON = "';'", --"semicolon",#Semicolon(;:)
+		KC_SCLN = ';',
+		KC_SCOLON = ';', --"semicolon",#Semicolon(;:)
 		KC_QUOT = '"\'"',
 		KC_QUOTE = '"\'"', --"quot",#Quote('")
 		KC_Z = 'z',
@@ -71,11 +71,11 @@ local M = {
 		KC_B = 'b',
 		KC_N = 'n',
 		KC_M = 'm',
-		KC_COMM = "','",
-		KC_COMMA = "','", --"comma",#Comma(,<)
-		KC_DOT = "'.'", --Period(.>)
-		KC_SLSH = "'/'",
-		KC_SLASH = "'/'", --"forward_slash",#ForwardSlash(/?)
+		KC_COMM = ',',
+		KC_COMMA = ',', --"comma",#Comma(,<)
+		KC_DOT = '.', --Period(.>)
+		KC_SLSH = '/',
+		KC_SLASH = '/', --"forward_slash",#ForwardSlash(/?)
 		KC_SPC = 'spc',
 		KC_SPACE = 'spc', --"spacebar",#Spacebar
 
@@ -155,47 +155,49 @@ local M = {
 		KC_F23 = 'f23',
 		KC_F24 = 'f24',
 		--Shifted
-		KC_TILDE = "'~'",
-		KC_TILD = "'~'",
-		KC_EXCLAIM = "'!'",
-		KC_EXLM = "'!'",
-		KC_AT = "'@'",
+		KC_TILDE = '~',
+		KC_TILD = '~',
+		KC_EXCLAIM = '!',
+		KC_EXLM = '!',
+		KC_AT = '@',
 		KC_HASH = "'--'",
-		KC_DOLLAR = "'$'",
-		KC_DLR = "'$'",
-		KC_PERCENT = "'%'",
-		KC_PERC = "'%'",
-		KC_CIRCUMFLEX = "'^'",
-		KC_CIRC = "'^'",
-		KC_AMPERSAND = "'&'",
-		KC_AMPR = "'&'",
-		KC_ASTERISK = "'*'",
-		KC_ASTR = "'*'",
-		KC_LEFT_PAREN = "'('",
-		KC_LPRN = "'('",
-		KC_RIGHT_PAREN = "')'",
-		KC_RPRN = "')'",
-		KC_UNDERSCORE = "'_'",
-		KC_UNDS = "'_'",
-		KC_PLUS = "'+'",
-		KC_LEFT_CURLY_BRACE = "'{'",
-		KC_LCBR = "'{'",
-		KC_RIGHT_CURLY_BRACE = "'}'",
-		KC_RCBR = "'}'",
-		KC_PIPE = "'|'",
-		KC_COLON = "':'",
-		KC_COLN = "':'",
+		KC_DOLLAR = '$',
+		KC_DLR = '$',
+		KC_PERCENT = '%',
+		KC_PERC = '%',
+		KC_CIRCUMFLEX = '^',
+		KC_CIRC = '^',
+		KC_AMPERSAND = '&',
+		KC_AMPR = '&',
+		KC_ASTERISK = '*',
+		KC_ASTR = '*',
+		KC_LEFT_PAREN = '(',
+		KC_LPRN = '(',
+		KC_RIGHT_PAREN = ')',
+		KC_RPRN = ')',
+		KC_UNDERSCORE = '_',
+		KC_UNDS = '_',
+		KC_PLUS = '+',
+		KC_LEFT_CURLY_BRACE = '{',
+		KC_RIGHT_CURLY_BRACE = '}',
+		KC_LCBR = '{',
+		KC_RCBR = '}',
+		KC_LEFT_BRACKET = '[',
+		KC_RIGHT_BRACKET = ']',
+		KC_PIPE = '|',
+		KC_COLON = ':',
+		KC_COLN = ':',
 		KC_DOUBLE_QUOTE = "'\"'",
 		KC_DQT = "'\"'",
 		KC_DQUO = "'\"'",
-		KC_LEFT_ANGLE_BRACKET = "'<'",
-		KC_LT = "'<'",
-		KC_LABK = "'<'",
-		KC_RIGHT_ANGLE_BRACKET = "'>'",
-		KC_GT = "'>'",
-		KC_RABK = "'>'",
-		KC_QUESTION = "'?'",
-		KC_QUES = "'?'",
+		KC_LEFT_ANGLE_BRACKET = '<',
+		KC_LT = '<',
+		KC_LABK = '<',
+		KC_RIGHT_ANGLE_BRACKET = '>',
+		KC_GT = '>',
+		KC_RABK = '>',
+		KC_QUESTION = '?',
+		KC_QUES = '?',
 
 		--Numpad
 		KC_NLCK = 'nlck',
@@ -280,7 +282,7 @@ local M = {
 		KC_NONUS_HASH = 'iso_hash', --ISOhash(#~)
 		KC_NUBS = 'iso\\',
 		KC_NONUS_BSLASH = 'iso\\', --ISOBackslash(\|)
-		KC_ZKHK = "'`'", --JISGrave
+		KC_ZKHK = '`', --JISGrave
 		KC_RO = 'int1',
 		KC_INT1 = 'int1', --JIS\|
 		KC_KANA = 'int2',

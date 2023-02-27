@@ -27,8 +27,9 @@ function M.join_comment_row(row, preview)
 	local current_key = { key_index = 0 }
 	for i, key in pairs(row) do
 		-- local text = preview.keymap_overrides[key.key] or key.key
-		-- TODO quick hack on gap
-		if key.type == 'gap' then str = str .. string.rep(' ', 4) end
+		if key.type == 'gap' then
+			-- ignore for now
+		end
 
 		-- simple case, just print the key
 		if key.type == 'key' then
