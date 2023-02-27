@@ -2,6 +2,8 @@ local get_keymaps = require 'qmk.get_keymaps'
 local format_keymaps = require 'qmk.format_keymaps'
 local api = vim.api
 
+local function print_layout(layout) vim.pretty_print(layout) end
+
 ---format_qmk_keymaps
 ---@param options qmk.Config
 ---@param buf? number
