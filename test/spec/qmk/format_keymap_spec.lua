@@ -11,6 +11,16 @@ local function create_options(layout)
 	}
 end
 
+---@param layout qmk.UserLayout
+---@return qmk.Config
+local function create_options_preview(layout)
+	return config.parse {
+		name = 'test',
+		layout = layout,
+		comment_preview = { position = 'top' },
+	}
+end
+
 describe('format_keymaps', function()
 	---@type { msg: string, input: { keys: string[], options: qmk.Config }, output: string[] }[]
 	local tests = {
@@ -162,6 +172,32 @@ describe('format_keymaps', function()
 				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) ,     KC_C , KC_5 , KC_6,',
 				'       KC_7 , KC_8                 ,            KC_9       ,',
 				'KC_C , KC_5 , KC_6                 ,     KC_7 , KC_8 , KC_9',
+			},
+		},
+		{
+			msg = 'simple double row with preview',
+			input = {
+				options = create_options_preview {
+					'x x',
+					'x^x',
+				},
+				keys = { 'KC_A', 'KC_B', 'KC_C' },
+			},
+			output = {
+				-- TODO: actually make this work
+				-- '// ┌───┬───┐',
+				-- '// │ a │ b │',
+				-- '// ├───┴───┤',
+				-- '// │   c   │',
+				-- '// └───────┘',
+				'// ┌───┬───┐',
+				'// │ a │ b │',
+				'// ├───┼───┤',
+				'// │ c │ c │',
+				'// └───┴───┘',
+				'[_FOO] = LAYOUT(',
+				'KC_A , KC_B,',
+				'   KC_C    ',
 			},
 		},
 	}

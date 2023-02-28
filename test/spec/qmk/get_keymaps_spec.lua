@@ -1,6 +1,6 @@
 local E = require 'qmk.errors'
 local match = assert.combinators.match
-local string_a = require 'matcher_combinators.matchers.string'
+local match_string = require 'matcher_combinators.matchers.string'
 local get_keymaps = require 'qmk.get_keymaps'
 
 describe('get_keymaps:', function()
@@ -223,7 +223,7 @@ describe('get_keymaps abuse:', function()
 		it('should fail when ' .. test.msg, function()
 			local ok, err = pcall(get_keymaps, test.input, { name = 'LAYOUT' })
 			assert(not ok, 'no error thrown')
-			match(string_a.regex(test.err), err)
+			match(match_string.regex(test.err), err)
 		end)
 	end
 end)

@@ -1,5 +1,5 @@
 local E = require 'qmk.errors'
-local validate = require 'qmk.validate'
+local K = require 'qmk.key_map'
 
 local M = {}
 
@@ -14,8 +14,9 @@ local M = {}
 ---@field comment_preview? qmk.UserPreview
 
 ---@class qmk.UserPreview
----@field position 'top' | 'bottom' | 'none'
+---@field position? 'top' | 'bottom' | 'inside'
 ---@field keymap_overrides? table<string, string> # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
+---@field symbols? table<string, string>
 
 ---@type qmk.Config
 M.default_config = {
@@ -25,8 +26,20 @@ M.default_config = {
 	auto_format_pattern = '*keymap.c',
 	keymap_path = '',
 	comment_preview = {
-		position = 'none',
 		keymap_overrides = {},
+		symbols = {
+			tl = '┌',
+			div = '─',
+			tm = '┬',
+			tr = '┐',
+			sep = '│',
+			ml = '├',
+			mm = '┼',
+			mr = '┤',
+			bl = '└',
+			bm = '┴',
+			br = '┘',
+		},
 	},
 }
 
@@ -67,16 +80,23 @@ end
 function M.parse(user_config)
 	if not user_config then error(E.config_missing) end
 	if not user_config.name or not user_config.layout then error 'name and layout are required' end
+	---@type qmk.Config
 	local merged_config = vim.tbl_deep_extend('force', M.default_config, user_config)
+
 	merged_config.layout = M.parse_layout(merged_config.layout)
-	validate(merged_config, M.default_config)
-	return merged_config
+	local keymaps =
+		vim.tbl_extend('force', {}, K.key_map, merged_config.comment_preview.keymap_overrides)
+	return vim.tbl_deep_extend(
+		'force',
+		merged_config,
+		{ comment_preview = { keymap_overrides = K.sort(keymaps) } }
+	)
 end
 
 ---@class qmk.LayoutKeyInfo
 ---@field width number
 ---@field align? string
----@field type 'key' | 'span' | 'gap'
+---@field type 'key' | 'span' | 'gap' #TODO: support space and gap
 
 ---@class qmk.Config
 ---@field name string # name of the layout macro, this is used to find the layout in the keymap
@@ -84,10 +104,11 @@ end
 ---@field keymap_path string # path to the keymap file, must be absolute, used for rendering the layout as a popup
 ---@field layout qmk.LayoutKeyInfo[][]
 ---@field spacing number
----@field comment_preview qmk.UserPreview
+---@field comment_preview qmk.Preview
 
 ---@class qmk.Preview
----@field position 'top' | 'bottom' | 'none'
----@field keymap_overrides table<string, string> # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
+---@field position 'top' | 'bottom' | 'none' | 'inside'
+---@field keymap_overrides qmk.KeymapList # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
+---@field symbols table<string, string>
 
 return M

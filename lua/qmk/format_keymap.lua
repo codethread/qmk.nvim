@@ -1,4 +1,5 @@
 local E = require 'qmk.errors'
+local preview = require 'qmk.create_preview'
 
 ---@param layout qmk.LayoutKeyInfo[][]
 ---@param keys string[]
@@ -76,8 +77,8 @@ local function join_row(row, divide)
 			end
 
 			-- peak ahead and see if next key is the same
+			-- if not this is the last key in the span
 			if not (i + 1 <= #row and row[i + 1].key_index == key.key_index) then
-				-- this is the last key in the span
 				-- alignment is a string like 1/3 or 2/3
 				---@diagnostic disable-next-line: missing-parameter
 				local ratio = vim.split(key.align, '/')
@@ -112,6 +113,19 @@ local function join_row(row, divide)
 	return str
 end
 
+---find all matching key codes from the key string and replace them with the keymap value
+---@param key string
+---@param keymap qmk.KeymapList
+---@return string
+local function get_key_text(key, keymap)
+	local str = key
+	for _, k in ipairs(keymap) do
+		-- replace the key with the override
+		str = string.gsub(str, k.key, k.value)
+	end
+	return str
+end
+
 ---@param options qmk.Config
 ---@param keymap qmk.Keymap
 ---@return string[]
@@ -126,6 +140,24 @@ local function format_keymap(options, keymap)
 		end
 	end
 
+	-- repeat of block above, refactor someday
+	local preview_layout_grid = map_keys_to_grid(
+		options.layout,
+		vim.tbl_map(
+			function(key) return get_key_text(key, options.comment_preview.keymap_overrides) end,
+			keys
+		)
+	)
+	local largest_in_preview_column = get_largest_per_column(preview_layout_grid)
+	for _, row in pairs(preview_layout_grid) do
+		for col_i, key in pairs(row) do
+			key.span = largest_in_preview_column[col_i]
+		end
+	end
+
+	local comment = options.comment_preview.position == 'none' and {}
+		or preview.generate(preview_layout_grid, options.comment_preview.symbols)
+
 	local output = {}
 	for idx, row in pairs(layout_grid) do
 		local str = join_row(row, options.spacing)
@@ -134,8 +166,11 @@ local function format_keymap(options, keymap)
 	end
 
 	return vim.tbl_flatten {
+		options.comment_preview.position == 'top' and vim.tbl_map(table.concat, comment) or {},
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
+		options.comment_preview.position == 'inside' and vim.tbl_map(table.concat, comment) or {},
 		output,
+		options.comment_preview.position == 'bottom' and vim.tbl_map(table.concat, comment) or {},
 	}
 end
 
