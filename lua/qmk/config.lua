@@ -14,7 +14,7 @@ local M = {}
 ---@field comment_preview? qmk.UserPreview
 
 ---@class qmk.UserPreview
----@field position 'top' | 'bottom' | 'none'
+---@field position? 'top' | 'bottom' | 'inside'
 ---@field keymap_overrides? table<string, string> # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
 ---@field symbols? table<string, string>
 
@@ -26,7 +26,6 @@ M.default_config = {
 	auto_format_pattern = '*keymap.c',
 	keymap_path = '',
 	comment_preview = {
-		position = 'none',
 		keymap_overrides = {},
 		symbols = {
 			tl = '┌',
@@ -108,7 +107,7 @@ end
 ---@field comment_preview qmk.Preview
 
 ---@class qmk.Preview
----@field position 'top' | 'bottom' | 'none'
+---@field position 'top' | 'bottom' | 'none' | 'inside'
 ---@field keymap_overrides qmk.KeymapList # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
 ---@field symbols table<string, string>
 

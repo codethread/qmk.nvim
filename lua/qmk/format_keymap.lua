@@ -166,9 +166,11 @@ local function format_keymap(options, keymap)
 	end
 
 	return vim.tbl_flatten {
-		vim.tbl_map(table.concat, comment),
+		options.comment_preview.position == 'top' and vim.tbl_map(table.concat, comment) or {},
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
+		options.comment_preview.position == 'inside' and vim.tbl_map(table.concat, comment) or {},
 		output,
+		options.comment_preview.position == 'bottom' and vim.tbl_map(table.concat, comment) or {},
 	}
 end
 
