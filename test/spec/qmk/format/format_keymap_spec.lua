@@ -1,5 +1,5 @@
 local match = assert.combinators.match
-local format_keymap = require 'qmk.format_keymap'
+local format_keymap = require 'qmk.format.format_keymap'
 local config = require 'qmk.config'
 
 ---@param layout qmk.UserLayout

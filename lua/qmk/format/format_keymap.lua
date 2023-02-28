@@ -1,5 +1,5 @@
 local E = require 'qmk.errors'
-local preview = require 'qmk.create_preview'
+local preview = require 'qmk.format.create_preview'
 
 ---@param layout qmk.LayoutKeyInfo[][]
 ---@param keys string[]

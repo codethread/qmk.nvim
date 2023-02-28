@@ -66,6 +66,9 @@ describe('qmk', function()
 			local qmk = require 'qmk'
 			qmk.setup {
 				name = 'LAYOUT_preonic_grid',
+				-- comment_preview = {
+				-- 	position = 'top',
+				-- },
 				layout = {
 					'x x x x x x | x x x x x x',
 					'x x x x x x | x x x x x x',

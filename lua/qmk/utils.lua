@@ -1,9 +1,5 @@
 local M = {}
 
---generic Key : table
---param keymap Key[][]
---param fn fun(key: Key[]): nil
-
 ---crab along a keymap table (2d array), going from left to right, being passed each column to `fn`
 ---@generic Key : table
 ---@param keymap Key[][]

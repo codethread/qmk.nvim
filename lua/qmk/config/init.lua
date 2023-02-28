@@ -1,5 +1,6 @@
 local E = require 'qmk.errors'
-local K = require 'qmk.key_map'
+local key_map = require 'qmk.config.key_map'
+local sort = require 'qmk.config.sort'
 
 local M = {}
 
@@ -55,6 +56,7 @@ function M.parse_layout(layout)
 		local invalid_whitespace = string.find(row, '  ', 1, true)
 		assert(not invalid_whitespace, E.layout_double_whitespace)
 
+		---@diagnostic disable-next-line: missing-parameter
 		local keys = vim.split(row, ' ')
 		local row_info = vim.tbl_map(function(key)
 			if key == '|' then return { width = 1, type = 'gap' } end
@@ -85,11 +87,11 @@ function M.parse(user_config)
 
 	merged_config.layout = M.parse_layout(merged_config.layout)
 	local keymaps =
-		vim.tbl_extend('force', {}, K.key_map, merged_config.comment_preview.keymap_overrides)
+		vim.tbl_extend('force', {}, key_map, merged_config.comment_preview.keymap_overrides)
 	return vim.tbl_deep_extend(
 		'force',
 		merged_config,
-		{ comment_preview = { keymap_overrides = K.sort(keymaps) } }
+		{ comment_preview = { keymap_overrides = sort(keymaps) } }
 	)
 end
 

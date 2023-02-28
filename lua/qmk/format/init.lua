@@ -1,5 +1,5 @@
-local get_keymaps = require 'qmk.get_keymaps'
-local format_keymaps = require 'qmk.format_keymaps'
+local get_keymaps = require 'qmk.parse.get_keymaps'
+local format_keymaps = require 'qmk.format.format_keymaps'
 local api = vim.api
 
 ---format_qmk_keymaps

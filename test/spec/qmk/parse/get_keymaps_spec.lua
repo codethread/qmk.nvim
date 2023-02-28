@@ -1,7 +1,7 @@
 local E = require 'qmk.errors'
 local match = assert.combinators.match
 local match_string = require 'matcher_combinators.matchers.string'
-local get_keymaps = require 'qmk.get_keymaps'
+local get_keymaps = require 'qmk.parse.get_keymaps'
 
 describe('get_keymaps:', function()
 	---@type {msg: string, input: string, output: qmk.Keymaps}[]
