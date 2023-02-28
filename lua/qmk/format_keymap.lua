@@ -155,16 +155,8 @@ local function format_keymap(options, keymap)
 		end
 	end
 
-	local comment = {}
-	if options.comment_preview.position ~= 'none' then
-		for _, row in pairs(preview_layout_grid) do
-			local str = preview.join_comment_row(row, options.comment_preview)
-			-- str = idx ~= #layout_grid and str .. ',' or str
-			table.insert(comment, str)
-			local divider = '─'
-			table.insert(comment, '//' .. string.rep(divider, #str))
-		end
-	end
+	local comment = options.comment_preview.position == 'none' and {}
+		or preview.generate(preview_layout_grid, options.comment_preview.symbols)
 
 	local output = {}
 	for idx, row in pairs(layout_grid) do
@@ -174,7 +166,7 @@ local function format_keymap(options, keymap)
 	end
 
 	return vim.tbl_flatten {
-		comment,
+		vim.tbl_map(table.concat, comment),
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
 		output,
 	}

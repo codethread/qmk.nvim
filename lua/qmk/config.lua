@@ -1,5 +1,4 @@
 local E = require 'qmk.errors'
-local validate = require 'qmk.validate'
 local K = require 'qmk.key_map'
 
 local M = {}
@@ -17,6 +16,7 @@ local M = {}
 ---@class qmk.UserPreview
 ---@field position 'top' | 'bottom' | 'none'
 ---@field keymap_overrides? table<string, string> # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
+---@field symbols? table<string, string>
 
 ---@type qmk.Config
 M.default_config = {
@@ -28,6 +28,19 @@ M.default_config = {
 	comment_preview = {
 		position = 'none',
 		keymap_overrides = {},
+		symbols = {
+			tl = '┌',
+			div = '─',
+			tm = '┬',
+			tr = '┐',
+			sep = '│',
+			ml = '├',
+			mm = '┼',
+			mr = '┤',
+			bl = '└',
+			bm = '┴',
+			br = '┘',
+		},
 	},
 }
 
@@ -84,7 +97,7 @@ end
 ---@class qmk.LayoutKeyInfo
 ---@field width number
 ---@field align? string
----@field type 'key' | 'span' | 'gap'
+---@field type 'key' | 'span' | 'gap' #TODO: support space and gap
 
 ---@class qmk.Config
 ---@field name string # name of the layout macro, this is used to find the layout in the keymap
@@ -97,5 +110,6 @@ end
 ---@class qmk.Preview
 ---@field position 'top' | 'bottom' | 'none'
 ---@field keymap_overrides qmk.KeymapList # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
+---@field symbols table<string, string>
 
 return M

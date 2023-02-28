@@ -1,6 +1,6 @@
 ---@alias qmk.KeymapList {key: string, value: string}[]
 
-local empty = ''
+local empty = '   '
 ---@class qmk.KeyMapModule
 ---@field key_map table<string, string>
 ---@field sort fun(key_map: table<string, string>): qmk.KeymapList
@@ -163,8 +163,8 @@ local M = {
 		KC_HASH = "'--'",
 		KC_DOLLAR = '$',
 		KC_DLR = '$',
-		KC_PERCENT = '%',
-		KC_PERC = '%',
+		KC_PERCENT = '%%', -- double for printf ??
+		KC_PERC = '%%', -- double for printf ??
 		KC_CIRCUMFLEX = '^',
 		KC_CIRC = '^',
 		KC_AMPERSAND = '&',
