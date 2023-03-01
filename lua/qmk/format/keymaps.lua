@@ -1,4 +1,4 @@
-local format_keymap = require 'qmk.format.format_keymap'
+local format_keymap = require 'qmk.format.keymap'
 
 ---@param keymaps qmk.Keymaps
 ---@param options qmk.Config
