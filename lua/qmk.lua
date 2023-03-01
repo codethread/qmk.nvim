@@ -8,7 +8,12 @@ local configured_warning = 'QMK plugin is not configured. Please call qmk.setup(
 -- creates user commands and autocmds to autoformat
 ---@param options qmk.UserConfig
 function qmk.setup(options)
-	qmk.options = config.parse(options)
+	local ok, config_or_error = pcall(config.parse, options)
+	if not ok then
+		vim.notify(config_or_error, vim.log.levels.ERROR)
+		return
+	end
+	qmk.options = config_or_error
 
 	vim.api.nvim_create_user_command(
 		'QMKFormat',
@@ -21,7 +26,7 @@ function qmk.setup(options)
 		{ desc = 'Display keymaps in a floating window' }
 	)
 
-	if options.auto_format_pattern then
+	if config_or_error.auto_format_pattern then
 		vim.api.nvim_create_autocmd('BufWritePre', {
 			desc = 'Format keymap',
 			group = vim.api.nvim_create_augroup('QMK', {}),

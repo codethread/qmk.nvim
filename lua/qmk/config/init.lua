@@ -1,48 +1,10 @@
 local E = require 'qmk.errors'
+local config = require 'qmk.config.default'
 local key_map = require 'qmk.config.key_map'
 local sort = require 'qmk.config.sort'
+local validate = require 'qmk.config.validate'
 
 local M = {}
-
----@alias qmk.UserLayout string[]
-
----@class qmk.UserConfig
----@field name string # name of the layout macro, this is used to find the layout in the keymap
----@field layout qmk.UserLayout
----@field spacing? number
----@field auto_format_pattern? string # autocommand pattern to match against for auto formatting, e.g. '*keymap.c'
----@field keymap_path? string # path to the keymap file, must be absolute, used for rendering the layout as a popup
----@field comment_preview? qmk.UserPreview
-
----@class qmk.UserPreview
----@field position? 'top' | 'bottom' | 'inside'
----@field keymap_overrides? table<string, string> # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
----@field symbols? table<string, string>
-
----@type qmk.Config
-M.default_config = {
-	name = '',
-	layout = { {} },
-	spacing = 4, -- this can likely be pulled from the buffer
-	auto_format_pattern = '*keymap.c',
-	keymap_path = '',
-	comment_preview = {
-		keymap_overrides = {},
-		symbols = {
-			tl = '┌',
-			div = '─',
-			tm = '┬',
-			tr = '┐',
-			sep = '│',
-			ml = '├',
-			mm = '┼',
-			mr = '┤',
-			bl = '└',
-			bm = '┴',
-			br = '┘',
-		},
-	},
-}
 
 ---@param layout qmk.UserLayout
 ---@return qmk.LayoutKeyInfo[][]
@@ -81,9 +43,10 @@ end
 ---@return qmk.Config
 function M.parse(user_config)
 	if not user_config then error(E.config_missing) end
-	if not user_config.name or not user_config.layout then error 'name and layout are required' end
+	if not user_config.name or not user_config.layout then error(E.config_missing_required) end
 	---@type qmk.Config
-	local merged_config = vim.tbl_deep_extend('force', M.default_config, user_config)
+	local merged_config = vim.tbl_deep_extend('force', config.default_config, user_config)
+	validate(merged_config, config.default_config)
 
 	merged_config.layout = M.parse_layout(merged_config.layout)
 	local keymaps =

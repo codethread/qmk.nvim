@@ -1,3 +1,4 @@
+local E = require 'qmk.errors'
 local FIELD_SKIP_VALIDATE = {}
 local FIELD_OVERRIDE_TYPECHECK = {}
 
@@ -22,7 +23,7 @@ local function validate_options(user_config, default_config)
 				local override_typecheck = FIELD_OVERRIDE_TYPECHECK[k] or {}
 				if def[k] == nil then
 					-- option does not exist
-					invalid = string.format('[QMK] unknown option: %s%s', prefix, k)
+					invalid = E.parse_unknown(prefix, k)
 				elseif type(v) ~= type(def[k]) and not override_typecheck[type(v)] then
 					-- option is of the wrong type and is not a function
 					invalid = string.format(
@@ -50,12 +51,7 @@ local function validate_options(user_config, default_config)
 
 	validate(user_config, default_config, '')
 
-	if msg then
-		vim.notify_once(
-			msg .. ' | see :help qmk-setup for available configuration options',
-			vim.log.levels.WARN
-		)
-	end
+	if msg then error(msg .. ' | see :help qmk-setup for available configuration options') end
 end
 
 return validate_options
