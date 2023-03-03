@@ -1,6 +1,4 @@
 require 'matcher_combinators.luassert'
-local E = require 'qmk.errors'
-local match_string = require 'matcher_combinators.matchers.string'
 local Path = require 'plenary.path'
 
 local function snapshot(input, final)
@@ -32,6 +30,7 @@ describe('qmk', function()
 			assert.is_true(qmk.is_configured())
 		end)
 
+		-- TODO fix error output
 		it('warns of invalid config but does not throw', function()
 			local qmk = require 'qmk'
 			local spy = require 'luassert.spy'

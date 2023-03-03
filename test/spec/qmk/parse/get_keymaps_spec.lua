@@ -223,7 +223,7 @@ describe('get_keymaps abuse:', function()
 		it('should fail when ' .. test.msg, function()
 			local ok, err = pcall(get_keymaps, test.input, { name = 'LAYOUT' })
 			assert(not ok, 'no error thrown')
-			match(match_string.regex(test.err), err)
+			match(match_string.equals(test.err), E._strip(err))
 		end)
 	end
 end)

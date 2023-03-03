@@ -1,5 +1,11 @@
 local E = require 'qmk.errors'
-local FIELD_SKIP_VALIDATE = {}
+local dic_validator = {
+	position = function(position)
+		local valid = { 'top', 'bottom', 'inside', 'none' }
+		-- check if position is a valid value
+		return vim.tbl_contains(valid, position), 'one of ' .. table.concat(valid, ', ')
+	end,
+}
 local FIELD_OVERRIDE_TYPECHECK = {}
 
 -- borrowed with love from nvim-tree
@@ -18,40 +24,39 @@ local function validate_options(user_config, default_config)
 		end
 
 		for k, v in pairs(user) do
-			if not FIELD_SKIP_VALIDATE[k] then
-				local invalid
+			local custom_validator = dic_validator[k]
+			local invalid
+
+			if custom_validator then
+				local valid, valid_values = custom_validator(v)
+				if not valid then invalid = E.parse_invalid(prefix, k, valid_values, v) end
+			else
 				local override_typecheck = FIELD_OVERRIDE_TYPECHECK[k] or {}
 				if def[k] == nil then
 					-- option does not exist
 					invalid = E.parse_unknown(prefix, k)
 				elseif type(v) ~= type(def[k]) and not override_typecheck[type(v)] then
 					-- option is of the wrong type and is not a function
-					invalid = string.format(
-						'[QMK] invalid option: %s%s expected: %s actual: %s',
-						prefix,
-						k,
-						type(def[k]),
-						type(v)
-					)
+					invalid = E.parse_invalid(prefix, k, type(def[k]), type(v))
 				end
+			end
 
-				if invalid then
-					if msg then
-						msg = string.format('%s | %s', msg, invalid)
-					else
-						msg = string.format('%s', invalid)
-					end
-					user[k] = nil
+			if invalid then
+				if msg then
+					msg = string.format('%s | %s', msg, invalid)
 				else
-					validate(v, def[k], prefix .. k .. '.')
+					msg = string.format('%s', invalid)
 				end
+				user[k] = nil
+			else
+				validate(v, def[k], prefix .. k .. '.')
 			end
 		end
 	end
 
 	validate(user_config, default_config, '')
 
-	if msg then error(msg .. ' | see :help qmk-setup for available configuration options') end
+	if msg then error(E.parse_error_msg(msg)) end
 end
 
 return validate_options

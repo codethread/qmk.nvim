@@ -9,8 +9,10 @@ local M = {}
 ---@param layout qmk.UserLayout
 ---@return qmk.LayoutKeyInfo[][]
 function M.parse_layout(layout)
+	assert(#layout > 0, E.layout_empty)
 	local result = {}
 	for _, row in pairs(layout) do
+		assert(#row > 0, E.layout_row_empty)
 		-- check for trailing whitespace
 		assert(not vim.startswith(row, ' '), E.layout_trailing_whitespace)
 		assert(not vim.endswith(row, ' '), E.layout_trailing_whitespace)
