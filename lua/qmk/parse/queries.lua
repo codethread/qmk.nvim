@@ -1,5 +1,8 @@
 local ts = vim.treesitter
 
+---@class tsnode
+---@field range fun(): number, number, number, number Get the range of the node. Return four values: the row, column of the start position, then the row, column of the end position.
+
 ---@param query Query
 ---@param root tsnode
 ---@param visitors table<string, fun(node: tsnode): nil>
