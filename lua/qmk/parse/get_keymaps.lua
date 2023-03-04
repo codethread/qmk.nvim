@@ -1,5 +1,5 @@
 local ts = vim.treesitter
-local queries = require 'qmk.queries'
+local queries = require 'qmk.parse.queries'
 local E = require 'qmk.errors'
 
 ---assert all keymaps don't overlap with the declaration itself

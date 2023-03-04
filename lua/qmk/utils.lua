@@ -1,9 +1,5 @@
 local M = {}
 
---generic Key : table
---param keymap Key[][]
---param fn fun(key: Key[]): nil
-
 ---crab along a keymap table (2d array), going from left to right, being passed each column to `fn`
 ---@generic Key : table
 ---@param keymap Key[][]
@@ -19,6 +15,14 @@ function M.crab(keymap, fn)
 		end
 		fn(column, col)
 	end
+end
+
+---stop execution with an error message, without stack trace
+---users don't care about stack traces, they just want to know what's wrong
+function M.die(msg) error(msg, 0) end
+
+function M.assert(cond, msg)
+	if not cond then M.die(msg) end
 end
 
 return M

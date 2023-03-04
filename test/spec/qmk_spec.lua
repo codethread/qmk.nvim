@@ -1,6 +1,4 @@
 require 'matcher_combinators.luassert'
-local E = require 'qmk.errors'
-local match_string = require 'matcher_combinators.matchers.string'
 local Path = require 'plenary.path'
 
 local function snapshot(input, final)
@@ -32,11 +30,13 @@ describe('qmk', function()
 			assert.is_true(qmk.is_configured())
 		end)
 
-		it('warns of invalid config', function()
+		it('warns of invalid config but does not throw', function()
 			local qmk = require 'qmk'
-			local ok, err = pcall(qmk.setup)
-			assert(not ok, 'no error thrown')
-			assert.combinators.match(match_string.regex(E.config_missing), err)
+			local spy = require 'luassert.spy'
+			spy.on(vim, 'notify')
+			local ok = pcall(qmk.setup)
+			assert(ok, 'no error thrown')
+			assert.spy(vim.notify).was_called()
 		end)
 	end)
 
@@ -66,12 +66,16 @@ describe('qmk', function()
 			local qmk = require 'qmk'
 			qmk.setup {
 				name = 'LAYOUT_preonic_grid',
+				spacing = 8,
+				comment_preview = {
+					position = 'top',
+				},
 				layout = {
-					'x x x x x x | x x x x x x',
-					'x x x x x x | x x x x x x',
-					'x x x x x x | x x x x x x',
-					'x x x x x x | x x x x x x',
-					'x x x x x x | x x x x x x',
+					'x x x x x x | | x x x x x x',
+					'x x x x x x | | x x x x x x',
+					'x x x x x x | | x x x x x x',
+					'x x x x x x | | x x x x x x',
+					'x x x x x x | | x x x x x x',
 				},
 			}
 			qmk.format(T.buff)
