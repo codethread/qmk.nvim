@@ -1,3 +1,4 @@
+local utils = require 'qmk.utils'
 local E = require 'qmk.errors'
 local dic_validator = {
 	position = function(position)
@@ -56,7 +57,7 @@ local function validate_options(user_config, default_config)
 
 	validate(user_config, default_config, '')
 
-	if msg then error(E.parse_error_msg(msg)) end
+	if msg then utils.die(E.parse_error_msg(msg)) end
 end
 
 return validate_options

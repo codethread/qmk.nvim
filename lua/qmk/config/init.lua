@@ -1,8 +1,10 @@
 local E = require 'qmk.errors'
+local utils = require 'qmk.utils'
 local config = require 'qmk.config.default'
 local key_map = require 'qmk.config.key_map'
 local sort = require 'qmk.config.sort'
 local validate = require 'qmk.config.validate'
+local assert = utils.assert
 
 local M = {}
 
@@ -44,8 +46,9 @@ end
 ---@param user_config qmk.UserConfig
 ---@return qmk.Config
 function M.parse(user_config)
-	if not user_config then error(E.config_missing) end
-	if not user_config.name or not user_config.layout then error(E.config_missing_required) end
+	assert(user_config, E.config_missing)
+	assert(user_config.name and user_config.layout, E.config_missing_required)
+
 	---@type qmk.Config
 	local merged_config = vim.tbl_deep_extend('force', config.default_config, user_config)
 	validate(merged_config, config.default_config)

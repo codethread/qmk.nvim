@@ -30,7 +30,6 @@ describe('qmk', function()
 			assert.is_true(qmk.is_configured())
 		end)
 
-		-- TODO fix error output
 		it('warns of invalid config but does not throw', function()
 			local qmk = require 'qmk'
 			local spy = require 'luassert.spy'

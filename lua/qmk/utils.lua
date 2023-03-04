@@ -17,4 +17,12 @@ function M.crab(keymap, fn)
 	end
 end
 
+---stop execution with an error message, without stack trace
+---users don't care about stack traces, they just want to know what's wrong
+function M.die(msg) error(msg, 0) end
+
+function M.assert(cond, msg)
+	if not cond then M.die(msg) end
+end
+
 return M
