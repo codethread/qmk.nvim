@@ -3,7 +3,7 @@ local preview = require 'qmk.format.preview'
 
 ---@param layout qmk.LayoutKeyInfo[][]
 ---@param keys string[]
----@return qmk.LayoutKeyMapInfo[][]
+---@return qmk.LayoutGrid[][]
 local function map_keys_to_grid(layout, keys)
 	local key_idx = 0
 	local mapped = {}
@@ -28,7 +28,7 @@ local function map_keys_to_grid(layout, keys)
 	return mapped
 end
 
----@param layout qmk.LayoutKeyMapInfo[][]
+---@param layout qmk.LayoutGrid[][]
 ---@return number[]
 local function get_largest_per_column(layout)
 	local width = #layout[1]
@@ -48,7 +48,7 @@ local function get_largest_per_column(layout)
 	return column_sizes
 end
 
----@param row qmk.LayoutKeyMapInfo[]
+---@param row qmk.LayoutGrid[]
 ---@param divide number
 ---@return string
 local function join_row(row, divide)
@@ -180,7 +180,7 @@ return format_keymap
 -- TYPES
 --------------------------------------------------------------------------------
 
----@class qmk.LayoutKeyMapInfo
+---@class qmk.LayoutGrid
 ---@field width number
 ---@field align? string
 ---@field type 'key' | 'span' | 'gap'

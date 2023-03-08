@@ -1,34 +1,12 @@
 local utils = require 'qmk.utils'
+local print = require 'qmk.format.print'
 
-local symbols = {}
-
-local function print_tl(width) return symbols.tl .. string.rep(symbols.div, width) end
-local function print_tm(width) return symbols.tm .. string.rep(symbols.div, width) end
-local function print_tr(width) return symbols.tm .. string.rep(symbols.div, width) .. symbols.tr end
-local function print_tbridge(width) return symbols.div .. string.rep(symbols.div, width) end
-
-local function print_bl(width) return symbols.bl .. string.rep(symbols.div, width) end
-local function print_bm(width) return symbols.bm .. string.rep(symbols.div, width) end
-local function print_br(width) return symbols.bm .. string.rep(symbols.div, width) .. symbols.br end
-local function print_bbridge(width) return symbols.div .. string.rep(symbols.div, width) end
-
-local function print_ml(width) return symbols.ml .. string.rep(symbols.div, width) end
-local function print_mm(width) return symbols.mm .. string.rep(symbols.div, width) end
-local function print_mr(width) return symbols.mm .. string.rep(symbols.div, width) .. symbols.mr end
-local function print_mbridge(width) return symbols.div .. string.rep(symbols.div, width) end
-
-local function print_kl(key) return symbols.sep .. key end
-local function print_km(key) return symbols.sep .. key end
-local function print_kr(key) return symbols.sep .. key .. symbols.sep end
-local function print_kbridge(key) return symbols.sep .. key end
-
----@param layout_all qmk.LayoutKeyMapInfo[][]
+---@param layout_all qmk.LayoutGrid[][]
 ---@param user_symbols table<string, string>
 ---@return string[][]
 local function generate(layout_all, user_symbols)
-	-- quick hack
-	symbols = user_symbols
-	---@type qmk.LayoutKeyMapInfo[][]
+	print.set_symbols(user_symbols)
+	---@type qmk.LayoutGrid[][]
 	local layout = vim.tbl_map(function(row)
 		return vim.tbl_filter(function(key) return key.type ~= 'gap' end, row)
 	end, layout_all)
@@ -51,10 +29,10 @@ local function generate(layout_all, user_symbols)
 		-- print the top comment row
 		table.insert(
 			comment_rows[1],
-			is_first and print_tl(width)
-				or is_last and print_tr(width)
-				or is_bridge and print_tbridge(width)
-				or print_tm(width)
+			is_first and print.tl(width)
+				or is_last and print.tr(width)
+				or is_bridge and print.tbridge(width)
+				or print.tm(width)
 		)
 
 		for i, key in pairs(column) do
@@ -69,10 +47,10 @@ local function generate(layout_all, user_symbols)
 
 			table.insert(
 				comment_rows[row_idx],
-				is_first and print_kl(text)
-					or is_last and print_kr(text)
-					or is_bridge and print_kbridge(text)
-					or print_km(text)
+				is_first and print.kl(text)
+					or is_last and print.kr(text)
+					or is_bridge and print.kbridge(text)
+					or print.km(text)
 			)
 
 			local comment_idx = row_idx + 1
@@ -80,18 +58,18 @@ local function generate(layout_all, user_symbols)
 			if i == #column then
 				table.insert(
 					comment_rows[comment_idx],
-					is_first and print_bl(width)
-						or is_last and print_br(width)
-						or is_bridge and print_bbridge(width)
-						or print_bm(width)
+					is_first and print.bl(width)
+						or is_last and print.br(width)
+						or is_bridge and print.bbridge(width)
+						or print.bm(width)
 				)
 			else
 				table.insert(
 					comment_rows[comment_idx],
-					is_first and print_ml(width)
-						or is_last and print_mr(width)
-						or is_bridge and print_mbridge(width)
-						or print_mm(width)
+					is_first and print.ml(width)
+						or is_last and print.mr(width)
+						or is_bridge and print.mbridge(width)
+						or print.mm(width)
 				)
 			end
 		end
