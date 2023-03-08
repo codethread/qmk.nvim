@@ -1,0 +1,10 @@
+-- require('qmk').setup {
+-- 	name = 'LAYOUT_preonic_grid',
+-- 	layout = {
+-- 		'| x x x x x x x x x x x x',
+-- 		'| x x x x x x x x x x x x',
+-- 		'| x x x x x x x x x x x x',
+-- 		'| x x x x x x x x x x x x',
+-- 		'| x x x x x x x x x x x x',
+-- 	},
+-- }

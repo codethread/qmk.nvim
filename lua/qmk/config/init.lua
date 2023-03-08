@@ -9,7 +9,7 @@ local assert = utils.assert
 local M = {}
 
 ---@param layout qmk.UserLayout
----@return qmk.LayoutKeyInfo[][]
+---@return qmk.LayoutPlan
 function M.parse_layout(layout)
 	assert(#layout > 0, E.layout_empty)
 	local result = {}
@@ -63,16 +63,21 @@ function M.parse(user_config)
 	)
 end
 
----@class qmk.LayoutKeyInfo
+---Struct to represent a single key in a qmk.Layout
+---@class qmk.LayoutPlanKey
 ---@field width number
 ---@field align? string
 ---@field type 'key' | 'span' | 'gap' #TODO: support space and gap
 
+---Struct to represent the users desired layout
+---@alias qmk.LayoutPlan qmk.LayoutPlanKey[][]
+
+---The users config after parsing
 ---@class qmk.Config
 ---@field name string # name of the layout macro, this is used to find the layout in the keymap
 ---@field auto_format_pattern string # autocommand pattern to match against for auto formatting, e.g. '*keymap.c'
----@field keymap_path string # path to the keymap file, must be absolute, used for rendering the layout as a popup
----@field layout qmk.LayoutKeyInfo[][]
+---@field keymap_qmk.LayoutPlang # path to the keymap file, must be absolute, used for rendering the layout as a popup
+---@field layout qmk.Layout
 ---@field spacing number
 ---@field comment_preview qmk.Preview
 

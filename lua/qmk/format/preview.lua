@@ -1,15 +1,16 @@
 local utils = require 'qmk.utils'
 local print = require 'qmk.format.print'
 
----@param layout_all qmk.LayoutGrid[][]
+---@param layout_all qmk.LayoutGridCell[][]
 ---@param user_symbols table<string, string>
 ---@return string[][]
 local function generate(layout_all, user_symbols)
 	print.set_symbols(user_symbols)
-	---@type qmk.LayoutGrid[][]
-	local layout = vim.tbl_map(function(row)
-		return vim.tbl_filter(function(key) return key.type ~= 'gap' end, row)
-	end, layout_all)
+	---@type qmk.LayoutGridCell[][]
+	-- local layout = vim.tbl_map(function(row)
+	-- 	return vim.tbl_filter(function(key) return key.type ~= 'gap' end, row)
+	-- end, layout_all)
+	local layout = layout_all
 
 	---@type string[][]
 	local comment_rows = {}
