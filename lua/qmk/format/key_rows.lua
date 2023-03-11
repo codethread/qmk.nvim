@@ -1,11 +1,19 @@
----@param row qmk.LayoutGridCell[]
+---@param row_full qmk.LayoutGridCell[]
 ---@param divide number
 ---@return string
-local function join_row(row, divide)
+local function join_row(row_full, divide)
 	local str = ''
 	local current_key = { key_index = 0 }
 	local comma = ' , '
 	local comma_width = #comma
+
+	--HACK quick fix until i refactor this to not use `cells()`
+	--skip the padding cells
+	---@type  qmk.LayoutGridCell[]
+	local row = {}
+	for _, cell in ipairs(row_full) do
+		if cell.type ~= 'padding' then table.insert(row, cell) end
+	end
 
 	for i, key in pairs(row) do
 		-- simple case, just print the key
@@ -70,9 +78,13 @@ local function print_rows(layout, spacing)
 	local output = {}
 	local grid = layout:cells()
 	for idx, row in pairs(grid) do
-		local str = join_row(row, spacing)
-		str = idx ~= #grid and str .. ',' or str
-		table.insert(output, str)
+		--HACK quick fix until i refactor this to not use `cells()`
+		--skip the first and last row as they are just padding
+		if idx > 1 and idx < #grid then
+			local str = join_row(row, spacing)
+			str = idx == (#grid - 1) and str or str .. ','
+			table.insert(output, str)
+		end
 	end
 	return output
 end

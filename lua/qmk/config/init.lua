@@ -24,6 +24,7 @@ function M.parse_layout(layout)
 
 		---@diagnostic disable-next-line: missing-parameter
 		local keys = vim.split(row, ' ')
+
 		local row_info = vim.tbl_map(function(key)
 			if key == '|' then return { width = 1, type = 'gap' } end
 			if key == 'x' then return { width = 1, type = 'key' } end
@@ -38,6 +39,7 @@ function M.parse_layout(layout)
 				align = tostring(i) .. '/' .. tostring(string.len(key)),
 			}
 		end, keys)
+
 		result[#result + 1] = row_info
 	end
 	return result

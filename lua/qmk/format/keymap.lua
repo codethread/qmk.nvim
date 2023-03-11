@@ -1,5 +1,5 @@
 local E = require 'qmk.errors'
-local preview = require 'qmk.format.preview'
+local generate = require('qmk.format.preview').generate
 local LayoutGrid = require 'qmk.data.LayoutGrid'
 local print_rows = require 'qmk.format.key_rows'
 
@@ -31,14 +31,15 @@ local function format_keymap(options, keymap)
 		)
 	)
 	local comment = options.comment_preview.position == 'none' and {}
-		or preview.generate(preview_layout:cells(), options.comment_preview.symbols)
+		or generate(preview_layout, options.comment_preview.symbols)
+	local preview = vim.tbl_map(table.concat, comment) or {}
 
 	return vim.tbl_flatten {
-		options.comment_preview.position == 'top' and vim.tbl_map(table.concat, comment) or {},
+		options.comment_preview.position == 'top' and preview,
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
-		options.comment_preview.position == 'inside' and vim.tbl_map(table.concat, comment) or {},
+		options.comment_preview.position == 'inside' and preview,
 		print_rows(key_layout, options.spacing),
-		options.comment_preview.position == 'bottom' and vim.tbl_map(table.concat, comment) or {},
+		options.comment_preview.position == 'bottom' and preview,
 	}
 end
 

@@ -1,4 +1,14 @@
+---@diagnostic disable: invisible
+local utils = require 'qmk.utils'
 local E = require 'qmk.errors'
+
+---@type qmk.LayoutGridCell
+local padding_cell = {
+	key_index = 999999,
+	type = 'padding',
+	width = 1,
+	key = ' ',
+}
 
 ---@param grid qmk.LayoutGridCell[]
 ---@return number[]
@@ -22,7 +32,7 @@ end
 
 ---@class qmk.LayoutGrid
 ---@field new fun(self, layout: qmk.LayoutPlan, keys: string[]): qmk.LayoutGrid
----@field crab fun(self, fn: fun(keys: qmk.LayoutGridCell[], column: number): nil): nil
+---@field for_each fun(self, fn: fun(key: qmk.LayoutGridCell, context: qmk.LayoutGridContext): nil): nil
 ---@field cells fun(): qmk.LayoutGridCell[][]
 ---@field private grid qmk.LayoutGridCell[][]
 
@@ -40,7 +50,8 @@ function LayoutGrid:new(layout, keys)
 
 	for row_i, row in pairs(layout) do
 		grid[row_i] = {}
-		for _, key in pairs(row) do
+
+		for col_i, key in pairs(row) do
 			if key.type == 'gap' then
 				table.insert(grid[row_i], key)
 			else
@@ -54,9 +65,21 @@ function LayoutGrid:new(layout, keys)
 				end
 			end
 		end
+
+		-- add padding to start and end of row
+		table.insert(grid[row_i], padding_cell)
+		table.insert(grid[row_i], 1, padding_cell)
 	end
 
 	assert(key_idx == #keys, E.config_mismatch)
+
+	-- add padding to top and bottom of grid
+	local padding_row = {}
+	for _ = 1, #grid[1] do
+		table.insert(padding_row, padding_cell)
+	end
+	table.insert(grid, padding_row)
+	table.insert(grid, 1, padding_row)
 
 	local largest_in_column = larget_per_column(grid)
 
@@ -71,20 +94,61 @@ function LayoutGrid:new(layout, keys)
 	return setmetatable(me, self)
 end
 
-function LayoutGrid:crab(fn)
-	local width = #self.grid[1]
-	local height = #self.grid
+function LayoutGrid:cells() return self.grid end
 
-	for col = 1, width do
-		local column = {}
-		for row = 1, height do
-			table.insert(column, self.grid[row][col])
+local function create_context(grid, row, col) return {} end
+
+---@class qmk.LayoutGridContext
+---@field col number
+---@field row number
+---@field is_first boolean
+---@field is_last boolean
+---@field is_top boolean
+---@field is_bottom boolean
+---@field is_bridge_vert boolean
+---@field is_bridge_down boolean
+---@field is_sibling_bridge_down boolean
+---@field is_sibling_bridge_vert boolean
+
+function LayoutGrid:for_each(fn)
+	for row_i, row in ipairs(self.grid) do
+		for col_i, key in ipairs(row) do
+			local key_index = key.key_index
+
+			local is_top = row_i == 1
+			local is_bottom = row_i == #self.grid
+			local is_last = col_i == #row
+			local is_first = col_i == 1
+
+			local cell_right = not is_last and row[col_i + 1]
+			local cell_down = not is_bottom and self.grid[row_i + 1] and self.grid[row_i + 1][col_i]
+			local cell_down_right = not is_bottom
+				and not is_last
+				and self.grid[row_i + 1]
+				and self.grid[row_i + 1][col_i + 1]
+
+			---@type qmk.LayoutGridContext
+			local ctx = {
+				col = col_i,
+				row = row_i,
+				is_bridge_vert = cell_right and key_index == cell_right.key_index,
+				is_bridge_down = cell_down and key_index == cell_down.key_index,
+				is_last = is_last,
+				is_bottom = is_bottom,
+				is_first = is_first,
+				is_top = is_top,
+				is_sibling_bridge_down = cell_right
+					and cell_down_right
+					and cell_right.key_index == cell_down_right.key_index,
+				is_sibling_bridge_vert = cell_down
+					and cell_down_right
+					and cell_down.key_index == cell_down_right.key_index,
+			}
+
+			fn(key, ctx)
 		end
-		fn(column, col)
 	end
 end
-
-function LayoutGrid:cells() return self.grid end
 
 return LayoutGrid
 
@@ -94,8 +158,8 @@ return LayoutGrid
 
 ---@class qmk.LayoutGridCell
 ---@field width number
+---@field type 'key' | 'span' | 'gap' | 'padding'
+---@field key string #the text value of the cell
+---@field key_index number #the unique key id which is shared between different cells that represent the same physical key, e.g if the key spans two cells, each cell is stored in the grid, but will have the same key_index
 ---@field align? string
----@field type 'key' | 'span' | 'gap'
----@field key string
----@field key_index number
 ---@field span? number

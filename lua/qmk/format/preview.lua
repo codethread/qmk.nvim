@@ -1,16 +1,16 @@
 local utils = require 'qmk.utils'
 local print = require 'qmk.format.print'
 
----@param layout_all qmk.LayoutGridCell[][]
+---@param layout qmk.LayoutGrid
 ---@param user_symbols table<string, string>
 ---@return string[][]
-local function generate(layout_all, user_symbols)
+local function generate_old(layout, user_symbols)
 	print.set_symbols(user_symbols)
 	---@type qmk.LayoutGridCell[][]
 	-- local layout = vim.tbl_map(function(row)
-	-- 	return vim.tbl_filter(function(key) return key.type ~= 'gap' end, row)
-	-- end, layout_all)
-	local layout = layout_all
+	-- 	return vim.tbl_filter(function(key) return key.type ~= 'padding' end, row)
+	-- end, layout:cells())
+	local layout = layout:cells()
 
 	---@type string[][]
 	local comment_rows = {}
@@ -79,4 +79,23 @@ local function generate(layout_all, user_symbols)
 	return comment_rows
 end
 
-return { generate = generate }
+---@param layout qmk.LayoutGrid
+---@param user_symbols table<string, string>
+---@return string[][]
+local function generate(layout, user_symbols)
+	-- print.set_symbols(user_symbols)
+
+	---@type string[][]
+	local ouput = {}
+
+	vim.pretty_print(layout:with_padding():cells())
+	-- layout:for_each(function(cell, ctx)
+	-- if ctx.is_bottom then return end
+	-- if ctx.is_first then
+	-- output
+	-- end
+	-- end)
+
+	return output
+end
+return { generate = generate_old }
