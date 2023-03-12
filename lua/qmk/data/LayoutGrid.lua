@@ -51,7 +51,7 @@ function LayoutGrid:new(layout, keys)
 	for row_i, row in pairs(layout) do
 		grid[row_i] = {}
 
-		for col_i, key in pairs(row) do
+		for _, key in pairs(row) do
 			if key.type == 'gap' then
 				table.insert(grid[row_i], key)
 			else
@@ -67,8 +67,8 @@ function LayoutGrid:new(layout, keys)
 		end
 
 		-- add padding to start and end of row
-		table.insert(grid[row_i], padding_cell)
-		table.insert(grid[row_i], 1, padding_cell)
+		table.insert(grid[row_i], utils.shallow_copy(padding_cell))
+		table.insert(grid[row_i], 1, utils.shallow_copy(padding_cell))
 	end
 
 	assert(key_idx == #keys, E.config_mismatch)
@@ -76,16 +76,16 @@ function LayoutGrid:new(layout, keys)
 	-- add padding to top and bottom of grid
 	local padding_row = {}
 	for _ = 1, #grid[1] do
-		table.insert(padding_row, padding_cell)
+		table.insert(padding_row, utils.shallow_copy(padding_cell))
 	end
-	table.insert(grid, padding_row)
-	table.insert(grid, 1, padding_row)
+	table.insert(grid, utils.shallow_copy(padding_row))
+	table.insert(grid, 1, utils.shallow_copy(padding_row))
 
 	local largest_in_column = larget_per_column(grid)
 
-	for _, row in pairs(grid) do
-		for col_i, key in pairs(row) do
-			key.span = largest_in_column[col_i]
+	for row_i, row in pairs(grid) do
+		for col_i, _ in pairs(row) do
+			grid[row_i][col_i].span = largest_in_column[col_i]
 		end
 	end
 
@@ -95,8 +95,6 @@ function LayoutGrid:new(layout, keys)
 end
 
 function LayoutGrid:cells() return self.grid end
-
-local function create_context(grid, row, col) return {} end
 
 ---@class qmk.LayoutGridContext
 ---@field col number

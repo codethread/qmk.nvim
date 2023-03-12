@@ -29,7 +29,8 @@ local function print_key(width, key, seen_key_index)
 			local half = math.floor(remainder / 2)
 			local centered = string.rep(' ', half) .. key_text .. string.rep(' ', half)
 			local padding = string.rep(' ', seen.span - string.len(centered))
-			local text = ' ' .. centered .. padding .. '  '
+			local paddings = #padding == 0 and ' ' or padding
+			local text = centered .. paddings .. ' '
 			return text
 		end
 	end
@@ -78,10 +79,10 @@ local function generate(layout, user_symbols)
 
 	layout:for_each(function(cell, ctx)
 		if cell.type == 'span' then
-			local seen = seen_key_index[cell.key_index] or { span = 0 }
+			local seen = seen_key_index[cell.key_index] or { span = -1 }
 			-- add up all the spacing found
 			seen_key_index[cell.key_index] = {
-				span = seen.span + cell.span,
+				span = seen.span + cell.span + 1,
 				is_last = not ctx.is_bridge_vert,
 			}
 		end
