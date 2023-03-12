@@ -32,6 +32,8 @@ local function print_key(width, key, seen_key_index)
 			local paddings = #padding == 0 and ' ' or padding
 			local text = centered .. paddings .. ' '
 			return text
+		else
+			return ' '
 		end
 	end
 
