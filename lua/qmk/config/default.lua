@@ -11,7 +11,9 @@
 ---@class qmk.UserPreview
 ---@field position? 'top' | 'bottom' | 'inside'
 ---@field keymap_overrides? table<string, string> # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
----@field symbols? table<string, string>
+---@field symbols? qmk.PreviewSymbols
+
+---@alias qmk.PreviewSymbols { space: string, blank: string, tl: string, tr: string, bl: string, br: string, horz: string, vert: string, tm: string, bm: string, ml: string, mr: string, mm: string }
 
 local M = {}
 
@@ -21,7 +23,7 @@ M.required_fields = {
 	layout = { '' },
 }
 
----@tpe qmk.Config
+---@type qmk.Config
 M.default_config = {
 	name = '',
 	layout = { '' },
@@ -32,11 +34,13 @@ M.default_config = {
 		position = 'none',
 		keymap_overrides = {},
 		symbols = {
-			tl = '┌',
+			space = ' ',
+			blank = ' ',
 			horz = '─',
+			vert = '│',
+			tl = '┌',
 			tm = '┬',
 			tr = '┐',
-			vert = '│',
 			ml = '├',
 			mm = '┼',
 			mr = '┤',

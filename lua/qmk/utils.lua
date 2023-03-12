@@ -33,4 +33,17 @@ function M.safe_call(fn)
 	end
 end
 
+function M.cond(conditions)
+	for _, v in ipairs(conditions) do
+		local predicate = v[1]
+		local result = v[2]
+		if type(predicate) == 'function' and predicate() or predicate then
+			return type(result) == 'function' and result() or result
+		end
+	end
+	error 'no condition matched'
+end
+
+function M.t() return true end
+
 return M

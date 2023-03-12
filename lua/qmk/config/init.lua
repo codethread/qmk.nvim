@@ -86,6 +86,6 @@ end
 ---@class qmk.Preview
 ---@field position 'top' | 'bottom' | 'none' | 'inside'
 ---@field keymap_overrides qmk.KeymapList # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
----@field symbols table<string, string>
+---@field symbols qmk.PreviewSymbols
 
 return M
