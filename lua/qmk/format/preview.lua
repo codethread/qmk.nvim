@@ -4,83 +4,41 @@ local draw = require 'qmk.format.preview_key'
 
 -- local symbols = {}
 
----@param layout qmk.LayoutGrid
----@param user_symbols table<string, string>
----@return string[][]
-local function generate_old(layout, user_symbols)
-	printer.set_symbols(user_symbols)
-	---@type qmk.LayoutGridCell[][]
-	-- local layout = vim.tbl_map(function(row)
-	-- 	return vim.tbl_filter(function(key) return key.type ~= 'padding' end, row)
-	-- end, layout:cells())
-	local layout = layout:cells()
-
-	---@type string[][]
-	local comment_rows = {}
-	for index, _ in ipairs(layout) do
-		comment_rows[(index * 2) - 1] = { '// ' }
-		comment_rows[index * 2] = { '// ' }
+---comment
+---@param width number
+---@param key qmk.LayoutGridCell
+---@param seen_key_index { span: number, is_last: boolean }[]
+local function print_key(width, key, seen_key_index)
+	if key.type == 'key' then
+		local key_text = key.key
+		local remainder = key.span - #key_text
+		local half = math.floor(remainder / 2)
+		local centered = string.rep(' ', half) .. key_text .. string.rep(' ', half)
+		local padding = string.rep(' ', key.span - string.len(centered))
+		local text = ' ' .. centered .. padding .. ' '
+		return text
 	end
-	comment_rows[#comment_rows + 1] = { '// ' }
 
-	-- from left to right like a printer
-	utils.crab(layout, function(column, col)
-		local is_first = col == 1
-		local is_last = col == #layout[1]
-		local is_bridge = not is_first and layout[1][col].key_index == layout[1][col - 1].key_index
-		local width = column[1].span + 2
-
-		-- print the top comment row
-		table.insert(
-			comment_rows[1],
-			is_first and printer.tl(width)
-				or is_last and printer.tr(width)
-				or is_bridge and printer.tbridge(width)
-				or printer.tm(width)
-		)
-
-		for i, key in pairs(column) do
-			-- want to print the current key and a comment beneath
-			local row_idx = i * 2
-			local key_text = key.type == 'gap' and ' ' or key.key -- TODO: sort out gap / space in config
-			local remainder = key.span - #key_text
+	if key.type == 'span' then
+		-- we keep track of how many times we've seen this key
+		local seen = seen_key_index[key.key_index]
+		if seen.is_last then
+			-- we only print it if it aligns
+			local key_text = key.key
+			local remainder = seen.span - #key_text
 			local half = math.floor(remainder / 2)
 			local centered = string.rep(' ', half) .. key_text .. string.rep(' ', half)
-			local padding = string.rep(' ', key.span - string.len(centered))
-			local text = ' ' .. centered .. padding .. ' '
-
-			table.insert(
-				comment_rows[row_idx],
-				is_first and printer.kl(text)
-					or is_last and printer.kr(text)
-					or is_bridge and printer.kbridge(text)
-					or printer.km(text)
-			)
-
-			local comment_idx = row_idx + 1
-			-- bottom row
-			if i == #column then
-				table.insert(
-					comment_rows[comment_idx],
-					is_first and printer.bl(width)
-						or is_last and printer.br(width)
-						or is_bridge and printer.bbridge(width)
-						or printer.bm(width)
-				)
-			else
-				table.insert(
-					comment_rows[comment_idx],
-					is_first and printer.ml(width)
-						or is_last and printer.mr(width)
-						or is_bridge and printer.mbridge(width)
-						or printer.mm(width)
-				)
-			end
+			local padding = string.rep(' ', seen.span - string.len(centered))
+			local text = ' ' .. centered .. padding .. '  '
+			return text
 		end
-	end)
+	end
 
-	return comment_rows
+	--- TEMP
+	return printer.space(width)
 end
+
+local function print_border(width, key) return string.rep(key, width + 2) end
 
 --Generate a preview of the layout
 --padding cells are used to create a consistent heuristic around the whole board
@@ -106,7 +64,10 @@ local function generate(layout, user_symbols)
 		comment_rows[(index * 2) - 1] = { '// ' }
 		comment_rows[index * 2] = { '// ' }
 	end
-	-- comment_rows[#comment_rows + 1] = { '// ' }
+
+	-- i have so many regrets
+	---@type { span: number, is_last: boolean }[]
+	local seen_key_index = {}
 
 	local function add_partial(ctx)
 		return function(res)
@@ -115,22 +76,23 @@ local function generate(layout, user_symbols)
 		end
 	end
 
-	local function use_partial(cell, ctx)
-		return function(fn)
-			return function()
-				local res = fn(user_symbols, cell, ctx)
+	layout:for_each(function(cell, ctx)
+		if cell.type == 'span' then
+			local seen = seen_key_index[cell.key_index] or { span = 0 }
+			-- add up all the spacing found
+			seen_key_index[cell.key_index] = {
+				span = seen.span + cell.span,
+				is_last = not ctx.is_bridge_vert,
+			}
+		end
+
+		local add = function(res)
+			return function() --
+				-- if cell.type == 'span' then vim.pretty_print(cell) end
 				add_partial(ctx)(res)
 			end
 		end
-	end
-
-	layout:for_each(function(cell, ctx)
-		local use = use_partial(cell, ctx)
-		local add = function(res)
-			return function() add_partial(ctx)(res) end
-		end
 		local width = cell.span or 1
-		print(cell.key, cell.type, ctx.is_sibling_bridge_vert)
 
 		utils.cond {
 			-- ignore these are they are just padding
@@ -142,7 +104,7 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_bridge_vert and ctx.is_bridge_down,
 				add {
-					printer.space(width) .. symbols.space,
+					print_key(width, cell, seen_key_index) .. symbols.space,
 					printer.space(width) .. symbols.tl,
 				},
 			},
@@ -150,23 +112,23 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_bridge_vert and ctx.is_sibling_bridge_down,
 				add {
-					printer.space(width) .. symbols.space,
-					string.rep(symbols.horz, width) .. symbols.tr,
+					print_key(width, cell, seen_key_index) .. symbols.space,
+					print_border(width, symbols.horz) .. symbols.tr,
 				},
 			},
 			-- ─┘
 			{
 				ctx.is_sibling_bridge_vert and ctx.is_sibling_bridge_down,
 				add {
-					printer.space(width) .. symbols.vert,
-					string.rep(symbols.horz, width) .. symbols.br,
+					print_key(width, cell, seen_key_index) .. symbols.vert,
+					print_border(width, symbols.horz) .. symbols.br,
 				},
 			},
 			-- └─
 			{
 				ctx.is_bridge_down and ctx.is_sibling_bridge_vert,
 				add {
-					printer.space(width) .. symbols.vert,
+					print_key(width, cell, seen_key_index) .. symbols.vert,
 					printer.space(width) .. symbols.bl,
 				},
 			},
@@ -177,8 +139,8 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_bridge_vert and ctx.is_sibling_bridge_vert,
 				add {
-					printer.space(width) .. symbols.space,
-					string.rep(symbols.horz, width) .. symbols.horz,
+					print_key(width, cell, seen_key_index) .. symbols.space,
+					print_border(width, symbols.horz) .. symbols.horz,
 				},
 			},
 			-- ──
@@ -186,8 +148,8 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_bridge_vert,
 				add {
-					printer.space(width) .. symbols.space,
-					string.rep(symbols.horz, width) .. symbols.tm,
+					print_key(width, cell, seen_key_index) .. symbols.space,
+					print_border(width, symbols.horz) .. symbols.tm,
 				},
 			},
 			-- │ │
@@ -195,7 +157,7 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_bridge_down and ctx.is_sibling_bridge_down,
 				add {
-					printer.space(width) .. symbols.vert,
+					print_key(width, cell, seen_key_index) .. symbols.vert,
 					printer.space(width) .. symbols.vert,
 				},
 			},
@@ -204,7 +166,7 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_bridge_down,
 				add {
-					printer.space(width) .. symbols.vert,
+					print_key(width, cell, seen_key_index) .. symbols.vert,
 					printer.space(width) .. symbols.ml,
 				},
 			},
@@ -214,33 +176,34 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_sibling_bridge_vert,
 				add {
-					printer.space(width) .. symbols.vert,
-					string.rep(symbols.horz, width) .. symbols.bm,
+					print_key(width, cell, seen_key_index) .. symbols.vert,
+					print_border(width, symbols.horz) .. symbols.bm,
 				},
 			},
 			-- |
 			{
 				ctx.is_sibling_bridge_down,
 				add {
-					printer.space(width) .. symbols.vert,
-					string.rep(symbols.horz, width) .. symbols.mr,
+					print_key(width, cell, seen_key_index) .. symbols.vert,
+					print_border(width, symbols.horz) .. symbols.mr,
 				},
 			},
-			-- else
-			-- {
-			-- 	true,
-			-- 	add {
-			-- 		printer.space(width) .. symbols.vert,
-			-- 		string.rep(symbols.horz, width) .. symbols.mm,
-			-- 	},
-			-- },
 
-			-- { true, use(draw.empty) },
+			-- handle final case
+			{
+				true,
+				add {
+					print_key(width, cell, seen_key_index) .. symbols.vert,
+					print_border(width, symbols.horz) .. symbols.mm,
+				},
+			},
 		}
 	end)
 
-	vim.pretty_print(comment_rows)
-
-	return comment_rows
+	local final = {}
+	for index, row in ipairs(comment_rows) do
+		if index > 1 and index < (#comment_rows - 1) then table.insert(final, row) end
+	end
+	return final
 end
 return { generate = generate }
