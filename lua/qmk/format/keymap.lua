@@ -1,4 +1,3 @@
-local E = require 'qmk.errors'
 local generate = require('qmk.format.preview').generate
 local LayoutGrid = require 'qmk.data.LayoutGrid'
 local print_rows = require 'qmk.format.key_rows'

@@ -2,6 +2,11 @@
 local utils = require 'qmk.utils'
 local E = require 'qmk.errors'
 
+local function is_all_padding(ls)
+	local padding = vim.tbl_filter(function(key) return key and key.type == 'padding' end, ls)
+	return #padding == #ls
+end
+
 ---@type qmk.LayoutGridCell
 local padding_cell = {
 	key_index = 999999,
@@ -53,7 +58,7 @@ function LayoutGrid:new(layout, keys)
 
 		for _, key in pairs(row) do
 			if key.type == 'gap' then
-				table.insert(grid[row_i], key)
+				table.insert(grid[row_i], utils.shallow_copy(padding_cell))
 			else
 				key_idx = key_idx + 1
 				for _ = 1, key.width do
@@ -99,6 +104,7 @@ function LayoutGrid:cells() return self.grid end
 ---@class qmk.LayoutGridContext
 ---@field col number
 ---@field row number
+---@field is_empty boolean
 ---@field is_first boolean
 ---@field is_last boolean
 ---@field is_top boolean
@@ -129,6 +135,7 @@ function LayoutGrid:for_each(fn)
 			local ctx = {
 				col = col_i,
 				row = row_i,
+				is_empty = is_all_padding { key, cell_right, cell_down, cell_down_right },
 				is_bridge_vert = cell_right and key_index == cell_right.key_index,
 				is_bridge_down = cell_down and key_index == cell_down.key_index,
 				is_last = is_last,

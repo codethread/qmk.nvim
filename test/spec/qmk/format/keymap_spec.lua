@@ -197,6 +197,26 @@ describe('keymaps', function()
 			},
 		},
 		{
+			msg = 'spaced double row with preview',
+			input = {
+				options = create_options_preview {
+					'| x x',
+					'| x^x',
+				},
+				keys = { 'KC_A', 'KC_B', 'KC_C' },
+			},
+			output = {
+				'//    ┌───┬───┐',
+				'//    │ a │ b │',
+				'//    ├───┴───┤',
+				'//    │   c   │',
+				'//    └───────┘',
+				'[_FOO] = LAYOUT(',
+				'KC_A , KC_B,',
+				'   KC_C    ',
+			},
+		},
+		{
 			msg = 'double overlap with rows',
 			input = {
 				options = create_options_preview {
