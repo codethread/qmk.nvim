@@ -221,6 +221,26 @@ describe('keymaps', function()
 			},
 		},
 		{
+			msg = 'wide test',
+			input = {
+				options = create_options_preview {
+					'x x x',
+					'xx^xx',
+				},
+				keys = { 'AA', 'B', 'C', 'D' },
+			},
+			output = {
+				'//  ┌────┬───┬───┐',
+				'//  │ AA │ B │ C │',
+				'//  ├────┴───┴───┤',
+				'//  │     D      │',
+				'//  └────────────┘',
+				'[_FOO] = LAYOUT(',
+				'AA , B , C,',
+				'    D     ',
+			},
+		},
+		{
 			msg = 'overlap test',
 			input = {
 				options = create_options_preview {
@@ -234,9 +254,9 @@ describe('keymaps', function()
 				'//  ┌────┬───────┐',
 				'//  │ AA │   B   │',
 				'//  ├────┴───┬───┤',
-				'//  │    C   │ D │',
+				'//  │   C    │ D │',
 				'//  ├────────┴───┤',
-				'//  │       E    │',
+				'//  │     E      │',
 				'//  └────────────┘',
 				'[_FOO] = LAYOUT(',
 				'AA ,     B,',
@@ -264,9 +284,9 @@ describe('keymaps', function()
 			},
 			output = {
 				'//  ┌───┬────────────────────────────────────┐',
-				'//  │ a │                  b                 │',
+				'//  │ a │                 b                  │',
 				'//  ├───┴────────────────────────────────┬───┤',
-				'//  │                  c                 │ d │',
+				'//  │                 c                  │ d │',
 				'//  ├───┬────────────────────────────────┼───┤',
 				'//  │ e │ Really long key but should pad │ g │',
 				'//  └───┴────────────────────────────────┴───┘',

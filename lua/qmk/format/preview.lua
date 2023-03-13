@@ -1,44 +1,69 @@
 local utils = require 'qmk.utils'
 local printer = require 'qmk.format.print'
-local draw = require 'qmk.format.preview_key'
 
--- local symbols = {}
+---@alias qmk.Seen { span: number, is_last: boolean, count: number }[]
+
+-- local function center(span, key_text)
+-- 	local remainder = span - #key_text
+-- 	local half = math.floor(remainder / 2)
+-- 	local centered = string.rep(space, half) .. key_text .. string.rep(space, half)
+-- 	local padding = string.rep(space, span - string.len(centered))
+-- 	local text = space .. centered .. padding .. space .. right_border
+-- 	return text
+-- end
+
+-- add up all the spacing found
+local function increment_seen_span(cell, ctx, seen_key_index)
+	local seen = seen_key_index[cell.key_index] or { span = 0 }
+	seen_key_index[cell.key_index] = {
+		span = seen.span + cell.span,
+		count = (seen.count or 0) + 1,
+		is_last = not ctx.is_bridge_vert,
+	}
+end
 
 ---comment
 ---@param width number
 ---@param key qmk.LayoutGridCell
----@param seen_key_index { span: number, is_last: boolean }[]
-local function print_key(width, key, seen_key_index)
+---@param seen_key_index qmk.Seen
+---@param right_border string
+local function print_key(width, key, seen_key_index, right_border)
+	local space = ' '
 	if key.type == 'key' then
 		local key_text = key.key
 		local remainder = key.span - #key_text
 		local half = math.floor(remainder / 2)
-		local centered = string.rep(' ', half) .. key_text .. string.rep(' ', half)
-		local padding = string.rep(' ', key.span - string.len(centered))
-		local text = ' ' .. centered .. padding .. ' '
+		local centered = string.rep(space, half) .. key_text .. string.rep(space, half)
+		local padding = string.rep(space, key.span - string.len(centered))
+		local text = space .. centered .. padding .. space .. right_border
 		return text
 	end
 
 	if key.type == 'span' then
 		-- we keep track of how many times we've seen this key
+		-- and print it the final time, now that we know the full width it will consume
 		local seen = seen_key_index[key.key_index]
 		if seen.is_last then
-			-- we only print it if it aligns
+			-- normally every cell is padded by one whitespace and a single right border
+			-- so we need to account for that
+			local seen_padding = seen.count * 3
+			-- now we know the full width of the key, but we also remove one to allow us
+			-- to add our own right border
+			local full_width = seen.span + seen_padding - 1
+
 			local key_text = key.key
-			local remainder = seen.span - #key_text
+			local remainder = full_width - #key_text
 			local half = math.floor(remainder / 2)
-			local centered = string.rep(' ', half) .. key_text .. string.rep(' ', half)
-			local padding = string.rep(' ', seen.span - string.len(centered))
-			local paddings = #padding == 0 and ' ' or padding
-			local text = centered .. paddings .. ' '
+			local centered = string.rep(space, half) .. key_text .. string.rep(space, half)
+			local padding = string.rep(space, full_width - string.len(centered))
+			local text = centered .. padding .. right_border
 			return text
 		else
-			return ' '
+			return ''
 		end
 	end
 
-	--- TEMP
-	return printer.space(width)
+	if key.type == 'padding' then return printer.space(width) .. right_border end
 end
 
 local function print_border(width, key) return string.rep(key, width + 2) end
@@ -68,8 +93,7 @@ local function generate(layout, user_symbols)
 		comment_rows[index * 2] = { '// ' }
 	end
 
-	-- i have so many regrets
-	---@type { span: number, is_last: boolean }[]
+	---@type qmk.Seen
 	local seen_key_index = {}
 
 	local function add_partial(ctx)
@@ -80,21 +104,9 @@ local function generate(layout, user_symbols)
 	end
 
 	layout:for_each(function(cell, ctx)
-		if cell.type == 'span' then
-			local seen = seen_key_index[cell.key_index] or { span = -1 }
-			-- add up all the spacing found
-			seen_key_index[cell.key_index] = {
-				span = seen.span + cell.span + 1,
-				is_last = not ctx.is_bridge_vert,
-			}
-		end
+		if cell.type == 'span' then increment_seen_span(cell, ctx, seen_key_index) end
 
-		local add = function(res)
-			return function() --
-				-- if cell.type == 'span' then vim.pretty_print(cell) end
-				add_partial(ctx)(res)
-			end
-		end
+		local add = function(res) add_partial(ctx)(res) end
 		local width = cell.span or 1
 
 		utils.cond {
@@ -106,34 +118,42 @@ local function generate(layout, user_symbols)
 			-- ┌─
 			{
 				ctx.is_bridge_vert and ctx.is_bridge_down,
-				add {
-					print_key(width, cell, seen_key_index) .. symbols.space,
-					printer.space(width) .. symbols.tl,
-				},
+				function()
+					add {
+						print_key(width, cell, seen_key_index, symbols.space),
+						printer.space(width) .. symbols.tl,
+					}
+				end,
 			},
 			-- ─┐
 			{
 				ctx.is_bridge_vert and ctx.is_sibling_bridge_down,
-				add {
-					print_key(width, cell, seen_key_index) .. symbols.space,
-					print_border(width, symbols.horz) .. symbols.tr,
-				},
+				function()
+					add {
+						print_key(width, cell, seen_key_index, symbols.space),
+						print_border(width, symbols.horz) .. symbols.tr,
+					}
+				end,
 			},
 			-- ─┘
 			{
 				ctx.is_sibling_bridge_vert and ctx.is_sibling_bridge_down,
-				add {
-					print_key(width, cell, seen_key_index) .. symbols.vert,
-					print_border(width, symbols.horz) .. symbols.br,
-				},
+				function()
+					add {
+						print_key(width, cell, seen_key_index, symbols.vert),
+						print_border(width, symbols.horz) .. symbols.br,
+					}
+				end,
 			},
 			-- └─
 			{
 				ctx.is_bridge_down and ctx.is_sibling_bridge_vert,
-				add {
-					print_key(width, cell, seen_key_index) .. symbols.vert,
-					printer.space(width) .. symbols.bl,
-				},
+				function()
+					add {
+						print_key(width, cell, seen_key_index, symbols.vert),
+						printer.space(width) .. symbols.bl,
+					}
+				end,
 			},
 
 			-- handle bridge cells
@@ -141,69 +161,84 @@ local function generate(layout, user_symbols)
 			-- ──
 			{
 				ctx.is_bridge_vert and ctx.is_sibling_bridge_vert,
-				add {
-					print_key(width, cell, seen_key_index) .. symbols.space,
-					print_border(width, symbols.horz) .. symbols.horz,
-				},
+				function()
+					add {
+						print_key(width, cell, seen_key_index, symbols.space),
+						print_border(width, symbols.horz) .. symbols.horz,
+					}
+				end,
 			},
 			-- ──
 			-- --
 			{
 				ctx.is_bridge_vert,
-				add {
-					print_key(width, cell, seen_key_index) .. symbols.space,
-					print_border(width, symbols.horz) .. symbols.tm,
-				},
+				function()
+					add {
+						print_key(width, cell, seen_key_index, symbols.space),
+						print_border(width, symbols.horz) .. symbols.tm,
+					}
+				end,
 			},
 			-- │ │
 			-- │ │
 			{
 				ctx.is_bridge_down and ctx.is_sibling_bridge_down,
-				add {
-					print_key(width, cell, seen_key_index) .. symbols.vert,
-					printer.space(width) .. symbols.vert,
-				},
+				function()
+					add {
+						print_key(width, cell, seen_key_index, symbols.vert),
+						printer.space(width) .. symbols.vert,
+					}
+				end,
 			},
 			-- │ |
 			-- │ |
 			{
 				ctx.is_bridge_down,
-				add {
-					print_key(width, cell, seen_key_index) .. symbols.vert,
-					printer.space(width) .. symbols.ml,
-				},
+				function()
+					add {
+						print_key(width, cell, seen_key_index, symbols.vert),
+						printer.space(width) .. symbols.ml,
+					}
+				end,
 			},
 
 			-- handle single cells
 			-- -
 			{
 				ctx.is_sibling_bridge_vert,
-				add {
-					print_key(width, cell, seen_key_index) .. symbols.vert,
-					print_border(width, symbols.horz) .. symbols.bm,
-				},
+				function()
+					add {
+						print_key(width, cell, seen_key_index, symbols.vert),
+						print_border(width, symbols.horz) .. symbols.bm,
+					}
+				end,
 			},
 			-- |
 			{
 				ctx.is_sibling_bridge_down,
-				add {
-					print_key(width, cell, seen_key_index) .. symbols.vert,
-					print_border(width, symbols.horz) .. symbols.mr,
-				},
+				function()
+					add {
+						print_key(width, cell, seen_key_index, symbols.vert),
+						print_border(width, symbols.horz) .. symbols.mr,
+					}
+				end,
 			},
 
 			-- handle final case
 			{
 				true,
-				add {
-					print_key(width, cell, seen_key_index) .. symbols.vert,
-					print_border(width, symbols.horz) .. symbols.mm,
-				},
+				function()
+					add {
+						print_key(width, cell, seen_key_index, symbols.vert),
+						print_border(width, symbols.horz) .. symbols.mm,
+					}
+				end,
 			},
 		}
 	end)
 
 	local final = {}
+	-- trim off padding
 	for index, row in ipairs(comment_rows) do
 		if index > 1 and index < (#comment_rows - 1) then table.insert(final, row) end
 	end
