@@ -3,7 +3,10 @@ local utils = require 'qmk.utils'
 local E = require 'qmk.errors'
 
 local function is_all_padding(ls)
-	local padding = vim.tbl_filter(function(key) return key and key.type == 'padding' end, ls)
+	local padding = vim.tbl_filter(
+		function(key) return key and (key.type == 'padding' or key.type == 'gap') end,
+		ls
+	)
 	return #padding == #ls
 end
 
@@ -58,7 +61,12 @@ function LayoutGrid:new(layout, keys)
 
 		for _, key in pairs(row) do
 			if key.type == 'gap' then
-				table.insert(grid[row_i], utils.shallow_copy(padding_cell))
+				table.insert(grid[row_i], {
+					type = 'gap',
+					key_index = 999999,
+					width = 1,
+					key = ' ',
+				})
 			else
 				key_idx = key_idx + 1
 				for _ = 1, key.width do

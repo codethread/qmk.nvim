@@ -25,7 +25,9 @@ local function increment_seen_span(cell, ctx, seen_key_index)
 	}
 end
 
-local function print_space(span, right_border) return string.rep(space, span) .. right_border end
+local function print_space(span, right_border)
+	return ' ' .. string.rep(space, span) .. ' ' .. right_border
+end
 
 ---@param span number
 ---@param key qmk.LayoutGridCell
@@ -37,6 +39,8 @@ local function print_key(span, key, seen_key_index, right_border)
 		local text = space .. centered .. space .. right_border
 		return text
 	end
+
+	if key.type == 'gap' then return print_space(span, right_border) end
 
 	if key.type == 'span' then
 		-- we keep track of how many times we've seen this key
