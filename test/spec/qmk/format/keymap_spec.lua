@@ -70,6 +70,26 @@ describe('keymaps', function()
 			},
 		},
 		{
+			msg = 'a double row keymap with gap',
+			input = {
+				options = create_options_preview {
+					'x x | x x',
+					'| | | | x',
+				},
+				keys = { '1', '2', 'long_key', '4', '5' },
+			},
+			output = {
+				'//    ┌───┬───┐   ┌──────────┬───┐',
+				'//    │ 1 │ 2 │   │ long_key │ 4 │',
+				'//    └───┴───┘   └──────────┼───┤',
+				'//                           │ 5 │',
+				'//                           └───┘',
+				'[_FOO] = LAYOUT(',
+				'1,2,  long_key,4,',
+				'               5,',
+			},
+		},
+		{
 			msg = 'simple double row',
 			input = {
 				options = create_options {
@@ -169,23 +189,13 @@ describe('keymaps', function()
 					'xx^ x | xx^xx',
 					'x x x | x x x',
 				},
+                -- stylua: ignore
 				keys = {
-					'KC_A',
-					'KC_B',
-					'MT(MOD_LALT, KC_ENT)',
-					'KC_C',
-					'KC_5',
-					'KC_6',
-					'KC_7',
-					'KC_8',
-					'KC_9',
-					'KC_C',
-					'KC_5',
-					'KC_6',
-					'KC_7',
-					'KC_8',
-					'KC_9',
+					'KC_A', 'KC_B', 'MT(MOD_LALT, KC_ENT)', 'KC_C', 'KC_5', 'KC_6',
+					'KC_7', 'KC_8', 'KC_9',
+					'KC_C', 'KC_5', 'KC_6', 'KC_7', 'KC_8', 'KC_9',
 				},
+				-- stylua: ignore end
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
@@ -338,7 +348,6 @@ describe('keymaps', function()
 		},
 		{
 			msg = 'mini kinesis',
-			only = true,
 			input = {
 				options = create_options_preview {
 					'x x x x x x x x x x x x x x',
@@ -353,7 +362,7 @@ describe('keymaps', function()
 					'1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
 					'12', '13', '14', '15', '16', '17', '18', '19', '20', '21',
 					'22', '23', '24', '2005', '26', '27', '28', '29', '30', '31',
-					'32', '33', '34', '35', '36', 
+					'32', '33', '34', '35', '36',
                 },
 				-- stylua: ignore end
 			},
@@ -362,7 +371,7 @@ describe('keymaps', function()
 	}
 
 	for _, test in pairs(tests) do
-		if test.only then
+		if not test.only then
 			it(test.msg, function()
 				local keymap = {
 					layer_name = '_FOO',

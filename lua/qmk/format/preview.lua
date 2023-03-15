@@ -1,29 +1,8 @@
 local E = 'qmk.errors'
 local utils = require 'qmk.utils'
+local helpers = require 'qmk.format.helper'
 
 local space = ' '
-
----@alias qmk.Seen { span: number, is_last: boolean, count: number }[]
-
--- center a string within a span
-local function center(span, key_text)
-	local remainder = span - #key_text
-	local half = math.floor(remainder / 2)
-	local centered = string.rep(space, half) .. key_text .. string.rep(space, half)
-	local padding = string.rep(space, span - string.len(centered))
-	local text = centered .. padding
-	return text
-end
-
--- add up all the spacing found
-local function increment_seen_span(cell, ctx, seen_key_index)
-	local seen = seen_key_index[cell.key_index] or { span = 0 }
-	seen_key_index[cell.key_index] = {
-		span = seen.span + cell.span,
-		count = (seen.count or 0) + 1,
-		is_last = not ctx.is_bridge_vert,
-	}
-end
 
 local function print_space(span, right_border)
 	return ' ' .. string.rep(space, span) .. ' ' .. right_border
@@ -35,7 +14,7 @@ end
 ---@param right_border string
 local function print_key(span, key, seen_key_index, right_border)
 	if key.type == 'key' then
-		local centered = center(key.span, key.key)
+		local centered = helpers.center(key.span, key.key, space)
 		local text = space .. centered .. space .. right_border
 		return text
 	end
@@ -54,7 +33,7 @@ local function print_key(span, key, seen_key_index, right_border)
 			-- to add our own right border
 			local full_span = seen.span + seen_padding - 1
 
-			local centered = center(full_span, key.key)
+			local centered = helpers.center(full_span, key.key, space)
 			local text = centered .. right_border
 			return text
 		else
@@ -90,11 +69,10 @@ local function generate(layout, user_symbols)
 		comment_rows[index * 2] = { '// ' }
 	end
 
-	---@type qmk.Seen
-	local seen_key_index = {}
+	local seen_key_index = helpers.create_seen_key_index()
 
 	layout:for_each(function(cell, ctx)
-		if cell.type == 'span' then increment_seen_span(cell, ctx, seen_key_index) end
+		if cell.type == 'span' then helpers.increment_seen_span(cell, ctx, seen_key_index) end
 
 		---update the comment rows with each new cell
 		---@param cell_tuple string[] #a tuple of strings representing the current cell and it's bottom border

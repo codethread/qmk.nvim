@@ -2,6 +2,21 @@
 local utils = require 'qmk.utils'
 local E = require 'qmk.errors'
 
+---comment
+---@param key qmk.LayoutGridCell
+---@param row qmk.LayoutGridCell[]
+---@param i number
+local function is_final_key(key, row, i)
+	---@diagnostic disable-next-line: missing-parameter
+	local keys = vim.list_slice(row, i + 1)
+
+	for _, next_key in pairs(keys) do
+		if next_key.type == 'key' then return false end
+		if next_key.type == 'span' and next_key.key_index ~= key.key_index then return false end
+	end
+	return true
+end
+
 local function is_all_padding(ls)
 	local padding = vim.tbl_filter(
 		function(key) return key and (key.type == 'padding' or key.type == 'gap') end,
@@ -114,6 +129,7 @@ function LayoutGrid:cells() return self.grid end
 ---@field row number
 ---@field is_empty boolean
 ---@field is_first boolean
+---@field is_final_key boolean
 ---@field is_last boolean
 ---@field is_top boolean
 ---@field is_bottom boolean
@@ -124,6 +140,8 @@ function LayoutGrid:cells() return self.grid end
 
 function LayoutGrid:for_each(fn)
 	for row_i, row in ipairs(self.grid) do
+		local found_final_key = false
+
 		for col_i, key in ipairs(row) do
 			local key_index = key.key_index
 
@@ -156,6 +174,7 @@ function LayoutGrid:for_each(fn)
 				is_sibling_bridge_vert = cell_down
 					and cell_down_right
 					and cell_down.key_index == cell_down_right.key_index,
+				is_final_key = not found_final_key and (is_last or is_final_key(key, row, col_i)),
 			}
 
 			fn(key, ctx)
