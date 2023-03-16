@@ -29,8 +29,10 @@ end
 local function print_rows(layout, spacing)
 	local output = {}
 
-	local comma = ' ,'
-	local end_pad = string.rep(space, #comma)
+	local comma = ' , '
+	-- the final key won't have a comma, this allows it to be added in the rows
+	-- later on (omitting the final row)
+	local end_pad = ''
 
 	local seen_key_index = helper.create_seen_key_index()
 
@@ -41,28 +43,32 @@ local function print_rows(layout, spacing)
 
 		if ctx.is_first then output[row] = {} end
 
-		local function add(str) table.insert(output[row], space .. str) end
+		local function add(str) table.insert(output[row], str) end
 		local is_last = ctx.is_final_key
+
+		if key.type == 'key' then
+			add(key.key .. string.rep(space, key.span - #key.key))
+			add(is_last and end_pad or comma)
+		end
+
+		if key.type == 'gap' then
+			add(string.rep(space, key.span))
+			add(string.rep(space, #comma))
+		end
 
 		if key.type == 'span' then
 			helper.increment_seen_span(key, ctx, seen_key_index)
 			local seen = seen_key_index[key.key_index]
 			if seen.is_last then
-				-- normally every cell is padded by one whitespace and a single right border
+				-- normally every cell is padded by our 'comma' string
 				-- so we need to account for that
-				local seen_padding = seen.count * 2
-				--HACK what's going on wieht these numbers??
-				-- now we know the full span of the key
-				local full_span = seen.span + seen_padding - 1
-				add(align(full_span, key) .. (is_last and end_pad or comma))
+				local seen_padding = (seen.count - 1) * #comma
+				local full_span = seen.span + seen_padding
+
+				add(align(full_span, key))
+				add(is_last and end_pad or comma)
 			end
 		end
-
-		if key.type == 'key' then
-			add(key.key .. string.rep(space, key.span - #key.key) .. (is_last and end_pad or comma))
-		end
-
-		if key.type == 'gap' then add(string.rep(space, key.span) .. end_pad) end
 	end)
 
 	local final = {}
