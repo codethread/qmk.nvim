@@ -26,4 +26,13 @@ watch:
 lint:
 	@luacheck lua/ test/spec/
 
+format:
+	@make format-code format-test
+
+format-code:
+	@stylua --glob '**/*.lua' lua
+
+format-test:
+	@stylua --glob '**/*.lua' test/spec
+
 all: prepare test
