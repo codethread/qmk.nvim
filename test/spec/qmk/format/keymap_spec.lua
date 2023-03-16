@@ -32,7 +32,7 @@ describe('keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'    KC_A',
+				'      KC_A',
 			},
 		},
 		{
@@ -43,8 +43,8 @@ describe('keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A         , MT(MOD_LALT),',
-				'MT(MOD_LALT) , KC_D        ',
+				'  KC_A         , MT(MOD_LALT),',
+				'  MT(MOD_LALT) , KC_D        ',
 			},
 		},
 		{
@@ -55,7 +55,7 @@ describe('keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) , KC_C',
+				'  KC_A , KC_B , MT(MOD_LALT, KC_ENT) , KC_C',
 			},
 		},
 		{
@@ -66,7 +66,7 @@ describe('keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B ,     MT(MOD_LALT, KC_ENT) , KC_C',
+				'  KC_A , KC_B ,     MT(MOD_LALT, KC_ENT) , KC_C',
 			},
 		},
 		{
@@ -85,8 +85,8 @@ describe('keymaps', function()
 				'//                           │ 5 │',
 				'//                           └───┘',
 				'[_FOO] = LAYOUT(',
-				'1,2,  long_key,4,',
-				'               5,',
+				'  1 , 2 ,     long_key , 4,',
+				'                         5',
 			},
 		},
 		{
@@ -100,8 +100,8 @@ describe('keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B,',
-				'   KC_C    ',
+				'  KC_A , KC_B,',
+				'     KC_C    ',
 			},
 		},
 		{
@@ -120,8 +120,8 @@ describe('keymaps', function()
 				'//    │   8   │               │ 9 │',
 				'//    └───────┘               └───┘',
 				'[_FOO] = LAYOUT(',
-				'1 , 2 , 3 , 4 , 5 , 6 , 7,',
-				'  8   ,                 9',
+				'  1 , 2 , 3 , 4 , 5 , 6 , 7,',
+				'    8   ,                 9',
 			},
 		},
 		{
@@ -136,9 +136,9 @@ describe('keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B     ,',
-				'KC_E , KC_D(Mod),',
-				'      KC_C      ',
+				'  KC_A , KC_B     ,',
+				'  KC_E , KC_D(Mod),',
+				'        KC_C      ',
 			},
 		},
 		{
@@ -152,8 +152,8 @@ describe('keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B , KC_C,',
-				'   KC_A     , KC_A',
+				'  KC_A , KC_B , KC_C,',
+				'     KC_A     , KC_A',
 			},
 		},
 		{
@@ -177,8 +177,8 @@ describe('keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) , KC_C , KC_5 , KC_6,',
-				'       KC_7 , KC_8                 ,        KC_9       ',
+				'  KC_A , KC_B , MT(MOD_LALT, KC_ENT) , KC_C , KC_5 , KC_6,',
+				'         KC_7 , KC_8                 ,        KC_9       ',
 			},
 		},
 		{
@@ -199,9 +199,9 @@ describe('keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B , MT(MOD_LALT, KC_ENT) ,     KC_C , KC_5 , KC_6,',
-				'       KC_7 , KC_8                 ,            KC_9       ,',
-				'KC_C , KC_5 , KC_6                 ,     KC_7 , KC_8 , KC_9',
+				'  KC_A , KC_B , MT(MOD_LALT, KC_ENT) ,     KC_C , KC_5 , KC_6,',
+				'         KC_7 , KC_8                 ,            KC_9       ,',
+				'  KC_C , KC_5 , KC_6                 ,     KC_7 , KC_8 , KC_9',
 			},
 		},
 
@@ -222,8 +222,8 @@ describe('keymaps', function()
 				'//    │   c   │',
 				'//    └───────┘',
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B,',
-				'   KC_C    ',
+				'  KC_A , KC_B,',
+				'     KC_C    ',
 			},
 		},
 		{
@@ -242,8 +242,8 @@ describe('keymaps', function()
 				'//        │   c   │',
 				'//        └───────┘',
 				'[_FOO] = LAYOUT(',
-				'    KC_A , KC_B,',
-				'       KC_C    ',
+				'      KC_A , KC_B,',
+				'         KC_C    ',
 			},
 		},
 		{
@@ -265,9 +265,9 @@ describe('keymaps', function()
 				'//    │ e │ f │ g │',
 				'//    └───┴───┴───┘',
 				'[_FOO] = LAYOUT(',
-				'KC_A ,        KC_B,',
-				'   KC_C     , KC_D,',
-				'KC_E , KC_F , KC_G',
+				'  KC_A ,        KC_B,',
+				'     KC_C     , KC_D,',
+				'  KC_E , KC_F , KC_G',
 			},
 		},
 		{
@@ -286,8 +286,8 @@ describe('keymaps', function()
 				'//    │     D      │',
 				'//    └────────────┘',
 				'[_FOO] = LAYOUT(',
-				'AA , B , C,',
-				'    D     ',
+				'  AA , B , C,',
+				'      D     ',
 			},
 		},
 		{
@@ -309,9 +309,9 @@ describe('keymaps', function()
 				'//    │     E      │',
 				'//    └────────────┘',
 				'[_FOO] = LAYOUT(',
-				'AA ,     B,',
-				'  C    , D,',
-				'    E     ',
+				'  AA ,     B,',
+				'    C    , D,',
+				'      E     ',
 			},
 		},
 		{
@@ -341,9 +341,9 @@ describe('keymaps', function()
 				'//    │ e │ Really long key but should pad │ g │',
 				'//    └───┴────────────────────────────────┴───┘',
 				'[_FOO] = LAYOUT(',
-				'KC_A ,                                  KC_B,',
-				'                KC_C                  , KC_D,',
-				'KC_E , Really long key but should pad , KC_G',
+				'  KC_A ,                                  KC_B,',
+				'                  KC_C                  , KC_D,',
+				'  KC_E , Really long key but should pad , KC_G',
 			},
 		},
 		{
@@ -366,7 +366,28 @@ describe('keymaps', function()
                 },
 				-- stylua: ignore end
 			},
-			output = {},
+			output = {
+				'//    ┌────┬────┬────┬────┬────┬───┬───┬───┬───┬────┬────┬──────┬────┬────┐',
+				'//    │ 1  │ 2  │ 3  │ 4  │ 5  │ 6 │ 7 │ 8 │ 9 │ 10 │ 11 │  12  │ 13 │ 14 │',
+				'//    ├────┼────┼────┼────┼────┴───┴───┴───┴───┴────┼────┼──────┼────┼────┤',
+				'//    │ 15 │ 16 │ 17 │ 18 │                         │ 19 │  20  │ 21 │ 22 │',
+				'//    └────┼────┼────┼────┘                         └────┼──────┼────┼────┘',
+				'//         │ 23 │ 24 │                                   │ 2005 │ 26 │     ',
+				'//         └────┴────┼─────────┐               ┌─────────┼──────┴────┘     ',
+				'//                   │   27    │               │   28    │                 ',
+				'//                   └────┬────┤               ├────┬────┘                 ',
+				'//                        │ 29 │               │ 30 │                      ',
+				'//              ┌────┬────┼────┤               ├────┼────┬──────┐          ',
+				'//              │ 31 │ 32 │ 33 │               │ 34 │ 35 │  36  │          ',
+				'//              └────┴────┴────┘               └────┴────┴──────┘          ',
+				'[_FOO] = LAYOUT(',
+				'  1  , 2  , 3  , 4  , 5  , 6 , 7 , 8 , 9 , 10 , 11 , 12   , 13 , 14,',
+				'  15 , 16 , 17 , 18 ,                           19 , 20   , 21 , 22,',
+				'       23 , 24 ,                                     2005 , 26     ,',
+				'                   27    ,                   28                    ,',
+				'                      29 ,                 30                      ,',
+				'            31 , 32 , 33 ,                 34 , 35 , 36            ',
+			},
 		},
 	}
 

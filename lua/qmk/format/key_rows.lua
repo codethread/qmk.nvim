@@ -41,7 +41,7 @@ local function print_rows(layout, spacing)
 
 		if ctx.is_top or ctx.is_bottom then return end
 
-		if ctx.is_first then output[row] = {} end
+		if ctx.is_first then output[row] = { '  ' } end
 
 		local function add(str) table.insert(output[row], str) end
 		local is_last = ctx.is_final_key
