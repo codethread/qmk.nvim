@@ -104,6 +104,32 @@ describe('qmk', function()
 
 			assert.combinators.match(T.expected, T.buff_content())
 		end)
+
+		it('formats a complex design', function()
+			local T = snapshot('kinesis.c', 'kinesis_out.c')
+
+			local qmk = require 'qmk'
+			qmk.setup {
+				comment_preview = {
+					position = 'top',
+				},
+				name = 'LAYOUT_pretty',
+				layout = {
+					'x x x x x x x x x x x x x x x x x x',
+					'x x x x x x | | | | | | x x x x x x',
+					'x x x x x x | | | | | | x x x x x x',
+					'x x x x x x | | | | | | x x x x x x',
+					'x x x x x x | | | | | | x x x x x x',
+					'| x x x x | | | | | | | | x x x x |',
+					'| | | | | x x | | | | x x | | | | |',
+					'| | | | | | x | | | | x | | | | | |',
+					'| | | | x x x | | | | x x x | | | |',
+				},
+			}
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
 	end)
 
 	describe('display', function()
