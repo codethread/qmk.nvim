@@ -24,9 +24,8 @@ local function align(span, key)
 end
 
 ---@param layout qmk.LayoutGrid
----@param spacing number
 ---@return string[]
-local function print_rows(layout, spacing)
+local function print_rows(layout)
 	local output = {}
 
 	local comma = ' , '

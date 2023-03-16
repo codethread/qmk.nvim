@@ -1,6 +1,10 @@
 require 'matcher_combinators.luassert'
 local Path = require 'plenary.path'
 
+---comment
+---@param input string
+---@param final string
+---@return table
 local function snapshot(input, final)
 	local content = Path:new('test', 'fixtures', input):read()
 	local out = Path:new('test', 'fixtures', final):read()
@@ -13,7 +17,12 @@ local function snapshot(input, final)
 		-- buffer handle
 		buff = buff,
 		-- function to get buffer content as list of lines
-		buff_content = function() return vim.api.nvim_buf_get_lines(buff, 0, -1, false) end,
+		buff_content = function()
+			local buff_content = vim.api.nvim_buf_get_lines(buff, 0, -1, false)
+			local actual = input:gsub('%.c$', '_actual.c')
+			Path:new('test', 'fixtures', actual):write(table.concat(buff_content, '\n'), 'w')
+			return buff_content
+		end,
 	}
 end
 
