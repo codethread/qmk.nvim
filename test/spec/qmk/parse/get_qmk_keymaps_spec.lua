@@ -25,7 +25,12 @@ describe('get_keymaps:', function()
 						layer_name = '_FOO',
 						pos = { start = 1, final = 3 },
 						layout_name = 'LAYOUT',
-						keys = { 'KC_A', 'KC_B', 'MT(MOD_LALT, KC_ENT)', 'KC_C' },
+						keys = {
+							'KC_A',
+							'KC_B',
+							'MT(MOD_LALT, KC_ENT)',
+							'KC_C',
+						},
 					},
 					{
 						layer_name = '_BOO',
@@ -53,7 +58,12 @@ describe('get_keymaps:', function()
 						layer_name = '_FOO',
 						pos = { start = 1, final = 3 },
 						layout_name = 'LAYOUT',
-						keys = { 'KC_A', 'KC_B', 'MT(MOD_LALT, KC_ENT)', 'KC_C' },
+						keys = {
+							'KC_A',
+							'KC_B',
+							'MT(MOD_LALT, KC_ENT)',
+							'KC_C',
+						},
 					},
 					{
 						layer_name = '_BOO',
@@ -78,7 +88,12 @@ describe('get_keymaps:', function()
 						layer_name = '_FOO',
 						pos = { start = 1, final = 1 },
 						layout_name = 'LAYOUT',
-						keys = { 'KC_A', 'KC_B', 'MT(MOD_LALT, KC_ENT)', 'KC_C' },
+						keys = {
+							'KC_A',
+							'KC_B',
+							'MT(MOD_LALT, KC_ENT)',
+							'KC_C',
+						},
 					},
 					{
 						layer_name = '_BOO',
@@ -120,7 +135,12 @@ describe('get_keymaps:', function()
 						layer_name = '_FOO',
 						pos = { start = 1, final = 8 },
 						layout_name = 'LAYOUT',
-						keys = { 'KC_A', 'KC_B', 'MT(MOD_LALT, KC_ENT)', 'KC_C' },
+						keys = {
+							'KC_A',
+							'KC_B',
+							'MT(MOD_LALT, KC_ENT)',
+							'KC_C',
+						},
 					},
 					{
 						layer_name = '_BOO',

@@ -1,0 +1,7 @@
+call_parentheses = "None"
+quote_style = "AutoPreferSingle"
+collapse_simple_statement = "Always"
+column_width = 80
+indent_type = "Tabs"
+indent_width = 4
+

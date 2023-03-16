@@ -66,8 +66,11 @@ local function get_keymaps(name, root, content)
 			queries.key_visitor(node, {
 				key = function(key_node)
 					local key_text = ts.get_node_text(key_node, content)
-					local newlines_removed = key_text:gsub('%s', ''):gsub(',', ', ')
-					if key_text ~= '' then table.insert(current_keymap.keys, newlines_removed) end
+					local newlines_removed =
+						key_text:gsub('%s', ''):gsub(',', ', ')
+					if key_text ~= '' then
+						table.insert(current_keymap.keys, newlines_removed)
+					end
 				end,
 			})
 		end,

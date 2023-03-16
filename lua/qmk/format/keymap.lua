@@ -25,7 +25,12 @@ local function format_keymap(options, keymap)
 	local preview_layout = LayoutGrid:new(
 		options.layout,
 		vim.tbl_map(
-			function(key) return get_key_text(key, options.comment_preview.keymap_overrides) end,
+			function(key)
+				return get_key_text(
+					key,
+					options.comment_preview.keymap_overrides
+				)
+			end,
 			keys
 		)
 	)

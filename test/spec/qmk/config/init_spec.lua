@@ -4,7 +4,11 @@ local match_string = require 'matcher_combinators.matchers.string'
 local config = require 'qmk.config'
 
 local function none_missing(conf)
-	return vim.tbl_deep_extend('force', { name = 'test', layout = { 'x' } }, conf)
+	return vim.tbl_deep_extend(
+		'force',
+		{ name = 'test', layout = { 'x' } },
+		conf
+	)
 end
 
 describe('config', function()
@@ -33,19 +37,29 @@ describe('config', function()
 			{
 				msg = 'invalid param',
 				input = none_missing { spacing = {} },
-				err = E.parse_error_msg(E.parse_invalid('', 'spacing', 'number', 'table')),
+				err = E.parse_error_msg(
+					E.parse_invalid('', 'spacing', 'number', 'table')
+				),
 			},
 			{
 				msg = 'invalid nested param',
-				input = none_missing { comment_preview = { keymap_overrides = 0 } },
+				input = none_missing {
+					comment_preview = { keymap_overrides = 0 },
+				},
 				err = E.parse_error_msg(
-					E.parse_invalid('comment_preview.', 'keymap_overrides', 'table', 'number')
+					E.parse_invalid(
+						'comment_preview.',
+						'keymap_overrides',
+						'table',
+						'number'
+					)
 				),
 			},
 			{
 				msg = 'invalid complex param',
 				input = none_missing { comment_preview = { position = 'foo' } },
-				err = 'QMK: [E14] invalid option: "comment_preview.position", expected: one of top, bottom, inside, none, got: foo | see :help qmk-setup for available configuration options',
+				err = 'QMK: [E14] invalid option: "comment_preview.position", expected: one of top, bottom, inside, none,'
+					.. ' got: foo | see :help qmk-setup for available configuration options',
 			},
 			{
 				msg = 'invalid layout empty',

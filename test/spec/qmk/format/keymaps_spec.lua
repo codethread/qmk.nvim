@@ -74,7 +74,8 @@ describe('format_keymaps', function()
 
 	for _, test in pairs(tests) do
 		it(test.msg, function()
-			local output = format_keymaps(test.input.keymaps, test.input.options)
+			local output =
+				format_keymaps(test.input.keymaps, test.input.options)
 			match(test.output, output)
 		end)
 	end

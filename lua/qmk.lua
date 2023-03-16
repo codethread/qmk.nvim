@@ -3,7 +3,8 @@ local format = require 'qmk.format'
 local utils = require 'qmk.utils'
 
 local qmk = {}
-local configured_warning = 'QMK plugin is not configured. Please call qmk.setup() first'
+local configured_warning =
+	'QMK plugin is not configured. Please call qmk.setup() first'
 
 -- setup QMK plugin
 -- creates user commands and autocmds to autoformat

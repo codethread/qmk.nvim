@@ -72,7 +72,9 @@ local function generate(layout, user_symbols)
 	local seen_key_index = helpers.create_seen_key_index()
 
 	layout:for_each(function(cell, ctx)
-		if cell.type == 'span' then helpers.increment_seen_span(cell, ctx, seen_key_index) end
+		if cell.type == 'span' then
+			helpers.increment_seen_span(cell, ctx, seen_key_index)
+		end
 
 		---update the comment rows with each new cell
 		---@param cell_tuple string[] #a tuple of strings representing the current cell and it's bottom border
@@ -91,7 +93,10 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_empty,
 				function()
-					update { print_space(span, symbols.space), print_space(span, symbols.space) }
+					update {
+						print_space(span, symbols.space),
+						print_space(span, symbols.space),
+					}
 				end,
 			},
 
@@ -247,7 +252,9 @@ local function generate(layout, user_symbols)
 	local final = {}
 	-- trim off padding
 	for index, row in ipairs(comment_rows) do
-		if index > 1 and index < (#comment_rows - 1) then table.insert(final, row) end
+		if index > 1 and index < (#comment_rows - 1) then
+			table.insert(final, row)
+		end
 	end
 	return final
 end

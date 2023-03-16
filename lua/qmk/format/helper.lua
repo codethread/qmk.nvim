@@ -23,7 +23,9 @@ function M.create_seen_key_index() return {} end
 function M.center(span, key_text, space)
 	local remainder = span - #key_text
 	local half = math.floor(remainder / 2)
-	local centered = string.rep(space, half) .. key_text .. string.rep(space, half)
+	local centered = string.rep(space, half)
+		.. key_text
+		.. string.rep(space, half)
 	local padding = string.rep(space, span - string.len(centered))
 	local text = centered .. padding
 	return text

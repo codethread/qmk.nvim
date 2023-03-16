@@ -26,7 +26,7 @@ function M.parse_layout(layout)
 		local keys = vim.split(row, ' ')
 
 		local row_info = vim.tbl_map(function(key)
-			if key == '|' then return { width = 1, type = 'gap' } end
+			if key == '_' then return { width = 1, type = 'gap' } end
 			if key == 'x' then return { width = 1, type = 'key' } end
 
 			local invalid = string.find(key, '[^x^]')
@@ -52,12 +52,17 @@ function M.parse(user_config)
 	assert(user_config.name and user_config.layout, E.config_missing_required)
 
 	---@type qmk.Config
-	local merged_config = vim.tbl_deep_extend('force', config.default_config, user_config)
+	local merged_config =
+		vim.tbl_deep_extend('force', config.default_config, user_config)
 	validate(merged_config, config.default_config)
 
 	merged_config.layout = M.parse_layout(merged_config.layout)
-	local keymaps =
-		vim.tbl_extend('force', {}, key_map, merged_config.comment_preview.keymap_overrides)
+	local keymaps = vim.tbl_extend(
+		'force',
+		{},
+		key_map,
+		merged_config.comment_preview.keymap_overrides
+	)
 	return vim.tbl_deep_extend(
 		'force',
 		merged_config,
@@ -69,7 +74,7 @@ end
 ---@class qmk.LayoutPlanKey
 ---@field width number
 ---@field align? string
----@field type 'key' | 'span' | 'gap' #TODO: support space and gap
+---@field type 'key' | 'span' | 'gap'
 
 ---Struct to represent the users desired layout
 ---@alias qmk.LayoutPlan qmk.LayoutPlanKey[][]

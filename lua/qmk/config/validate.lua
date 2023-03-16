@@ -4,7 +4,8 @@ local dic_validator = {
 	position = function(position)
 		local valid = { 'top', 'bottom', 'inside', 'none' }
 		-- check if position is a valid value
-		return vim.tbl_contains(valid, position), 'one of ' .. table.concat(valid, ', ')
+		return vim.tbl_contains(valid, position),
+			'one of ' .. table.concat(valid, ', ')
 	end,
 }
 local FIELD_OVERRIDE_TYPECHECK = {}
@@ -30,13 +31,17 @@ local function validate_options(user_config, default_config)
 
 			if custom_validator then
 				local valid, valid_values = custom_validator(v)
-				if not valid then invalid = E.parse_invalid(prefix, k, valid_values, v) end
+				if not valid then
+					invalid = E.parse_invalid(prefix, k, valid_values, v)
+				end
 			else
 				local override_typecheck = FIELD_OVERRIDE_TYPECHECK[k] or {}
 				if def[k] == nil then
 					-- option does not exist
 					invalid = E.parse_unknown(prefix, k)
-				elseif type(v) ~= type(def[k]) and not override_typecheck[type(v)] then
+				elseif
+					type(v) ~= type(def[k]) and not override_typecheck[type(v)]
+				then
 					-- option is of the wrong type and is not a function
 					invalid = E.parse_invalid(prefix, k, type(def[k]), type(v))
 				end

@@ -20,7 +20,8 @@ local function snapshot(input, final)
 		buff_content = function()
 			local buff_content = vim.api.nvim_buf_get_lines(buff, 0, -1, false)
 			local actual = input:gsub('%.c$', '_actual.c')
-			Path:new('test', 'fixtures', actual):write(table.concat(buff_content, '\n'), 'w')
+			Path:new('test', 'fixtures', actual)
+				:write(table.concat(buff_content, '\n'), 'w')
 			return buff_content
 		end,
 	}
@@ -57,11 +58,11 @@ describe('qmk', function()
 			qmk.setup {
 				name = 'LAYOUT_preonic_grid',
 				layout = {
-					'| x x x x x x x x x x x x',
-					'| x x x x x x x x x x x x',
-					'| x x x x x x x x x x x x',
-					'| x x x x x x x x x x x x',
-					'| x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
 				},
 			}
 			qmk.format(T.buff)
@@ -80,11 +81,11 @@ describe('qmk', function()
 					position = 'top',
 				},
 				layout = {
-					'x x x x x x | | x x x x x x',
-					'x x x x x x | | x x x x x x',
-					'x x x x x x | | x x x x x x',
-					'x x x x x x | | x x x x x x',
-					'x x x x x x | | x x x x x x',
+					'x x x x x x _ _ x x x x x x',
+					'x x x x x x _ _ x x x x x x',
+					'x x x x x x _ _ x x x x x x',
+					'x x x x x x _ _ x x x x x x',
+					'x x x x x x _ _ x x x x x x',
 				},
 			}
 			qmk.format(T.buff)
@@ -98,7 +99,7 @@ describe('qmk', function()
 			local qmk = require 'qmk'
 			qmk.setup {
 				name = 'LAYOUT_preonic_grid',
-				layout = { '| x x x x x' },
+				layout = { '_ x x x x x' },
 			}
 			qmk.format(T.buff)
 
@@ -116,14 +117,14 @@ describe('qmk', function()
 				name = 'LAYOUT_pretty',
 				layout = {
 					'x x x x x x x x x x x x x x x x x x',
-					'x x x x x x | | | | | | x x x x x x',
-					'x x x x x x | | | | | | x x x x x x',
-					'x x x x x x | | | | | | x x x x x x',
-					'x x x x x x | | | | | | x x x x x x',
-					'| x x x x | | | | | | | | x x x x |',
-					'| | | | | x x | | | | x x | | | | |',
-					'| | | | | | x | | | | x | | | | | |',
-					'| | | | x x x | | | | x x x | | | |',
+					'x x x x x x _ _ _ _ _ _ x x x x x x',
+					'x x x x x x _ _ _ _ _ _ x x x x x x',
+					'x x x x x x _ _ _ _ _ _ x x x x x x',
+					'x x x x x x _ _ _ _ _ _ x x x x x x',
+					'_ x x x x _ _ _ _ _ _ _ _ x x x x _',
+					'_ _ _ _ _ x x _ _ _ _ x x _ _ _ _ _',
+					'_ _ _ _ _ _ x _ _ _ _ x _ _ _ _ _ _',
+					'_ _ _ _ x x x _ _ _ _ x x x _ _ _ _',
 				},
 			}
 			qmk.format(T.buff)
@@ -133,6 +134,9 @@ describe('qmk', function()
 	end)
 
 	describe('display', function()
-		it('displays the keymap in a popup', function() assert.is_true(true) end)
+		it(
+			'displays the keymap in a popup',
+			function() assert.is_true(true) end
+		)
 	end)
 end)
