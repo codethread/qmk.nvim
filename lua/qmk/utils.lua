@@ -25,4 +25,33 @@ function M.assert(cond, msg)
 	if not cond then M.die(msg) end
 end
 
+function M.safe_call(fn)
+	local ok, err = pcall(fn)
+	if not ok then
+		vim.notify(err, vim.log.levels.ERROR)
+		return
+	end
+end
+
+function M.cond(conditions)
+	for _, v in ipairs(conditions) do
+		local predicate = v[1]
+		local result = v[2]
+		if type(predicate) == 'function' and predicate() or predicate then
+			return type(result) == 'function' and result() or result
+		end
+	end
+	error 'no condition matched'
+end
+
+function M.t() return true end
+
+function M.shallow_copy(t)
+	local t2 = {}
+	for k, v in pairs(t) do
+		t2[k] = v
+	end
+	return t2
+end
+
 return M

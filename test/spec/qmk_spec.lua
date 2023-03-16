@@ -1,6 +1,10 @@
 require 'matcher_combinators.luassert'
 local Path = require 'plenary.path'
 
+---comment
+---@param input string
+---@param final string
+---@return table
 local function snapshot(input, final)
 	local content = Path:new('test', 'fixtures', input):read()
 	local out = Path:new('test', 'fixtures', final):read()
@@ -13,7 +17,12 @@ local function snapshot(input, final)
 		-- buffer handle
 		buff = buff,
 		-- function to get buffer content as list of lines
-		buff_content = function() return vim.api.nvim_buf_get_lines(buff, 0, -1, false) end,
+		buff_content = function()
+			local buff_content = vim.api.nvim_buf_get_lines(buff, 0, -1, false)
+			local actual = input:gsub('%.c$', '_actual.c')
+			Path:new('test', 'fixtures', actual):write(table.concat(buff_content, '\n'), 'w')
+			return buff_content
+		end,
 	}
 end
 
@@ -90,6 +99,32 @@ describe('qmk', function()
 			qmk.setup {
 				name = 'LAYOUT_preonic_grid',
 				layout = { '| x x x x x' },
+			}
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
+
+		it('formats a complex design', function()
+			local T = snapshot('kinesis.c', 'kinesis_out.c')
+
+			local qmk = require 'qmk'
+			qmk.setup {
+				comment_preview = {
+					position = 'top',
+				},
+				name = 'LAYOUT_pretty',
+				layout = {
+					'x x x x x x x x x x x x x x x x x x',
+					'x x x x x x | | | | | | x x x x x x',
+					'x x x x x x | | | | | | x x x x x x',
+					'x x x x x x | | | | | | x x x x x x',
+					'x x x x x x | | | | | | x x x x x x',
+					'| x x x x | | | | | | | | x x x x |',
+					'| | | | | x x | | | | x x | | | | |',
+					'| | | | | | x | | | | x | | | | | |',
+					'| | | | x x x | | | | x x x | | | |',
+				},
 			}
 			qmk.format(T.buff)
 

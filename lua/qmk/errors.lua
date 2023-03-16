@@ -39,6 +39,8 @@ local E = {
 	parse_error_msg = function(msg)
 		return msg .. ' | see :help qmk-setup for available configuration options'
 	end,
+
+	dev_error = 'QMK: [E00] This is a dev error, please report this on the repo with your config',
 	_strip = function(err) return string.gsub(err, '.*QMK:', 'QMK:', 2) end,
 }
 

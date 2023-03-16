@@ -1,3 +1,4 @@
+require 'matcher_combinators.luassert'
 local match = assert.combinators.match
 local format_keymaps = require 'qmk.format.keymaps'
 local config = require 'qmk.config'
@@ -59,13 +60,13 @@ describe('format_keymaps', function()
 			},
 			output = {
 				'[_FOO] = LAYOUT(',
-				'KC_A , KC_B                 , MT(MOD_LALT, KC_ENT) , KC_C,',
-				'KC_A , MT(MOD_LALT, KC_ENT) , KC_B                 , KC_C',
+				'  KC_A , KC_B                 , MT(MOD_LALT, KC_ENT) , KC_C,',
+				'  KC_A , MT(MOD_LALT, KC_ENT) , KC_B                 , KC_C',
 				'),',
 				'',
 				'[_BOO] = LAYOUT(',
-				'KC_A , KC_B , KC_C , KC_D,',
-				'KC_A , KC_B , KC_C , KC_D',
+				'  KC_A , KC_B , KC_C , KC_D,',
+				'  KC_A , KC_B , KC_C , KC_D',
 				')',
 			},
 		},
