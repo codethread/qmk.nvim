@@ -5,7 +5,6 @@ RUN=nvim --headless --noplugin -u test/spec.vim
 .PHONY: all nvim test watch prepare
 
 prepare:
-	git submodule update --depth 1 --init
 	luarocks install luacheck --local
 
 nvim:

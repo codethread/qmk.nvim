@@ -1,5 +1,5 @@
-set rtp^=./test/vendor/plenary.nvim/
-set rtp^=./test/vendor/matcher_combinators.lua/
+set rtp^=../../vendor/plenary.nvim/
+set rtp^=../../vendor/matcher_combinators.lua/
 set rtp^=./
 
 runtime plugin/plenary.vim
