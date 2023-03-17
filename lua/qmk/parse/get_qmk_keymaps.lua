@@ -1,6 +1,6 @@
 local ts = vim.treesitter
-local queries = require 'qmk.parse.queries'
-local E = require 'qmk.errors'
+local queries = require('qmk.parse.queries')
+local E = require('qmk.errors')
 
 ---assert all keymaps don't overlap with the declaration itself
 ---@param keymaps qmk.Keymaps
@@ -66,8 +66,7 @@ local function get_keymaps(name, root, content)
 			queries.key_visitor(node, {
 				key = function(key_node)
 					local key_text = ts.get_node_text(key_node, content)
-					local newlines_removed =
-						key_text:gsub('%s', ''):gsub(',', ', ')
+					local newlines_removed = key_text:gsub('%s', ''):gsub(',', ', ')
 					if key_text ~= '' then
 						table.insert(current_keymap.keys, newlines_removed)
 					end

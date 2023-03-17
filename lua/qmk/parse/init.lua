@@ -1,4 +1,4 @@
-local get_keymap = require 'qmk.parse.get_qmk_keymaps'
+local get_keymap = require('qmk.parse.get_qmk_keymaps')
 
 local M = {}
 

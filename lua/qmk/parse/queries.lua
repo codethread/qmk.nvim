@@ -15,7 +15,9 @@ local function visitor(query, root, visitors, content, start, final)
 		local capture_name = query.captures[id]
 		local node = n
 
-		if visitors[capture_name] then visitors[capture_name](node) end
+		if visitors[capture_name] then
+			visitors[capture_name](node)
+		end
 	end
 end
 

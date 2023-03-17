@@ -1,4 +1,4 @@
-local E = require 'qmk.errors'
+local E = require('qmk.errors')
 ---@alias qmk.KeymapList {key: string, value: string}[]
 
 ---@param key_map table<string, string>
@@ -15,7 +15,9 @@ local function sort(key_map)
 	-- sort so that the longest key is at the top, meaning when we match up keys
 	-- to the keymap, we'll get the most specific first, e.g
 	-- KC_LEFT_CURLY_BRACE before KC_LEFT
-	table.sort(map, function(a, b) return #a.key > #b.key end)
+	table.sort(map, function(a, b)
+		return #a.key > #b.key
+	end)
 	return map
 end
 

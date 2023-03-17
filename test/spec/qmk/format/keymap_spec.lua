@@ -1,24 +1,24 @@
 local match = assert.combinators.match
-local format = require 'qmk.format.keymap'
-local config = require 'qmk.config'
+local format = require('qmk.format.keymap')
+local config = require('qmk.config')
 
 ---@param layout qmk.UserLayout
 ---@return qmk.Config
 local function create_options(layout)
-	return config.parse {
+	return config.parse({
 		name = 'test',
 		layout = layout,
-	}
+	})
 end
 
 ---@param layout qmk.UserLayout
 ---@return qmk.Config
 local function create_options_preview(layout)
-	return config.parse {
+	return config.parse({
 		name = 'test',
 		layout = layout,
 		comment_preview = { position = 'top' },
-	}
+	})
 end
 
 describe('keymaps', function()
@@ -27,7 +27,7 @@ describe('keymaps', function()
 		{
 			msg = 'a single space',
 			input = {
-				options = create_options { '_ x' },
+				options = create_options({ '_ x' }),
 				keys = { 'KC_A' },
 			},
 			output = {
@@ -38,7 +38,7 @@ describe('keymaps', function()
 		{
 			msg = 'wide keys',
 			input = {
-				options = create_options { 'x x', 'x x' },
+				options = create_options({ 'x x', 'x x' }),
 				keys = { 'KC_A', 'MT(MOD_LALT)', 'MT(MOD_LALT)', 'KC_D' },
 			},
 			output = {
@@ -50,7 +50,7 @@ describe('keymaps', function()
 		{
 			msg = 'a single row keymap',
 			input = {
-				options = create_options { 'x x x x' },
+				options = create_options({ 'x x x x' }),
 				keys = { 'KC_A', 'KC_B', 'MT(MOD_LALT, KC_ENT)', 'KC_C' },
 			},
 			output = {
@@ -61,7 +61,7 @@ describe('keymaps', function()
 		{
 			msg = 'a single row keymap with gap',
 			input = {
-				options = create_options { 'x x _ x x' },
+				options = create_options({ 'x x _ x x' }),
 				keys = { 'KC_A', 'KC_B', 'MT(MOD_LALT, KC_ENT)', 'KC_C' },
 			},
 			output = {
@@ -72,10 +72,10 @@ describe('keymaps', function()
 		{
 			msg = 'a double row keymap with gap',
 			input = {
-				options = create_options_preview {
+				options = create_options_preview({
 					'x x _ x x',
 					'_ _ _ _ x',
-				},
+				}),
 				keys = { '1', '2', 'long_key', '4', '5' },
 			},
 			output = {
@@ -92,10 +92,10 @@ describe('keymaps', function()
 		{
 			msg = 'simple double row',
 			input = {
-				options = create_options {
+				options = create_options({
 					'x x',
 					'x^x',
-				},
+				}),
 				keys = { 'KC_A', 'KC_B', 'KC_C' },
 			},
 			output = {
@@ -107,10 +107,10 @@ describe('keymaps', function()
 		{
 			msg = 'simple with lots of gaps',
 			input = {
-				options = create_options_preview {
+				options = create_options_preview({
 					'x x x x x x x',
 					'x^x _ _ _ _ x',
-				},
+				}),
 				keys = { '1', '2', '3', '4', '5', '6', '7', '8', '9' },
 			},
 			output = {
@@ -127,11 +127,11 @@ describe('keymaps', function()
 		{
 			msg = 'simple multiple rows',
 			input = {
-				options = create_options {
+				options = create_options({
 					'x x',
 					'x x',
 					'x^x',
-				},
+				}),
 				keys = { 'KC_A', 'KC_B', 'KC_E', 'KC_D(Mod)', 'KC_C' },
 			},
 			output = {
@@ -144,10 +144,10 @@ describe('keymaps', function()
 		{
 			msg = 'simple double row',
 			input = {
-				options = create_options {
+				options = create_options({
 					'x x x',
 					'x^x x',
-				},
+				}),
 				keys = { 'KC_A', 'KC_B', 'KC_C', 'KC_A', 'KC_A' },
 			},
 			output = {
@@ -159,10 +159,10 @@ describe('keymaps', function()
 		{
 			msg = 'multiple row keymap with spaces',
 			input = {
-				options = create_options {
+				options = create_options({
 					'x x x x x x',
 					'xx^ x xx^xx',
-				},
+				}),
 				keys = {
 					'KC_A',
 					'KC_B',
@@ -184,11 +184,11 @@ describe('keymaps', function()
 		{
 			msg = 'complex',
 			input = {
-				options = create_options {
+				options = create_options({
 					'x x x _ x x x',
 					'xx^ x _ xx^xx',
 					'x x x _ x x x',
-				},
+				}),
                 -- stylua: ignore
 				keys = {
 					'KC_A', 'KC_B', 'MT(MOD_LALT, KC_ENT)', 'KC_C', 'KC_5', 'KC_6',
@@ -209,10 +209,10 @@ describe('keymaps', function()
 		{
 			msg = 'simple double row with preview',
 			input = {
-				options = create_options_preview {
+				options = create_options_preview({
 					'x x',
 					'x^x',
-				},
+				}),
 				keys = { 'KC_A', 'KC_B', 'KC_C' },
 			},
 			output = {
@@ -229,10 +229,10 @@ describe('keymaps', function()
 		{
 			msg = 'spaced double row with preview',
 			input = {
-				options = create_options_preview {
+				options = create_options_preview({
 					'_ x x',
 					'_ x^x',
-				},
+				}),
 				keys = { 'KC_A', 'KC_B', 'KC_C' },
 			},
 			output = {
@@ -249,11 +249,11 @@ describe('keymaps', function()
 		{
 			msg = 'double overlap with rows',
 			input = {
-				options = create_options_preview {
+				options = create_options_preview({
 					'x xx^',
 					'x^x x',
 					'x x x',
-				},
+				}),
 				keys = {
 					'KC_A',
 					'KC_B',
@@ -281,10 +281,10 @@ describe('keymaps', function()
 		{
 			msg = 'wide test',
 			input = {
-				options = create_options_preview {
+				options = create_options_preview({
 					'x x x',
 					'xx^xx',
-				},
+				}),
 				keys = { 'AA', 'B', 'C', 'D' },
 			},
 			output = {
@@ -301,11 +301,11 @@ describe('keymaps', function()
 		{
 			msg = 'overlap test',
 			input = {
-				options = create_options_preview {
+				options = create_options_preview({
 					'x xx^',
 					'x^x x',
 					'xx^xx',
-				},
+				}),
 				keys = { 'AA', 'B', 'C', 'D', 'E' },
 			},
 			output = {
@@ -325,11 +325,11 @@ describe('keymaps', function()
 		{
 			msg = 'long keys with overlap',
 			input = {
-				options = create_options_preview {
+				options = create_options_preview({
 					'x xx^',
 					'x^x x',
 					'x x x',
-				},
+				}),
 				keys = {
 					'KC_A',
 					'KC_B',
@@ -357,14 +357,14 @@ describe('keymaps', function()
 		{
 			msg = 'mini kinesis',
 			input = {
-				options = create_options_preview {
+				options = create_options_preview({
 					'x x x x x x x x x x x x x x',
 					'x x x x _ _ _ _ _ _ x x x x',
 					'_ x x _ _ _ _ _ _ _ _ x x _',
 					'_ _ _ x^x _ _ _ _ x^x _ _ _',
 					'_ _ _ _ x _ _ _ _ x _ _ _ _',
 					'_ _ x x x _ _ _ _ x x x _ _',
-				},
+				}),
                 -- stylua: ignore
 				keys = {
 					'1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',

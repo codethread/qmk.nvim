@@ -1,28 +1,15 @@
 local M = {}
 
----crab along a keymap table (2d array), going from left to right, being passed each column to `fn`
----@generic Key : table
----@param keymap Key[][]
----@param fn fun(keys: Key[], column: number): nil
-function M.crab(keymap, fn)
-	local width = #keymap[1]
-	local height = #keymap
-
-	for col = 1, width do
-		local column = {}
-		for row = 1, height do
-			table.insert(column, keymap[row][col])
-		end
-		fn(column, col)
-	end
-end
-
 ---stop execution with an error message, without stack trace
 ---users don't care about stack traces, they just want to know what's wrong
-function M.die(msg) error(msg, 0) end
+function M.die(msg)
+	error(msg, 0)
+end
 
 function M.assert(cond, msg)
-	if not cond then M.die(msg) end
+	if not cond then
+		M.die(msg)
+	end
 end
 
 function M.safe_call(fn)
@@ -41,10 +28,8 @@ function M.cond(conditions)
 			return type(result) == 'function' and result() or result
 		end
 	end
-	error 'no condition matched'
+	error('no condition matched')
 end
-
-function M.t() return true end
 
 function M.shallow_copy(t)
 	local t2 = {}
@@ -52,6 +37,15 @@ function M.shallow_copy(t)
 		t2[k] = v
 	end
 	return t2
+end
+
+-- center a string within a span
+function M.center(span, text, space_symbol)
+	local remainder = span - #text
+	local half = math.floor(remainder / 2)
+	local centered = string.rep(space_symbol, half) .. text .. string.rep(space_symbol, half)
+	local padding = string.rep(space_symbol, span - string.len(centered))
+	return centered .. padding
 end
 
 return M
