@@ -84,7 +84,6 @@ end
 ---@field auto_format_pattern string # autocommand pattern to match against for auto formatting, e.g. '*keymap.c'
 ---@field keymap_qmk.LayoutPlang # path to the keymap file, must be absolute, used for rendering the layout as a popup
 ---@field layout qmk.Layout
----@field spacing number
 ---@field comment_preview qmk.Preview
 
 ---@class qmk.Preview

@@ -1,9 +1,10 @@
 local E = require('qmk.errors')
 local match = assert.combinators.match
 local match_string = require('matcher_combinators.matchers.string')
-local get_keymaps = require('qmk.parse.get_qmk_keymaps')
+local qmk_parser = require('qmk.parse.qmk')
+local parser = require('qmk.parse').parse
 
-describe('get_keymaps:', function()
+describe('parse qmk keymaps:', function()
 	---@type {msg: string, input: string, output: qmk.Keymaps}[]
 	local tests = {
 		{
@@ -154,7 +155,7 @@ describe('get_keymaps:', function()
 	}
 
 	for _, test in pairs(tests) do
-		local all_keymaps = get_keymaps(test.input, { name = 'LAYOUT' })
+		local all_keymaps = parser(test.input, { name = 'LAYOUT' }, qmk_parser)
 
 		it('for layout "' .. test.msg .. '" gets the correct pos', function()
 			match(test.output.pos, all_keymaps.pos)
@@ -176,7 +177,7 @@ describe('get_keymaps:', function()
 	end
 end)
 
-describe('get_keymaps abuse:', function()
+describe('parse qmk keymaps abuse:', function()
 	---@type { msg: string, err: string, input: string }[]
 	local tests = {
 		{
@@ -242,7 +243,7 @@ describe('get_keymaps abuse:', function()
 
 	for _, test in pairs(tests) do
 		it('should fail when ' .. test.msg, function()
-			local ok, err = pcall(get_keymaps, test.input, { name = 'LAYOUT' })
+			local ok, err = pcall(parser, test.input, { name = 'LAYOUT' }, qmk_parser)
 			assert(not ok, 'no error thrown')
 			match(match_string.equals(test.err), E._strip(err))
 		end)

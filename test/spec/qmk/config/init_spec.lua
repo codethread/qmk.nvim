@@ -32,8 +32,10 @@ describe('config', function()
 			},
 			{
 				msg = 'invalid param',
-				input = none_missing({ spacing = {} }),
-				err = E.parse_error_msg(E.parse_invalid('', 'spacing', 'number', 'table')),
+				input = none_missing({ auto_format_pattern = {} }),
+				err = E.parse_error_msg(
+					E.parse_invalid('', 'auto_format_pattern', 'string', 'table')
+				),
 			},
 			{
 				msg = 'invalid nested param',

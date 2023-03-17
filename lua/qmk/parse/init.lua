@@ -1,8 +1,57 @@
-local get_keymap = require('qmk.parse.get_qmk_keymaps')
+local E = require('qmk.errors')
+local parse_qmk = require('qmk.parse.qmk')
 
 local M = {}
 
----currenly only supports qmk keymaps, but in theory could support anything that parses to a qmk.Keymap
-M.parse = get_keymap
+---assert all keymaps don't overlap with the declaration itself
+---@param keymaps qmk.Keymaps
+---@throws string
+local function validate(keymaps)
+	local start, final = keymaps.pos.start, keymaps.pos.final
+
+	assert(#keymaps.keymaps > 0, E.keymaps_none)
+
+	-- iterate over all keymaps
+	for _, keymap in pairs(keymaps.keymaps) do
+		local keymap_start, keymap_final = keymap.pos.start, keymap.pos.final
+		assert(keymap_start > start, E.keymaps_overlap)
+		assert(keymap_final < final, E.keymaps_overlap)
+
+		assert(#keymap.keys > 0, E.keymap_empty(keymap.layer_name))
+	end
+end
+
+---parse a keymap file, such as keymap.c for qmk into a qmk.Keymaps struct
+---currenly only supports qmk keymaps, but in theory could support anything that parses to a qmk.Keymaps
+---@param content string
+---@param options qmk.Config
+---@param parser? fun(content: string, options: qmk.Config): qmk.Keymaps
+---@return qmk.Keymaps
+function M.parse(content, options, parser)
+	local board_parser = parser or parse_qmk
+	local keymaps = board_parser(content, options)
+	validate(keymaps)
+	return keymaps
+end
 
 return M
+
+--------------------------------------------------------------------------------
+-- TYPES
+--------------------------------------------------------------------------------
+
+---@class qmk.Keymaps
+---@field keymaps qmk.KeymapDict
+---@field pos qmk.Position
+
+---@alias qmk.KeymapDict { [string]: qmk.Keymap } # dictionary of keymaps
+
+---@class qmk.Keymap
+---@field layer_name string
+---@field layout_name string
+---@field keys string[]
+---@field pos qmk.Position
+
+---@class qmk.Position
+---@field start number
+---@field final number

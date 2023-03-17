@@ -1,24 +1,6 @@
-local ts = vim.treesitter
-local queries = require('qmk.parse.queries')
+local queries = require('qmk.parse.qmk.queries')
 local E = require('qmk.errors')
-
----assert all keymaps don't overlap with the declaration itself
----@param keymaps qmk.Keymaps
----@throws string
-local function validate(keymaps)
-	local start, final = keymaps.pos.start, keymaps.pos.final
-
-	assert(#keymaps.keymaps > 0, E.keymaps_none)
-
-	-- iterate over all keymaps
-	for _, keymap in pairs(keymaps.keymaps) do
-		local keymap_start, keymap_final = keymap.pos.start, keymap.pos.final
-		assert(keymap_start > start, E.keymaps_overlap)
-		assert(keymap_final < final, E.keymaps_overlap)
-
-		assert(#keymap.keys > 0, E.keymap_empty(keymap.layer_name))
-	end
-end
+local ts = vim.treesitter
 
 ---@return qmk.Position
 local function get_keymaps_position(root)
@@ -47,6 +29,7 @@ end
 local function get_keymaps(name, root, content)
 	---@type qmk.KeymapDict
 	local keymaps = {}
+
 	---@type qmk.Keymap
 	local current_keymap = {
 		layout_name = name,
@@ -94,35 +77,10 @@ local function get_keymap(content, options)
 	local parser = ts.get_string_parser(content, 'c', {})
 	local root = parser:parse()[1]:root()
 
-	---@type qmk.Keymaps
-	local info = {
+	return {
 		pos = get_keymaps_position(root),
 		keymaps = get_keymaps(options.name, root, content),
 	}
-
-	validate(info)
-
-	return info
 end
 
 return get_keymap
-
---------------------------------------------------------------------------------
--- TYPES
---------------------------------------------------------------------------------
-
----@class qmk.Keymaps
----@field keymaps qmk.KeymapDict
----@field pos qmk.Position
-
----@alias qmk.KeymapDict { [string]: qmk.Keymap } # dictionary of keymaps
-
----@class qmk.Keymap
----@field layer_name string
----@field layout_name string
----@field keys string[]
----@field pos qmk.Position
-
----@class qmk.Position
----@field start number
----@field final number

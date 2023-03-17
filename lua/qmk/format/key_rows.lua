@@ -12,6 +12,7 @@ local function align(span, key)
 	local nom = tonumber(ratio[1])
 	local denom = tonumber(ratio[2])
 
+	--TODO: handle other alignments like 2/5
 	if nom == 1 then
 		-- left align
 		return key.key .. string.rep(space, span - #key.key)
