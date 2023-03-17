@@ -26,8 +26,7 @@ local E = {
 	layout_double_whitespace = 'QMK: [E12] layout contains two or more adjacent spaces, use a break "_" or span "x^" to create spaces',
 
 	parse_unknown = function(prefix, option)
-		return 'QMK: [E13] '
-			.. string.format('unknown option: %s%s', prefix, option)
+		return 'QMK: [E13] ' .. string.format('unknown option: %s%s', prefix, option)
 	end,
 	parse_invalid = function(prefix, option, expected, got)
 		return 'QMK: [E14] '
@@ -40,12 +39,13 @@ local E = {
 			)
 	end,
 	parse_error_msg = function(msg)
-		return msg
-			.. ' | see :help qmk-setup for available configuration options'
+		return msg .. ' | see :help qmk-setup for available configuration options'
 	end,
 
 	dev_error = 'QMK: [E00] This is a dev error, please report this on the repo with your config',
-	_strip = function(err) return string.gsub(err, '.*QMK:', 'QMK:', 2) end,
+	_strip = function(err)
+		return string.gsub(err, '.*QMK:', 'QMK:', 2)
+	end,
 }
 
 return E

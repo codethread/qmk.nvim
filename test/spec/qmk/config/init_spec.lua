@@ -1,14 +1,10 @@
-local E = require 'qmk.errors'
+local E = require('qmk.errors')
 local match = assert.combinators.match
-local match_string = require 'matcher_combinators.matchers.string'
-local config = require 'qmk.config'
+local match_string = require('matcher_combinators.matchers.string')
+local config = require('qmk.config')
 
 local function none_missing(conf)
-	return vim.tbl_deep_extend(
-		'force',
-		{ name = 'test', layout = { 'x' } },
-		conf
-	)
+	return vim.tbl_deep_extend('force', { name = 'test', layout = { 'x' } }, conf)
 end
 
 describe('config', function()
@@ -31,69 +27,64 @@ describe('config', function()
 			},
 			{
 				msg = 'invalid key',
-				input = none_missing { foo = {} },
+				input = none_missing({ foo = {} }),
 				err = E.parse_error_msg(E.parse_unknown('', 'foo')),
 			},
 			{
 				msg = 'invalid param',
-				input = none_missing { spacing = {} },
+				input = none_missing({ auto_format_pattern = {} }),
 				err = E.parse_error_msg(
-					E.parse_invalid('', 'spacing', 'number', 'table')
+					E.parse_invalid('', 'auto_format_pattern', 'string', 'table')
 				),
 			},
 			{
 				msg = 'invalid nested param',
-				input = none_missing {
+				input = none_missing({
 					comment_preview = { keymap_overrides = 0 },
-				},
+				}),
 				err = E.parse_error_msg(
-					E.parse_invalid(
-						'comment_preview.',
-						'keymap_overrides',
-						'table',
-						'number'
-					)
+					E.parse_invalid('comment_preview.', 'keymap_overrides', 'table', 'number')
 				),
 			},
 			{
 				msg = 'invalid complex param',
-				input = none_missing { comment_preview = { position = 'foo' } },
+				input = none_missing({ comment_preview = { position = 'foo' } }),
 				err = 'QMK: [E14] invalid option: "comment_preview.position", expected: one of top, bottom, inside, none,'
 					.. ' got: foo | see :help qmk-setup for available configuration options',
 			},
 			{
 				msg = 'invalid layout empty',
-				input = none_missing { layout = {} },
+				input = none_missing({ layout = {} }),
 				err = E.layout_empty,
 			},
 			{
 				msg = 'invalid layout empty row',
-				input = none_missing { layout = { '' } },
+				input = none_missing({ layout = { '' } }),
 				err = E.layout_row_empty,
 			},
 			{
 				msg = 'invalid layout trailing space',
-				input = none_missing { layout = { ' x' } },
+				input = none_missing({ layout = { ' x' } }),
 				err = E.layout_trailing_whitespace,
 			},
 			{
 				msg = 'invalid layout leading space',
-				input = none_missing { layout = { 'x ' } },
+				input = none_missing({ layout = { 'x ' } }),
 				err = E.layout_trailing_whitespace,
 			},
 			{
 				msg = 'invalid layout invalid double space',
-				input = none_missing { layout = { 'x x', 'x  x' } },
+				input = none_missing({ layout = { 'x x', 'x  x' } }),
 				err = E.layout_double_whitespace,
 			},
 			{
 				msg = 'invalid layout symbol',
-				input = none_missing { layout = { 'x x y' } },
+				input = none_missing({ layout = { 'x x y' } }),
 				err = E.config_invalid_symbol,
 			},
 			{
 				msg = 'invalid layout span',
-				input = none_missing { layout = { 'x xxx' } },
+				input = none_missing({ layout = { 'x xxx' } }),
 				err = E.config_invalid_span,
 			},
 		}

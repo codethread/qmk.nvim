@@ -1,6 +1,6 @@
 ---@diagnostic disable: invisible
-local utils = require 'qmk.utils'
-local E = require 'qmk.errors'
+local utils = require('qmk.utils')
+local E = require('qmk.errors')
 
 ---comment
 ---@param key qmk.LayoutGridCell
@@ -11,7 +11,9 @@ local function is_final_key(key, row, i)
 	local keys = vim.list_slice(row, i + 1)
 
 	for _, next_key in pairs(keys) do
-		if next_key.type == 'key' then return false end
+		if next_key.type == 'key' then
+			return false
+		end
 		if next_key.type == 'span' and next_key.key_index ~= key.key_index then
 			return false
 		end
@@ -20,12 +22,9 @@ local function is_final_key(key, row, i)
 end
 
 local function is_all_padding(ls)
-	local padding = vim.tbl_filter(
-		function(key)
-			return key and (key.type == 'padding' or key.type == 'gap')
-		end,
-		ls
-	)
+	local padding = vim.tbl_filter(function(key)
+		return key and (key.type == 'padding' or key.type == 'gap')
+	end, ls)
 	return #padding == #ls
 end
 
@@ -49,7 +48,9 @@ local function larget_per_column(grid)
 		for row = 1, height do
 			local key = grid[row][col]
 			if key.type == 'key' then
-				if #key.key > longest_key then longest_key = #key.key end
+				if #key.key > longest_key then
+					longest_key = #key.key
+				end
 			end
 		end
 		column_sizes[col] = longest_key
@@ -126,7 +127,9 @@ function LayoutGrid:new(layout, keys)
 	return setmetatable(me, self)
 end
 
-function LayoutGrid:cells() return self.grid end
+function LayoutGrid:cells()
+	return self.grid
+end
 
 ---@class qmk.LayoutGridContext
 ---@field col number
@@ -155,9 +158,7 @@ function LayoutGrid:for_each(fn)
 			local is_first = col_i == 1
 
 			local cell_right = not is_last and row[col_i + 1]
-			local cell_down = not is_bottom
-				and self.grid[row_i + 1]
-				and self.grid[row_i + 1][col_i]
+			local cell_down = not is_bottom and self.grid[row_i + 1] and self.grid[row_i + 1][col_i]
 			local cell_down_right = not is_bottom
 				and not is_last
 				and self.grid[row_i + 1]
@@ -167,14 +168,13 @@ function LayoutGrid:for_each(fn)
 			local ctx = {
 				col = col_i,
 				row = row_i,
-				is_empty = is_all_padding {
+				is_empty = is_all_padding({
 					key,
 					cell_right,
 					cell_down,
 					cell_down_right,
-				},
-				is_bridge_vert = cell_right
-					and key_index == cell_right.key_index,
+				}),
+				is_bridge_vert = cell_right and key_index == cell_right.key_index,
 				is_bridge_down = cell_down and key_index == cell_down.key_index,
 				is_last = is_last,
 				is_bottom = is_bottom,
@@ -186,8 +186,7 @@ function LayoutGrid:for_each(fn)
 				is_sibling_bridge_vert = cell_down
 					and cell_down_right
 					and cell_down.key_index == cell_down_right.key_index,
-				is_final_key = not found_final_key
-					and (is_last or is_final_key(key, row, col_i)),
+				is_final_key = not found_final_key and (is_last or is_final_key(key, row, col_i)),
 			}
 
 			fn(key, ctx)

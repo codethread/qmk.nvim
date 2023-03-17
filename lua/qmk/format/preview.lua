@@ -1,6 +1,6 @@
 local E = 'qmk.errors'
-local utils = require 'qmk.utils'
-local helpers = require 'qmk.format.helper'
+local Seen = require('qmk.data.Seen')
+local utils = require('qmk.utils')
 
 local space = ' '
 
@@ -10,22 +10,24 @@ end
 
 ---@param span number
 ---@param key qmk.LayoutGridCell
----@param seen_key_index qmk.Seen
+---@param seen_keys qmk.Seen
 ---@param right_border string
-local function print_key(span, key, seen_key_index, right_border)
+local function print_key(span, key, seen_keys, right_border)
 	if key.type == 'key' then
-		local centered = helpers.center(key.span, key.key, space)
+		local centered = utils.center(key.span, key.key, space)
 		local text = space .. centered .. space .. right_border
 		return text
 	end
 
-	if key.type == 'gap' then return print_space(span, right_border) end
+	if key.type == 'gap' then
+		return print_space(span, right_border)
+	end
 
 	if key.type == 'span' then
 		-- we keep track of how many times we've seen this key
 		-- and print it the final time, now that we know the full span it will consume
-		local seen = seen_key_index[key.key_index]
-		if seen.is_last then
+		local seen = seen_keys:get(key.key_index)
+		if seen and seen.is_last then
 			-- normally every cell is padded by one whitespace and a single right border
 			-- so we need to account for that
 			local seen_padding = seen.count * 3
@@ -33,7 +35,7 @@ local function print_key(span, key, seen_key_index, right_border)
 			-- to add our own right border
 			local full_span = seen.span + seen_padding - 1
 
-			local centered = helpers.center(full_span, key.key, space)
+			local centered = utils.center(full_span, key.key, space)
 			local text = centered .. right_border
 			return text
 		else
@@ -41,7 +43,9 @@ local function print_key(span, key, seen_key_index, right_border)
 		end
 	end
 
-	if key.type == 'padding' then return print_space(span, right_border) end
+	if key.type == 'padding' then
+		return print_space(span, right_border)
+	end
 end
 
 local function print_border(span, key, right_border)
@@ -69,11 +73,11 @@ local function generate(layout, user_symbols)
 		comment_rows[index * 2] = { '// ' }
 	end
 
-	local seen_key_index = helpers.create_seen_key_index()
+	local seen_keys = Seen:new()
 
 	layout:for_each(function(cell, ctx)
 		if cell.type == 'span' then
-			helpers.increment_seen_span(cell, ctx, seen_key_index)
+			seen_keys:increment(cell, ctx)
 		end
 
 		---update the comment rows with each new cell
@@ -85,7 +89,7 @@ local function generate(layout, user_symbols)
 
 		local span = cell.span or 1
 
-		utils.cond {
+		utils.cond({
 			-- ignore these are they are just padding
 			{ ctx.is_bottom, 'do nothing' },
 			{ ctx.is_last, 'do nothing' },
@@ -93,10 +97,10 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_empty,
 				function()
-					update {
+					update({
 						print_space(span, symbols.space),
 						print_space(span, symbols.space),
-					}
+					})
 				end,
 			},
 
@@ -107,40 +111,40 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_bridge_vert and ctx.is_bridge_down,
 				function()
-					update {
-						print_key(span, cell, seen_key_index, symbols.space),
+					update({
+						print_key(span, cell, seen_keys, symbols.space),
 						print_space(span, symbols.tl),
-					}
+					})
 				end,
 			},
 			-- ─┐
 			{
 				ctx.is_bridge_vert and ctx.is_sibling_bridge_down,
 				function()
-					update {
-						print_key(span, cell, seen_key_index, symbols.space),
+					update({
+						print_key(span, cell, seen_keys, symbols.space),
 						print_border(span, symbols.horz, symbols.tr),
-					}
+					})
 				end,
 			},
 			-- ─┘
 			{
 				ctx.is_sibling_bridge_vert and ctx.is_sibling_bridge_down,
 				function()
-					update {
-						print_key(span, cell, seen_key_index, symbols.vert),
+					update({
+						print_key(span, cell, seen_keys, symbols.vert),
 						print_border(span, symbols.horz, symbols.br),
-					}
+					})
 				end,
 			},
 			-- └─
 			{
 				ctx.is_bridge_down and ctx.is_sibling_bridge_vert,
 				function()
-					update {
-						print_key(span, cell, seen_key_index, symbols.vert),
+					update({
+						print_key(span, cell, seen_keys, symbols.vert),
 						print_space(span, symbols.bl),
-					}
+					})
 				end,
 			},
 
@@ -152,10 +156,10 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_bridge_vert and ctx.is_sibling_bridge_vert,
 				function()
-					update {
-						print_key(span, cell, seen_key_index, symbols.space),
+					update({
+						print_key(span, cell, seen_keys, symbols.space),
 						print_border(span, symbols.horz, symbols.horz),
-					}
+					})
 				end,
 			},
 			-- ──
@@ -163,10 +167,10 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_bridge_vert,
 				function()
-					update {
-						print_key(span, cell, seen_key_index, symbols.space),
+					update({
+						print_key(span, cell, seen_keys, symbols.space),
 						print_border(span, symbols.horz, symbols.tm),
-					}
+					})
 				end,
 			},
 			-- │ │
@@ -174,10 +178,10 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_bridge_down and ctx.is_sibling_bridge_down,
 				function()
-					update {
-						print_key(span, cell, seen_key_index, symbols.vert),
+					update({
+						print_key(span, cell, seen_keys, symbols.vert),
 						print_space(span, symbols.vert),
-					}
+					})
 				end,
 			},
 			-- │ |
@@ -185,10 +189,10 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_bridge_down,
 				function()
-					update {
-						print_key(span, cell, seen_key_index, symbols.vert),
+					update({
+						print_key(span, cell, seen_keys, symbols.vert),
 						print_space(span, symbols.ml),
-					}
+					})
 				end,
 			},
 
@@ -199,20 +203,20 @@ local function generate(layout, user_symbols)
 			{
 				ctx.is_sibling_bridge_vert,
 				function()
-					update {
-						print_key(span, cell, seen_key_index, symbols.vert),
+					update({
+						print_key(span, cell, seen_keys, symbols.vert),
 						print_border(span, symbols.horz, symbols.bm),
-					}
+					})
 				end,
 			},
 			-- |
 			{
 				ctx.is_sibling_bridge_down,
 				function()
-					update {
-						print_key(span, cell, seen_key_index, symbols.vert),
+					update({
+						print_key(span, cell, seen_keys, symbols.vert),
 						print_border(span, symbols.horz, symbols.mr),
-					}
+					})
 				end,
 			},
 
@@ -226,10 +230,10 @@ local function generate(layout, user_symbols)
 						or ctx.is_bridge_down
 					),
 				function()
-					update {
-						print_key(span, cell, seen_key_index, symbols.vert),
+					update({
+						print_key(span, cell, seen_keys, symbols.vert),
 						print_border(span, symbols.horz, symbols.mm),
-					}
+					})
 				end,
 			},
 
@@ -240,13 +244,13 @@ local function generate(layout, user_symbols)
 				true,
 				function()
 					vim.notify(E.dev_error)
-					update {
+					update({
 						print_space(span, symbols.vert),
 						print_space(span, symbols.vert),
-					}
+					})
 				end,
 			},
-		}
+		})
 	end)
 
 	local final = {}

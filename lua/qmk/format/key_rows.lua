@@ -1,4 +1,5 @@
-local helper = require 'qmk.format.helper'
+local utils = require('qmk.utils')
+local Seen = require('qmk.data.Seen')
 local space = ' '
 
 ---@param span number
@@ -11,6 +12,7 @@ local function align(span, key)
 	local nom = tonumber(ratio[1])
 	local denom = tonumber(ratio[2])
 
+	--TODO: handle other alignments like 2/5
 	if nom == 1 then
 		-- left align
 		return key.key .. string.rep(space, span - #key.key)
@@ -19,7 +21,7 @@ local function align(span, key)
 		return string.rep(space, span - #key.key) .. key.key
 	else
 		-- center align
-		return helper.center(span, key.key, space)
+		return utils.center(span, key.key, space)
 	end
 end
 
@@ -33,16 +35,22 @@ local function print_rows(layout)
 	-- later on (omitting the final row)
 	local end_pad = ''
 
-	local seen_key_index = helper.create_seen_key_index()
+	local seen_keys = Seen:new()
 
 	layout:for_each(function(key, ctx)
 		local row = ctx.row
 
-		if ctx.is_top or ctx.is_bottom then return end
+		if ctx.is_top or ctx.is_bottom then
+			return
+		end
 
-		if ctx.is_first then output[row] = { '  ' } end
+		if ctx.is_first then
+			output[row] = { '  ' }
+		end
 
-		local function add(str) table.insert(output[row], str) end
+		local function add(str)
+			table.insert(output[row], str)
+		end
 		local is_last = ctx.is_final_key
 
 		if key.type == 'key' then
@@ -56,9 +64,9 @@ local function print_rows(layout)
 		end
 
 		if key.type == 'span' then
-			helper.increment_seen_span(key, ctx, seen_key_index)
-			local seen = seen_key_index[key.key_index]
-			if seen.is_last then
+			seen_keys:increment(key, ctx)
+			local seen = seen_keys:get(key.key_index)
+			if seen and seen.is_last then
 				-- normally every cell is padded by our 'comma' string
 				-- so we need to account for that
 				local seen_padding = (seen.count - 1) * #comma

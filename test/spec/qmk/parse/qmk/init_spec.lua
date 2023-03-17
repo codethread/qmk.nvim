@@ -1,9 +1,10 @@
-local E = require 'qmk.errors'
+local E = require('qmk.errors')
 local match = assert.combinators.match
-local match_string = require 'matcher_combinators.matchers.string'
-local get_keymaps = require 'qmk.parse.get_qmk_keymaps'
+local match_string = require('matcher_combinators.matchers.string')
+local qmk_parser = require('qmk.parse.qmk')
+local parser = require('qmk.parse').parse
 
-describe('get_keymaps:', function()
+describe('parse qmk keymaps:', function()
 	---@type {msg: string, input: string, output: qmk.Keymaps}[]
 	local tests = {
 		{
@@ -154,12 +155,11 @@ describe('get_keymaps:', function()
 	}
 
 	for _, test in pairs(tests) do
-		local all_keymaps = get_keymaps(test.input, { name = 'LAYOUT' })
+		local all_keymaps = parser(test.input, { name = 'LAYOUT' }, qmk_parser)
 
-		it(
-			'for layout "' .. test.msg .. '" gets the correct pos',
-			function() match(test.output.pos, all_keymaps.pos) end
-		)
+		it('for layout "' .. test.msg .. '" gets the correct pos', function()
+			match(test.output.pos, all_keymaps.pos)
+		end)
 
 		for i, keymap in pairs(all_keymaps.keymaps) do
 			local expected = test.output.keymaps[i]
@@ -169,13 +169,15 @@ describe('get_keymaps:', function()
 					.. '" layer "'
 					.. (expected.layer_name or 'NOT_FOUND')
 					.. '"',
-				function() match(expected, keymap) end
+				function()
+					match(expected, keymap)
+				end
 			)
 		end
 	end
 end)
 
-describe('get_keymaps abuse:', function()
+describe('parse qmk keymaps abuse:', function()
 	---@type { msg: string, err: string, input: string }[]
 	local tests = {
 		{
@@ -200,7 +202,7 @@ describe('get_keymaps abuse:', function()
 		},
 		{
 			msg = 'empty keymap',
-			err = E.keymap_empty '_FOO',
+			err = E.keymap_empty('_FOO'),
 			input = [[
               const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =  {
               [_FOO] = LAYOUT()
@@ -208,7 +210,7 @@ describe('get_keymaps abuse:', function()
 		},
 		{
 			msg = 'empty keymap amoungst valid ones',
-			err = E.keymap_empty '_FOO',
+			err = E.keymap_empty('_FOO'),
 			input = [[
               const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =  {
               [_OO] = LAYOUT(A),
@@ -241,7 +243,7 @@ describe('get_keymaps abuse:', function()
 
 	for _, test in pairs(tests) do
 		it('should fail when ' .. test.msg, function()
-			local ok, err = pcall(get_keymaps, test.input, { name = 'LAYOUT' })
+			local ok, err = pcall(parser, test.input, { name = 'LAYOUT' }, qmk_parser)
 			assert(not ok, 'no error thrown')
 			match(match_string.equals(test.err), E._strip(err))
 		end)

@@ -1,11 +1,10 @@
-local utils = require 'qmk.utils'
-local E = require 'qmk.errors'
+local utils = require('qmk.utils')
+local E = require('qmk.errors')
 local dic_validator = {
 	position = function(position)
 		local valid = { 'top', 'bottom', 'inside', 'none' }
 		-- check if position is a valid value
-		return vim.tbl_contains(valid, position),
-			'one of ' .. table.concat(valid, ', ')
+		return vim.tbl_contains(valid, position), 'one of ' .. table.concat(valid, ', ')
 	end,
 }
 local FIELD_OVERRIDE_TYPECHECK = {}
@@ -39,9 +38,7 @@ local function validate_options(user_config, default_config)
 				if def[k] == nil then
 					-- option does not exist
 					invalid = E.parse_unknown(prefix, k)
-				elseif
-					type(v) ~= type(def[k]) and not override_typecheck[type(v)]
-				then
+				elseif type(v) ~= type(def[k]) and not override_typecheck[type(v)] then
 					-- option is of the wrong type and is not a function
 					invalid = E.parse_invalid(prefix, k, type(def[k]), type(v))
 				end
@@ -62,7 +59,9 @@ local function validate_options(user_config, default_config)
 
 	validate(user_config, default_config, '')
 
-	if msg then utils.die(E.parse_error_msg(msg)) end
+	if msg then
+		utils.die(E.parse_error_msg(msg))
+	end
 end
 
 return validate_options
