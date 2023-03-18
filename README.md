@@ -2,7 +2,7 @@
 
 **qmk.nvim** is a 100% lua plugin for Neovim that formats [QMK](https://docs.qmk.fm/#/newbs) keymaps, used in a large number of mechanical and hobbyist keyboards.
 
-![image]()
+![qmk](https://user-images.githubusercontent.com/10004500/226140459-6a37f7c9-1154-4a7c-899a-5fa6943e6002.gif)
 
 ## Features
 
@@ -45,7 +45,7 @@ qmk.nvim takes the following configuration, and unless marked as required, the d
 
 | setting                            | type / default                                                              | descritpion                                                                                                                                                                                                             |
 | ---------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                             | `string` **required**                                                       | the name of your layout, for example `LAYOUT_preonic_grid` for the (preonic keyboard)[https://github.com/qmk/qmk_firmware/blob/c5b0e3a6a3c5a86273b933c04f5cfdef9a541c9d/keyboards/preonic/keymaps/default/keymap.c#L53] |
+| `name`                             | `string` **required**                                                       | the name of your layout, for example `LAYOUT_preonic_grid` for the [preonic keyboard](https://github.com/qmk/qmk_firmware/blob/c5b0e3a6a3c5a86273b933c04f5cfdef9a541c9d/keyboards/preonic/keymaps/default/keymap.c#L53) |
 | `layout`                           | `string[]` **required**                                                     | the keyboard key layout, see [Layout](#Layout) for more details                                                                                                                                                         |
 | `auto_format_pattern`              | `string` / *`*keymap.c`\*                                                   | the autocommand file pattern to use when applying [`QMKFormat`](#Commands) on save                                                                                                                                      |
 | `comment_preview`                  | `table`                                                                     | whether to create a pretty comment preview of your layout, defaults to `position.top`, set to `nil` to disable                                                                                                          |
@@ -300,7 +300,7 @@ The default settings will create an autocommand that formats your buffer on save
 Getting your layout right may be a slightly iterative process, so I recomend the following:
 
 - open a scratch buffer next to your `keymap.c` file
-- get teh buffer id of your `keymap.c` file with `:lua print(vim.api.nvim_get_current_buf())`
+- get the buffer id of your `keymap.c` file with `:lua print(vim.api.nvim_get_current_buf())`
 - in your scratch buffer, call `qmk.setup { .. your config }` and `qmk.format(<buf id>)`
 - from within your scratch buffer evaluate with `luafile %`
 
