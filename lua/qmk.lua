@@ -54,4 +54,5 @@ function qmk.format(buf)
 end
 
 qmk.options = nil
+
 return qmk
