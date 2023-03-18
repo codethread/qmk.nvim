@@ -38,7 +38,6 @@ jobs:
 
     - name: Setup Vendors
       run: |
-        ls -a
         mkdir -p ~/.local/share/nvim/site/pack/vendor/start
         git clone --depth 1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/vendor/start/plenary.nvim
         git clone --depth 1 https://github.com/m00qek/matcher_combinators.lua ~/.local/share/nvim/site/pack/vendor/start/matcher_combinators.lua
