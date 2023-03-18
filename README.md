@@ -323,35 +323,20 @@ qmk.setup({
 qmk.format(43) -- the result of calling :lua print(vim.api.nvim_get_current_buf()) in my keymap.c file
 ```
 
+Also if your key codes are quite long, you can define aliases in `c`
+
+```c
+//Aliases for longer keycodes
+#define NUMPAD  TG(_NUMPAD)
+```
+
 ### Errors:
 
 I have tried to create useful errors when something is wrong with the config, layout or your current keymap, but please raise an issue if something isn't clear (or you get an `QMK: E00`, as that's defiantely on me).
 
 ## Credit, Thanks, Alternatives(?)
 
-automatically format your kemap.c qmk files
-
-WIP, works just need to add docs
-
-for example my config:
-
-```lua
-local qmk = require('qmk')
-qmk.setup {
-    name = 'LAYOUT_preonic_grid',
-    layout = {
-        '_ x x x x x x _ _ x x x x x x',
-        '_ x x x x x x _ _ x x x x x x',
-        '_ x x x x x x _ _ x x x x x x',
-        '_ x x x x x x _ _ x x x x x x',
-        '_ x x x x x x _ _ x x x x x x',
-    }
-}
-```
-
-if keys are too long
-
-```c
-//Aliases for longer keycodes
-#define NUMPAD  TG(_NUMPAD)
-```
+- [go-qmk-keymap](https://github.com/jurgen-kluft/go-qmk-keymap): this looks cool but still alpha.
+- [2hwk/Q2K](https://github.com/2hwk/Q2K): same idea, in python, didn't work for me for some reason, but I stole the [keycode map](https://github.com/2hwk/Q2K/blob/master/q2k/reference.py), thanks!
+- [this excellent nvim intro](https://www.youtube.com/watch?v=9gUatBHuXE0&t=0s) by TJ DeVries on how to use a powerful set of neovim's builtin features (which inspired and taught me how to make this).
+- [nvim-tree](https://github.com/nvim-tree/nvim-tree.lua): I stole your approach for validating user config, nice idea!
