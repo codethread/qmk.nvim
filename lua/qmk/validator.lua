@@ -1,5 +1,8 @@
 local utils = require('qmk.utils')
 local E = require('qmk.errors')
+
+-- TODO decouple from config and DI all the goodness
+
 local dic_validator = {
 	position = function(position)
 		local valid = { 'top', 'bottom', 'inside', 'none' }

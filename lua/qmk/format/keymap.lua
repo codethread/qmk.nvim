@@ -22,21 +22,23 @@ end
 local function format_keymap(options, keymap)
 	local keys = keymap.keys
 	local key_layout = LayoutGrid:new(options.layout, keys)
+	local comment_preview = options.comment_preview
 
 	local preview_layout = LayoutGrid:new(
 		options.layout,
-		vim.tbl_map(get_key_text(options.comment_preview.keymap_overrides), keys)
+		vim.tbl_map(get_key_text(comment_preview.keymap_overrides), keys)
 	)
-	local comment = options.comment_preview.position == 'none' and {}
-		or generate(preview_layout, options.comment_preview.symbols)
+	local comment = comment_preview.position ~= 'none'
+			and generate(preview_layout, comment_preview.symbols)
+		or {}
 	local preview = vim.tbl_map(table.concat, comment) or {}
 
 	return vim.tbl_flatten({
-		options.comment_preview.position == 'top' and preview,
+		comment_preview.position == 'top' and preview,
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
-		options.comment_preview.position == 'inside' and preview,
+		comment_preview.position == 'inside' and preview,
 		print_rows(key_layout),
-		options.comment_preview.position == 'bottom' and preview,
+		comment_preview.position == 'bottom' and preview,
 	})
 end
 

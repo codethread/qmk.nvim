@@ -1,16 +1,7 @@
 require('matcher_combinators.luassert')
 local match = assert.combinators.match
 local format_keymaps = require('qmk.format.keymaps')
-local config = require('qmk.config')
-
----@param layout qmk.UserLayout
----@return qmk.Config
-local function create_options(layout)
-	return config.parse({
-		name = 'test',
-		layout = layout,
-	})
-end
+local testy = require('qmk._test_utils')
 
 describe('format_keymaps', function()
 	---@type { msg: string, input: { keymaps: qmk.Keymaps, options: qmk.Config }, output: string[] }[]
@@ -53,7 +44,7 @@ describe('format_keymaps', function()
 						},
 					},
 				},
-				options = create_options({
+				options = testy.create_options({
 					'x x x x',
 					'x x x x',
 				}),

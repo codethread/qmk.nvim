@@ -1,30 +1,5 @@
+local testy = require('qmk._test_utils')
 require('matcher_combinators.luassert')
-local Path = require('plenary.path')
-
----comment
----@param input string
----@param final string
----@return table
-local function snapshot(input, final)
-	local content = Path:new('test', 'fixtures', input):read()
-	local out = Path:new('test', 'fixtures', final):read()
-	local buff = vim.api.nvim_create_buf(true, false)
-	vim.api.nvim_buf_set_lines(buff, 0, -1, false, vim.split(content, '\n', {}))
-
-	return {
-		-- expected text as list of lines
-		expected = vim.split(out, '\n', {}),
-		-- buffer handle
-		buff = buff,
-		-- function to get buffer content as list of lines
-		buff_content = function()
-			local buff_content = vim.api.nvim_buf_get_lines(buff, 0, -1, false)
-			local actual = input:gsub('%.c$', '_actual.c')
-			Path:new('test', 'fixtures', actual):write(table.concat(buff_content, '\n'), 'w')
-			return buff_content
-		end,
-	}
-end
 
 describe('qmk', function()
 	describe('api', function()
@@ -51,7 +26,7 @@ describe('qmk', function()
 
 	describe('format', function()
 		it('formats the buffer', function()
-			local T = snapshot('simple.c', 'simple_out.c')
+			local T = testy.snapshot('simple.c')
 
 			local qmk = require('qmk')
 			qmk.setup({
@@ -70,7 +45,7 @@ describe('qmk', function()
 		end)
 
 		it('formats the buffer with multiple keymaps', function()
-			local T = snapshot('multiple.c', 'multiple_out.c')
+			local T = testy.snapshot('multiple.c')
 
 			local qmk = require('qmk')
 			qmk.setup({
@@ -92,7 +67,7 @@ describe('qmk', function()
 		end)
 
 		it('formats overlapping keymaps onto seperate lines', function()
-			local T = snapshot('overlap.c', 'overlap_out.c')
+			local T = testy.snapshot('overlap.c')
 
 			local qmk = require('qmk')
 			qmk.setup({
@@ -105,7 +80,7 @@ describe('qmk', function()
 		end)
 
 		it('formats a complex design', function()
-			local T = snapshot('kinesis.c', 'kinesis_out.c')
+			local T = testy.snapshot('kinesis.c')
 
 			local qmk = require('qmk')
 			qmk.setup({

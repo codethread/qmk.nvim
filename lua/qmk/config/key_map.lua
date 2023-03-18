@@ -1,7 +1,11 @@
+local E = require('qmk.errors')
+
 local empty = '   '
 
+local M = {}
+
 --borrowed lovingly from reference https://github.com/2hwk/Q2K/blob/master/q2k/reference.py
-return {
+M.key_map = {
 	KC_NO = 'no', ---giorgio,2018
 	KC_TRNS = empty,
 	KC_TRANKC_TRNS = empty, --"trans",
@@ -393,3 +397,25 @@ return {
 	KC_HYPR = 'csag-none', -- Hyper
 	KC_MEH = 'csa-none', -- Ctrl+Shift+Alt
 }
+
+---sort so that the longest key is at the top, meaning when we match up keys
+---to the keymap, we'll get the most specific first, e.g
+---KC_LEFT_CURLY_BRACE before KC_LEFT
+---@param key_map table<string, string>
+---@return qmk.KeymapList
+function M.sort(key_map)
+	---@type qmk.KeymapList
+	local map = {}
+	for key, value in pairs(key_map) do
+		if type(key) ~= 'string' or type(value) ~= 'string' then
+			error(E.config_keymap_invalid_pair(key, value))
+		end
+		table.insert(map, { key = key, value = value })
+	end
+	table.sort(map, function(a, b)
+		return #a.key > #b.key
+	end)
+	return map
+end
+
+return M
