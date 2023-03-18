@@ -9,8 +9,12 @@ local function get_key_text(keymap)
 	return function(key)
 		local str = key
 		for _, k in ipairs(keymap) do
-			-- replace the key with the override
-			str = string.gsub(str, k.key, k.value)
+			-- check if the key is a substring of the current key
+			if string.find(str, k.key) then
+				print(k.key)
+				-- replace the key with the override
+				str = string.gsub(str, k.key, k.value)
+			end
 		end
 		return str
 	end
