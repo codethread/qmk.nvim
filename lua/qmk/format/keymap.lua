@@ -11,7 +11,6 @@ local function get_key_text(keymap)
 		for _, k in ipairs(keymap) do
 			-- check if the key is a substring of the current key
 			if string.find(str, k.key) then
-				print(k.key)
 				-- replace the key with the override
 				str = string.gsub(str, k.key, k.value)
 			end
