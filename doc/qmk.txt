@@ -27,6 +27,57 @@ FEATURES                                               *qmk-qmk.nvim-features*
 - automatically align your keymaps
 - create a comment string of your keymap
 
+For a simple example of the following keymap
+
+>c
+    const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+      [_QWERTY] = LAYOUT_preonic_grid(
+      KC_1 ,      K2,
+          K3 , K4,     // notice the white space
+        KC_5  , HERE_BE_A_LONG_KEY // and how this doesn't line up at all
+      )
+    };
+<
+
+Setup your |qmk-layout|:
+
+>lua
+    local qmk = require 'qmk'
+    qmk.setup {
+        name = 'LAYOUT_preonic_grid', -- identify your layout name
+        comment_preview = {
+            keymap_overrides = {
+                HERE_BE_A_LONG_KEY = 'Magic', -- replace any long key codes
+            },
+        },
+        layout = { -- create a visual representation of your final layout
+            'x ^xx', -- including keys that span multple rows (with alignment left, center or right)
+            '_ x x', -- pad empty cells
+            '_ x x',
+        },
+    }
+<
+
+Save the file and it will automaticlly be nicely aligned, with a pretty comment
+string
+
+>c
+    const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    //    ┌───┬────────────┐
+    //    │ 1 │     K2     │
+    //    └───┼────┬───────┤
+    //        │ K3 │  K4   │
+    //        ├────┼───────┤
+    //        │ 5  │ Magic │
+    //        └────┴───────┘
+    [_QWERTY] = LAYOUT_preonic_grid(
+      KC_1 , K2                       ,
+             K3   , K4                ,
+             KC_5 , HERE_BE_A_LONG_KEY
+    )
+    };
+<
+
 
 REQUIREMENTS                                       *qmk-qmk.nvim-requirements*
 
