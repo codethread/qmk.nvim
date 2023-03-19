@@ -11,7 +11,7 @@ Table of Contents                                      *qmk-table-of-contents*
   - Layout                                               |qmk-qmk.nvim-layout|
   - Usage                                                 |qmk-qmk.nvim-usage|
   - Debugging                                         |qmk-qmk.nvim-debugging|
-  - Credit, Thanks, Alternatives(?)|qmk-qmk.nvim-credit,-thanks,-alternatives(?)|
+  - Thanks                                               |qmk-qmk.nvim-thanks|
 
 ==============================================================================
 1. qmk.nvim                                                     *qmk-qmk.nvim*
@@ -47,7 +47,8 @@ e.g:
     use {
         'codethread/qmk.nvim',
         config = function()
-            require('qmk').setup {
+            ---@type qmk.UserConfig
+            local conf = {
                 name = 'LAYOUT_preonic_grid',
                 layout = {
                     '_ x x x x x x _ x x x x x x',
@@ -57,6 +58,7 @@ e.g:
                     '_ x x x x x x _ x x x x x x',
                 }
             }
+            require('qmk').setup(conf)
         end
     }
 <
@@ -72,10 +74,10 @@ qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
   name                               string required         the name of your layout, for example
                                                              LAYOUT_preonic_grid for the preonic keyboard
 
+  layout                             string[] required       the keyboard key layout, see Layout for more details
+
   timeout                            number                  (default 5000) duration of vim.notify timeout if using
                                                              nvim-notify
-
-  layout                             string[] required       the keyboard key layout, see Layout for more details
 
   auto_format_pattern                string                  (default *keymap.c) the autocommand file pattern to
                                                              use when applying QMKFormat on save
@@ -88,10 +90,10 @@ qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
 
   comment_preview.keymap_overrides   table<string, string>   a dictionary of key codes to text replacements, any
                                                              provided value will be merged with the existing
-                                                             dictionary
+                                                             dictionary, see key_map.lua for details
 
   comment_preview.symbols            table<string, string>   a dictionary of symbols used for the preview comment
-                                                             border chars
+                                                             border chars see default.lua for details
   -----------------------------------------------------------------------------------------------------------------
 
 EXAMPLES ~
@@ -101,12 +103,14 @@ here are some example configurations:
 Disabling most features ~
 
 >lua
-      {
-          name = 'Some_layout',
-          layout = { { 'x', 'x' } },
-          auto_format_pattern = nil,
-          comment_preview = nil
-      }
+    {
+        name = 'Some_layout',
+        layout = { { 'x', 'x' } },
+        auto_format_pattern = nil,
+        comment_preview = {
+            position = 'none'
+        }
+    }
 <
 
 Overriding a long key code ~
@@ -319,8 +323,8 @@ config:
 
 >lua
     { layout = {
-        'x x x',
-        'xx^xx',
+        'x _ x', -- we need the '_' to pad out the gaps
+        'xx^xx', -- this spans 3 columns, but we could keep going to 5,7,9 etc
     } }
 <
 
@@ -347,7 +351,7 @@ LUA ~
 
 
 - `:lua require('qmk').setup( <config> )`: setup qmk using your |qmk-config| (must be called before format, can be called repeatedly)
-- `:lua require('qmk').format(<buf id>)`: format a given buffer, or the current if  is not provided
+- `:lua require('qmk').format( <buf id ?> )`: format a given buffer, or the current if  is not provided
 
 
 AUTOCOMMANDS ~
@@ -391,7 +395,7 @@ layout or your current keymap, but please raise an issue if something isn’t
 clear (or you get an `QMK: E00`, as that’s defiantely on me).
 
 
-CREDIT, THANKS, ALTERNATIVES(?) *qmk-qmk.nvim-credit,-thanks,-alternatives(?)*
+THANKS                                                   *qmk-qmk.nvim-thanks*
 
 
 - go-qmk-keymap <https://github.com/jurgen-kluft/go-qmk-keymap>: this looks cool but still alpha.
