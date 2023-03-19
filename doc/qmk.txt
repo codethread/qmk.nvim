@@ -98,7 +98,7 @@ qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
 
 EXAMPLES ~
 
-here are some example configurations:
+Here are some example configurations:
 
 Disabling most features ~
 
@@ -115,7 +115,7 @@ Disabling most features ~
 
 Overriding a long key code ~
 
-for the configuration
+For the configuration
 
 >lua
     {
@@ -128,14 +128,14 @@ for the configuration
                 -- longer key codes are checked first, and these will replace the value displayed in the preview
                 --
                 -- lua magic patterns must be escaped with `%`, sorry, I'll fix this one day
-                -- watch ot for emojis as they are double width
+                -- watch out for emojis as they are double width
                 ['LSG%(KC_GRAVE%)'] = 'Next Window',
             },
         },
     }
 <
 
-with keymap.c:
+With keymap.c:
 
 >c
     const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -147,7 +147,7 @@ with keymap.c:
     }
 <
 
-becomes:
+Becomes:
 
 >c
     const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -188,7 +188,7 @@ for the configuration
     }
 <
 
-will format to something like:
+Will format to something like:
 
 >c
     const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -233,14 +233,14 @@ qmk_firmware is simply expecting an array of key codes, the layout is pretty
 much up to you.
 
 A `layout` is a list of strings, where each string in the list represents a
-single row. Rows must all be the same width, and you’ll see they visuall
+single row. Rows must all be the same width, and you’ll see they visually
 align to what your keymap looks like.
 
 Valid keys are
 
 
 - `x`: indicates presence of key
-- ``: space used to separete keys (must be used, and only use single spaces)
+- ``: space used to separate keys (must be used, and only use single spaces)
 - `_`: indicates an empty space (e.g to split left and right, or adding padding)
 - `x^x`: a key spanning multiple slots on the keyboard, the `^` indicates alignment. (NOTE vertically sized keys, like some thumb clusters are net yet supported)
     - `^xx`: left align across two columns
@@ -255,7 +255,7 @@ _there is also a test file with a great many examples_
 
 two rows, two columns ~
 
-config:
+Config:
 
 >lua
     { layout = {
@@ -264,7 +264,7 @@ config:
     } }
 <
 
-output:
+Output:
 
 >c
     [1] = Layout(
@@ -275,7 +275,7 @@ output:
 
 one column, four rows ~
 
-config:
+Config:
 
 >lua
     { layout = {
@@ -286,7 +286,7 @@ config:
     } }
 <
 
-output:
+Output:
 
 >c
     [1] = Layout(
@@ -299,7 +299,7 @@ output:
 
 two rows, two columns, but with a centered key ~
 
-config:
+Config:
 
 >lua
     { layout = {
@@ -308,7 +308,7 @@ config:
     } }
 <
 
-output:
+Output:
 
 >c
     [1] = Layout(
@@ -319,7 +319,7 @@ output:
 
 two rows, three columns, and with a centered key ~
 
-config:
+Config:
 
 >lua
     { layout = {
@@ -328,7 +328,7 @@ config:
     } }
 <
 
-output:
+Output:
 
 >c
     [1] = Layout(
@@ -362,7 +362,7 @@ save. The name of the file can be changed with `auto_format_pattern`
 
 DEBUGGING                                             *qmk-qmk.nvim-debugging*
 
-Getting your layout right may be a slightly iterative process, so I recomend
+Getting your layout right may be a slightly iterative process, so I recommend
 the following:
 
 
@@ -392,7 +392,7 @@ ERRORS: ~
 
 I have tried to create useful errors when something is wrong with the config,
 layout or your current keymap, but please raise an issue if something isn’t
-clear (or you get an `QMK: E00`, as that’s defiantely on me).
+clear (or you get an `QMK: E00`, as that’s definitely on me).
 
 
 THANKS                                                   *qmk-qmk.nvim-thanks*
