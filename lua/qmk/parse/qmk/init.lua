@@ -1,4 +1,5 @@
 local queries = require('qmk.parse.qmk.queries')
+local check = require('qmk.utils').check
 local E = require('qmk.errors')
 local ts = vim.treesitter
 
@@ -17,10 +18,10 @@ local function get_keymaps_position(root)
 		end,
 	})
 
-	assert(count <= 1, E.keymaps_too_many)
-	assert(count >= 1, E.keymaps_none)
-	assert(start and final, E.keymaps_none)
-	assert(start ~= final, E.keymaps_overlap)
+	check(count <= 1, E.keymaps_too_many)
+	check(count >= 1, E.keymaps_none)
+	check(start and final, E.keymaps_none)
+	check(start ~= final, E.keymaps_overlap)
 
 	return { start = start, final = final }
 end

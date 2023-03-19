@@ -6,17 +6,9 @@ function M.die(msg)
 	error(msg, 0)
 end
 
-function M.assert(cond, msg)
+function M.check(cond, msg)
 	if not cond then
 		M.die(msg)
-	end
-end
-
-function M.safe_call(fn)
-	local ok, err = pcall(fn)
-	if not ok then
-		vim.notify(err, vim.log.levels.ERROR)
-		return
 	end
 end
 

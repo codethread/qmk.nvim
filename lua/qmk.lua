@@ -1,6 +1,5 @@
 local config = require('qmk.config')
 local format = require('qmk.format')
-local utils = require('qmk.utils')
 
 local qmk = {}
 local configured_warning = 'QMK plugin is not configured. Please call qmk.setup() first'
@@ -17,9 +16,7 @@ function qmk.setup(options)
 	qmk.options = config_or_error
 
 	vim.api.nvim_create_user_command('QMKFormat', function()
-		utils.safe_call(function()
-			format(qmk.options)
-		end)
+		format(qmk.options)
 	end, { desc = 'Format all keymaps in buffer' })
 
 	if config_or_error.auto_format_pattern then
@@ -28,9 +25,7 @@ function qmk.setup(options)
 			group = vim.api.nvim_create_augroup('QMK', {}),
 			pattern = qmk.options.auto_format_pattern,
 			callback = function()
-				utils.safe_call(function()
-					format(qmk.options)
-				end)
+				format(qmk.options)
 			end,
 		})
 	end
@@ -48,9 +43,7 @@ function qmk.format(buf)
 		return
 	end
 
-	utils.safe_call(function()
-		format(qmk.options, buf)
-	end)
+	format(qmk.options, buf)
 end
 
 qmk.options = nil
