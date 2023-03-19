@@ -25,7 +25,8 @@ e.g:
 use {
     'codethread/qmk.nvim',
     config = function()
-        require('qmk').setup {
+        ---@type qmk.UserConfig
+        local conf = {
             name = 'LAYOUT_preonic_grid',
             layout = {
                 '_ x x x x x x _ x x x x x x',
@@ -35,6 +36,7 @@ use {
                 '_ x x x x x x _ x x x x x x',
             }
         }
+        require('qmk').setup(conf)
     end
 }
 ```
@@ -46,13 +48,13 @@ qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
 | setting                            | type                            | descritpion                                                                                                                                                                                                             |
 | ---------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name`                             | `string` **required**           | the name of your layout, for example `LAYOUT_preonic_grid` for the [preonic keyboard](https://github.com/qmk/qmk_firmware/blob/c5b0e3a6a3c5a86273b933c04f5cfdef9a541c9d/keyboards/preonic/keymaps/default/keymap.c#L53) |
-| `timeout`                          | `number`                        | (default `5000`) duration of vim.notify timeout if using [nvim-notify](https://github.com/rcarriga/nvim-notify)                                                                                                         |
 | `layout`                           | `string[]` **required**         | the keyboard key layout, see [Layout](#Layout) for more details                                                                                                                                                         |
+| `timeout`                          | `number`                        | (default `5000`) duration of vim.notify timeout if using [nvim-notify](https://github.com/rcarriga/nvim-notify)                                                                                                         |
 | `auto_format_pattern`              | `string`                        | (default `*keymap.c`) the autocommand file pattern to use when applying [`QMKFormat`](#Commands) on save                                                                                                                |
 | `comment_preview`                  | `table`                         | table of properties for rendering a pretty comment string of each keymap                                                                                                                                                |
 | `comment_preview.position`         | `top`,`bottom`,`inside`, `none` | (default `top`) control the position of the preview, set to `none` to disable                                                                                                                                           |
-| `comment_preview.keymap_overrides` | `table<string, string>`         | a dictionary of key codes to text replacements, any provided value will be merged with the existing dictionary                                                                                                          |
-| `comment_preview.symbols`          | `table<string, string>`         | a dictionary of symbols used for the preview comment border chars                                                                                                                                                       |
+| `comment_preview.keymap_overrides` | `table<string, string>`         | a dictionary of key codes to text replacements, any provided value will be merged with the existing dictionary, see [key_map.lua](./lua/qmk/config/key_map.lua) for details                                             |
+| `comment_preview.symbols`          | `table<string, string>`         | a dictionary of symbols used for the preview comment border chars see [default.lua](./lua/qmk/config/default.lua) for details                                                                                           |
 
 ### examples
 
@@ -62,12 +64,14 @@ here are some example configurations:
   <summary>Disabling most features</summary>
 
 ```lua
-  {
-      name = 'Some_layout',
-      layout = { { 'x', 'x' } },
-      auto_format_pattern = nil,
-      comment_preview = nil
-  }
+{
+    name = 'Some_layout',
+    layout = { { 'x', 'x' } },
+    auto_format_pattern = nil,
+    comment_preview = {
+        position = 'none'
+    }
+}
 ```
 
 </details>
@@ -291,8 +295,8 @@ config:
 
 ```lua
 { layout = {
-    'x x x',
-    'xx^xx',
+    'x _ x', -- we need the '_' to pad out the gaps
+    'xx^xx', -- this spans 3 columns, but we could keep going to 5,7,9 etc
 } }
 ```
 
@@ -316,7 +320,7 @@ output:
 ### lua
 
 - `:lua require('qmk').setup( <config> )`: setup qmk using your [config](#Configuration) (must be called before format, can be called repeatedly)
-- `:lua require('qmk').format(<buf id>)`: format a given buffer, or the current if <buf id> is not provided
+- `:lua require('qmk').format( <buf id ?> )`: format a given buffer, or the current if <buf id> is not provided
 
 ### Autocommands
 
@@ -351,7 +355,7 @@ qmk.format(43) -- the result of calling :lua print(vim.api.nvim_get_current_buf(
 
 I have tried to create useful errors when something is wrong with the config, layout or your current keymap, but please raise an issue if something isn't clear (or you get an `QMK: E00`, as that's defiantely on me).
 
-## Credit, Thanks, Alternatives(?)
+## Thanks
 
 - [go-qmk-keymap](https://github.com/jurgen-kluft/go-qmk-keymap): this looks cool but still alpha.
 - [2hwk/Q2K](https://github.com/2hwk/Q2K): same idea, in python, didn't work for me for some reason, but I stole the [keycode map](https://github.com/2hwk/Q2K/blob/master/q2k/reference.py), thanks!
