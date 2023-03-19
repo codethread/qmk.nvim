@@ -58,7 +58,7 @@ qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
 
 ### examples
 
-here are some example configurations:
+Here are some example configurations:
 
 <details>
   <summary>Disabling most features</summary>
@@ -79,7 +79,7 @@ here are some example configurations:
 <details>
 <summary>Overriding a long key code</summary>
 
-for the configuration
+For the configuration
 
 ```lua
 {
@@ -92,14 +92,14 @@ for the configuration
             -- longer key codes are checked first, and these will replace the value displayed in the preview
             --
             -- lua magic patterns must be escaped with `%`, sorry, I'll fix this one day
-            -- watch ot for emojis as they are double width
+            -- watch out for emojis as they are double width
 			['LSG%(KC_GRAVE%)'] = 'Next Window',
 		},
 	},
 }
 ```
 
-with keymap.c:
+With keymap.c:
 
 ```c
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -111,7 +111,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 }
 ```
 
-becomes:
+Becomes:
 
 ```c
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -155,7 +155,7 @@ for the configuration
 }
 ```
 
-will format to something like:
+Will format to something like:
 
 ```c
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -198,12 +198,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 The `layout` config describes your layout as expected by qmk_firmware. As qmk_firmware is simply expecting an array of key codes, the layout is pretty much up to you.
 
-A `layout` is a list of strings, where each string in the list represents a single row. Rows must all be the same width, and you'll see they visuall align to what your keymap looks like.
+A `layout` is a list of strings, where each string in the list represents a single row. Rows must all be the same width, and you'll see they visually align to what your keymap looks like.
 
 Valid keys are
 
 - `x`: indicates presence of key
-- ` `: space used to separete keys (must be used, and only use single spaces)
+- ` `: space used to separate keys (must be used, and only use single spaces)
 - `_`: indicates an empty space (e.g to split left and right, or adding padding)
 - `x^x`: a key spanning multiple slots on the keyboard, the `^` indicates alignment. (NOTE vertically sized keys, like some thumb clusters are net yet supported)
   - `^xx`: left align across two columns
@@ -218,7 +218,7 @@ _there is [also a test file](./test/spec/qmk/format/keymap_spec.lua) with a grea
 <details>
   <summary>two rows, two columns</summary>
 
-config:
+Config:
 
 ```lua
 { layout = {
@@ -227,7 +227,7 @@ config:
 } }
 ```
 
-output:
+Output:
 
 ```c
 [1] = Layout(
@@ -241,7 +241,7 @@ output:
 <details>
   <summary>one column, four rows</summary>
 
-config:
+Config:
 
 ```lua
 { layout = {
@@ -252,7 +252,7 @@ config:
 } }
 ```
 
-output:
+Output:
 
 ```c
 [1] = Layout(
@@ -268,7 +268,7 @@ output:
 <details>
   <summary>two rows, two columns, but with a centered key</summary>
 
-config:
+Config:
 
 ```lua
 { layout = {
@@ -277,7 +277,7 @@ config:
 } }
 ```
 
-output:
+Output:
 
 ```c
 [1] = Layout(
@@ -291,7 +291,7 @@ output:
 <details>
   <summary>two rows, three columns, and with a centered key</summary>
 
-config:
+Config:
 
 ```lua
 { layout = {
@@ -300,7 +300,7 @@ config:
 } }
 ```
 
-output:
+Output:
 
 ```c
 [1] = Layout(
@@ -328,7 +328,7 @@ The default settings will create an autocommand that formats your buffer on save
 
 ## Debugging
 
-Getting your layout right may be a slightly iterative process, so I recomend the following:
+Getting your layout right may be a slightly iterative process, so I recommend the following:
 
 - open a scratch buffer next to your `keymap.c` file
 - get the buffer id of your `keymap.c` file with `:lua print(vim.api.nvim_get_current_buf())`
@@ -353,7 +353,7 @@ qmk.format(43) -- the result of calling :lua print(vim.api.nvim_get_current_buf(
 
 ### Errors:
 
-I have tried to create useful errors when something is wrong with the config, layout or your current keymap, but please raise an issue if something isn't clear (or you get an `QMK: E00`, as that's defiantely on me).
+I have tried to create useful errors when something is wrong with the config, layout or your current keymap, but please raise an issue if something isn't clear (or you get an `QMK: E00`, as that's definitely on me).
 
 ## Thanks
 
