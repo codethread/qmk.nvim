@@ -39,121 +39,22 @@ use {
 }
 ```
 
-### Configuration
+## Configuration
 
-qmk.nvim takes the following configuration, and unless marked as required, the defaults can be disable by setting their value to `nil`:
+qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
 
-| setting                            | type / default                                                              | descritpion                                                                                                                                                                                                             |
-| ---------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                             | `string` **required**                                                       | the name of your layout, for example `LAYOUT_preonic_grid` for the [preonic keyboard](https://github.com/qmk/qmk_firmware/blob/c5b0e3a6a3c5a86273b933c04f5cfdef9a541c9d/keyboards/preonic/keymaps/default/keymap.c#L53) |
-| `layout`                           | `string[]` **required**                                                     | the keyboard key layout, see [Layout](#Layout) for more details                                                                                                                                                         |
-| `auto_format_pattern`              | `string` / *`*keymap.c`\*                                                   | the autocommand file pattern to use when applying [`QMKFormat`](#Commands) on save                                                                                                                                      |
-| `comment_preview`                  | `table`                                                                     | whether to create a pretty comment preview of your layout, defaults to `position.top`, set to `nil` to disable                                                                                                          |
-| `comment_preview.position`         | `top`,`bottom`,`inside` / _`top`_                                           | control the position of the preview                                                                                                                                                                                     |
-| `comment_preview.keymap_overrides` | `table<string, string>` / _see [key_map.lua](./lua/qmk/config/key_map.lua)_ | a dictionary of key codes to text replacements, any provided value will be merged with the existing dictionary                                                                                                          |
-| `comment_preview.symbols`          | `table<string, string>` / _see [default.lua](./lua/qmk/config/default.lua)_ | a dictionary of symbols used for the preview comment                                                                                                                                                                    |
+| setting                            | type                            | descritpion                                                                                                                                                                                                             |
+| ---------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                             | `string` **required**           | the name of your layout, for example `LAYOUT_preonic_grid` for the [preonic keyboard](https://github.com/qmk/qmk_firmware/blob/c5b0e3a6a3c5a86273b933c04f5cfdef9a541c9d/keyboards/preonic/keymaps/default/keymap.c#L53) |
+| `timeout`                          | `number`                        | (default `5000`) duration of vim.notify timeout if using [nvim-notify](https://github.com/rcarriga/nvim-notify)                                                                                                         |
+| `layout`                           | `string[]` **required**         | the keyboard key layout, see [Layout](#Layout) for more details                                                                                                                                                         |
+| `auto_format_pattern`              | `string`                        | (default `*keymap.c`) the autocommand file pattern to use when applying [`QMKFormat`](#Commands) on save                                                                                                                |
+| `comment_preview`                  | `table`                         | table of properties for rendering a pretty comment string of each keymap                                                                                                                                                |
+| `comment_preview.position`         | `top`,`bottom`,`inside`, `none` | (default `top`) control the position of the preview, set to `none` to disable                                                                                                                                           |
+| `comment_preview.keymap_overrides` | `table<string, string>`         | a dictionary of key codes to text replacements, any provided value will be merged with the existing dictionary                                                                                                          |
+| `comment_preview.symbols`          | `table<string, string>`         | a dictionary of symbols used for the preview comment border chars                                                                                                                                                       |
 
-#### default
-
-the default values are:
-
-```lua
----@type qmk.UserConfig
-{
-	auto_format_pattern = '*keymap.c',
-	comment_preview = {
-		position = 'top',
-		keymap_overrides = {},
-		symbols = {
-			space = ' ',
-			horz = '─',
-			vert = '│',
-			tl = '┌',
-			tm = '┬',
-			tr = '┐',
-			ml = '├',
-			mm = '┼',
-			mr = '┤',
-			bl = '└',
-			bm = '┴',
-			br = '┘',
-		},
-	},
-}
-```
-
-#### layout
-
-The `layout` config describes your layout as expected by qmk_firmware. As qmk_firmware is simply expecting an array of key codes, the layout is pretty much up to you.
-
-A `layout` is a list of strings, where each string in the list represents a single row.
-
-Valid keys are
-
-- `x`: indicates presence of key
-- ` `: space used to separete keys (must be used, and only use single spaces)
-- `_`: indicates an empty space (e.g to split left and right, or adding padding)
-- `x^x`: a key spanning multiple slots on the keyboard, the `^` indicates alignment. (NOTE vertically sized keys, like some thumb clusters are net yet supported)
-  - `^xx`: left align across two columns
-  - `x^x`: center align
-  - `xx^`: right align
-  - `xx^xx`: center align but across three columns
-
-some examples should make things a little clearer:
-
-_there is [also a test file](./test/spec/qmk/format/keymap_spec.lua) with a great many examples_
-
-```lua
--- two rows, two columns
-{ layout = { 'x x', 'x x' } }
-
--- produces
-
--- [1] = Layout(',
---   KC_A , KC_B,
---   KC_C , KC_D
--- )
-```
-
-```lua
--- the same as above but one key per 4 rows
-{ layout = { 'x', 'x', 'x', 'x' } }
-
--- produces
-
--- [1] = Layout(',
---   KC_A ,
---   KC_B ,
---   KC_C ,
---   KC_D
--- )
-```
-
-```lua
--- two rows, top row is two keys wide, bottom is a single centered key
-{ layout = { 'x x', 'x^x' } }
-
--- produces
-
--- [1] = Layout(',
---   KC_A , KC_B,
---      KC_C
--- )
-```
-
-```lua
--- same as above but with an extra space between the keys
-{ layout = { 'x _ x', 'xx^xx' } }
-
--- produces
-
--- [1] = Layout(',
---   KC_A ,     KC_B,
---        KC_C
--- )
-```
-
-#### examples
+### examples
 
 here are some example configurations:
 
@@ -184,6 +85,8 @@ for the configuration
 		position = 'inside',
 		keymap_overrides = {
             -- key codes are mapped literally against the entire key in your layout
+            -- longer key codes are checked first, and these will replace the value displayed in the preview
+            --
             -- lua magic patterns must be escaped with `%`, sorry, I'll fix this one day
             -- watch ot for emojis as they are double width
 			['LSG%(KC_GRAVE%)'] = 'Next Window',
@@ -215,6 +118,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_1 , LSG(KC_GRAVE)
 )
 }
+```
+
+Also if your key codes are quite long, you can define aliases in `c`
+
+```c
+//Aliases for longer keycodes
+#define NUMPAD  TG(_NUMPAD)
 ```
 
 </details>
@@ -280,6 +190,123 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 </details>
 
+## Layout
+
+The `layout` config describes your layout as expected by qmk_firmware. As qmk_firmware is simply expecting an array of key codes, the layout is pretty much up to you.
+
+A `layout` is a list of strings, where each string in the list represents a single row. Rows must all be the same width, and you'll see they visuall align to what your keymap looks like.
+
+Valid keys are
+
+- `x`: indicates presence of key
+- ` `: space used to separete keys (must be used, and only use single spaces)
+- `_`: indicates an empty space (e.g to split left and right, or adding padding)
+- `x^x`: a key spanning multiple slots on the keyboard, the `^` indicates alignment. (NOTE vertically sized keys, like some thumb clusters are net yet supported)
+  - `^xx`: left align across two columns
+  - `x^x`: center align
+  - `xx^`: right align
+  - `xx^xx`: center align but across three columns
+
+### examples
+
+_there is [also a test file](./test/spec/qmk/format/keymap_spec.lua) with a great many examples_
+
+<details>
+  <summary>two rows, two columns</summary>
+
+config:
+
+```lua
+{ layout = {
+    'x x',
+    'x x'
+} }
+```
+
+output:
+
+```c
+[1] = Layout(
+  KC_A , KC_B,
+  KC_C , KC_D
+)
+```
+
+</details>
+
+<details>
+  <summary>one column, four rows</summary>
+
+config:
+
+```lua
+{ layout = {
+    'x',
+    'x',
+    'x',
+    'x'
+} }
+```
+
+output:
+
+```c
+[1] = Layout(
+  KC_A ,
+  KC_B ,
+  KC_C ,
+  KC_D
+)
+```
+
+</details>
+
+<details>
+  <summary>two rows, two columns, but with a centered key</summary>
+
+config:
+
+```lua
+{ layout = {
+    'x x',
+    'x^x',
+} }
+```
+
+output:
+
+```c
+[1] = Layout(
+   KC_A , KC_B,
+      KC_C
+)
+```
+
+</details>
+
+<details>
+  <summary>two rows, three columns, and with a centered key</summary>
+
+config:
+
+```lua
+{ layout = {
+    'x x x',
+    'xx^xx',
+} }
+```
+
+output:
+
+```c
+[1] = Layout(
+   KC_A ,     KC_B,
+        KC_C
+)
+```
+
+</details>
+
 ## Usage
 
 ### Commands
@@ -291,9 +318,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 - `:lua require('qmk').setup( <config> )`: setup qmk using your [config](#Configuration) (must be called before format, can be called repeatedly)
 - `:lua require('qmk').format(<buf id>)`: format a given buffer, or the current if <buf id> is not provided
 
-### Autocommand
+### Autocommands
 
-The default settings will create an autocommand that formats your buffer on save.
+The default settings will create an autocommand that formats your buffer on save. The name of the file can be changed with `auto_format_pattern`
 
 ## Debugging
 
@@ -313,21 +340,11 @@ qmk.setup({
 	name = 'Some_layout',
 	layout = { 'x x' },
 	comment_preview = {
-		position = 'inside',
-		keymap_overrides = {
-			['LSG%(KC_GRAVE%)'] = 'Next Window', -- key codes are mapped literally against the entire key in your layout
-		},
+		position = 'inside'
 	},
 })
 
 qmk.format(43) -- the result of calling :lua print(vim.api.nvim_get_current_buf()) in my keymap.c file
-```
-
-Also if your key codes are quite long, you can define aliases in `c`
-
-```c
-//Aliases for longer keycodes
-#define NUMPAD  TG(_NUMPAD)
 ```
 
 ### Errors:

@@ -245,7 +245,7 @@ describe('parse qmk keymaps abuse:', function()
 		it('should fail when ' .. test.msg, function()
 			local ok, err = pcall(parser, test.input, { name = 'LAYOUT' }, qmk_parser)
 			assert(not ok, 'no error thrown')
-			match(match_string.equals(test.err), E._strip(err))
+			match(match_string.equals(test.err), err)
 		end)
 	end
 end)

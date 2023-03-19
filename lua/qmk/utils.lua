@@ -1,7 +1,7 @@
 local M = {}
 
 ---stop execution with an error message, without stack trace
----users don't care about stack traces, they just want to know what's wrong
+---users don't care about my stack traces, they just want to know what's wrong
 function M.die(msg)
 	error(msg, 0)
 end
@@ -10,6 +10,12 @@ function M.check(cond, msg)
 	if not cond then
 		M.die(msg)
 	end
+end
+
+M.timeout = 0
+
+function M.notify(err)
+	vim.notify(err, vim.log.levels.ERROR, { title = 'qmk.nvim', timeout = M.timeout })
 end
 
 function M.cond(conditions)

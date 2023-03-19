@@ -49,7 +49,7 @@ describe('config', function()
 			{
 				msg = 'invalid complex param',
 				input = none_missing({ comment_preview = { position = 'foo' } }),
-				err = 'QMK: [E15] invalid option: "comment_preview.position", expected: one of top, bottom, inside, none,'
+				err = 'qmk.nvim: [E18] invalid option: "comment_preview.position", expected: one of top, bottom, inside, none,'
 					.. ' got: foo | see :help qmk-setup for available configuration options',
 			},
 			{
@@ -98,7 +98,7 @@ describe('config', function()
 			it(test.msg, function()
 				local ok, err = pcall(config.parse, test.input)
 				assert(not ok, 'no error thrown')
-				match(match_string.equals(test.err), E._strip(err))
+				match(match_string.equals(test.err), err)
 			end)
 		end
 	end)
