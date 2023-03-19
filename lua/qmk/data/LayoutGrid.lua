@@ -1,4 +1,5 @@
 ---@diagnostic disable: invisible
+local check = require('qmk.utils').check
 local utils = require('qmk.utils')
 local E = require('qmk.errors')
 
@@ -104,7 +105,8 @@ function LayoutGrid:new(layout, keys)
 		table.insert(grid[row_i], 1, utils.shallow_copy(padding_cell))
 	end
 
-	assert(key_idx == #keys, E.config_mismatch)
+	check(key_idx <= #keys, E.config_too_few_keys)
+	check(key_idx >= #keys, E.config_too_many_keys)
 
 	-- add padding to top and bottom of grid
 	local padding_row = {}

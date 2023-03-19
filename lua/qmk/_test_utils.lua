@@ -39,6 +39,7 @@ end
 function M.create_options(layout)
 	return config.parse({
 		name = 'test',
+		comment_preview = { position = 'none' },
 		layout = layout,
 	})
 end

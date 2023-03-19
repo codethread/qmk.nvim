@@ -1,6 +1,6 @@
 local config = require('qmk.config')
-local format = require('qmk.format')
 local utils = require('qmk.utils')
+local format = require('qmk.format')
 
 local qmk = {}
 local configured_warning = 'QMK plugin is not configured. Please call qmk.setup() first'
@@ -9,17 +9,18 @@ local configured_warning = 'QMK plugin is not configured. Please call qmk.setup(
 -- creates user commands and autocmds to autoformat
 ---@param options qmk.UserConfig
 function qmk.setup(options)
+	utils.timeout = options and options.timeout or 5000
+
 	local ok, config_or_error = pcall(config.parse, options)
 	if not ok then
-		vim.notify(config_or_error, vim.log.levels.ERROR)
+		utils.notify(config_or_error)
 		return
 	end
+
 	qmk.options = config_or_error
 
 	vim.api.nvim_create_user_command('QMKFormat', function()
-		utils.safe_call(function()
-			format(qmk.options)
-		end)
+		qmk.format()
 	end, { desc = 'Format all keymaps in buffer' })
 
 	if config_or_error.auto_format_pattern then
@@ -28,9 +29,7 @@ function qmk.setup(options)
 			group = vim.api.nvim_create_augroup('QMK', {}),
 			pattern = qmk.options.auto_format_pattern,
 			callback = function()
-				utils.safe_call(function()
-					format(qmk.options)
-				end)
+				qmk.format()
 			end,
 		})
 	end
@@ -44,13 +43,14 @@ end
 ---@param buf? buffer number
 function qmk.format(buf)
 	if not qmk.is_configured() then
-		vim.notify(configured_warning, vim.log.levels.WARN)
+		utils.notify(configured_warning)
 		return
 	end
 
-	utils.safe_call(function()
-		format(qmk.options, buf)
-	end)
+	local ok, err = pcall(format, qmk.options, buf)
+	if not ok then
+		utils.notify(err)
+	end
 end
 
 qmk.options = nil

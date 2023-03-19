@@ -19,7 +19,7 @@ describe('qmk', function()
 			local spy = require('luassert.spy')
 			spy.on(vim, 'notify')
 			local ok = pcall(qmk.setup)
-			assert(ok, 'no error thrown')
+			assert(ok, 'no error should be thrown')
 			assert.spy(vim.notify).was_called()
 		end)
 	end)
@@ -31,6 +31,7 @@ describe('qmk', function()
 			local qmk = require('qmk')
 			qmk.setup({
 				name = 'LAYOUT_preonic_grid',
+				comment_preview = { position = 'none' },
 				layout = {
 					'_ x x x x x x x x x x x x',
 					'_ x x x x x x x x x x x x',
@@ -50,9 +51,6 @@ describe('qmk', function()
 			local qmk = require('qmk')
 			qmk.setup({
 				name = 'LAYOUT_preonic_grid',
-				comment_preview = {
-					position = 'top',
-				},
 				layout = {
 					'x x x x x x _ _ x x x x x x',
 					'x x x x x x _ _ x x x x x x',
@@ -72,6 +70,7 @@ describe('qmk', function()
 			local qmk = require('qmk')
 			qmk.setup({
 				name = 'LAYOUT_preonic_grid',
+				comment_preview = { position = 'none' },
 				layout = { '_ x x x x x' },
 			})
 			qmk.format(T.buff)
@@ -84,9 +83,6 @@ describe('qmk', function()
 
 			local qmk = require('qmk')
 			qmk.setup({
-				comment_preview = {
-					position = 'top',
-				},
 				name = 'LAYOUT_pretty',
 				layout = {
 					'x x x x x x x x x x x x x x x x x x',
