@@ -374,7 +374,7 @@ Output:
 
 ### Autocommands
 
-The default settings will create an autocommand that formats your buffer on save. The name of the file can be changed with `auto_format_pattern`
+- A `BufWritePre` autocmd will format buffers on save matching `config.auto_format_pattern` (defaults to `*keymap.c`, set to `nil` to disable)
 
 ## Debugging
 
