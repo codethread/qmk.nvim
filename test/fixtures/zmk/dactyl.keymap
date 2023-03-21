@@ -1,0 +1,83 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define AS(keycode) &as LS(keycode) keycode
+
+&mt {
+   tapping-term-ms = <200>;
+};
+
+/ {
+        behaviors {
+            as: auto_shift {
+                compatible = "zmk,behavior-hold-tap";
+                label = "AUTO_SHIFT";
+                #binding-cells = <2>;
+                tapping_term_ms = <200>;
+                quick_tap_ms = <0>;
+                flavor = "tap-preferred";
+                bindings = <&kp>, <&kp>;
+            };
+            ht: hold_tap{
+                compatible = "zmk,behavior-hold-tap";
+                label = "HOLD_TAP";
+                #binding-cells = <2>;
+                tapping-term-ms = <150>;
+                quick_tap_ms = <0>;
+                flavor = "tap-preferred";
+                bindings = <&kp>, <&kp>;
+            };
+            me: multi_equal {
+                compatible = "zmk,behavior-tap-dance";
+                label = "MULTI_EQUAL";
+                #binding-cells = <0>;
+                tapping-term-ms = <200>;
+                bindings = <&ht LG(EQUAL) EQUAL>, <&kp LS(EQUAL)>;
+            };
+            mm: multi_minus {
+                compatible = "zmk,behavior-tap-dance";
+                label = "MULTI_MINUS";
+                #binding-cells = <0>;
+                tapping-term-ms = <200>;
+                bindings = <&ht LG(MINUS) MINUS>, <&kp LA(LS(MINUS))>;
+            };
+        };
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+&mt LC(LG(LS(LALT))) ESC  	AS(N1) 		AS(N2)   	AS(N3)   	AS(N4)    	AS(N5)                      				AS(N6) 		AS(N7)    		AS(N8)    		AS(N9)   	AS(N0)   	AS(LBKT)
+&kp TAB   					AS(Q)  		AS(W)    	AS(F)    	AS(P)     	AS(B)                       				AS(J)  		AS(L)     		AS(U)     		AS(Y)    	AS(SEMI) 	AS(RBKT)
+&kp DEL                     AS(A)  		AS(R)    	AS(S)    	AS(T)     	AS(G)                       				AS(M)  		AS(N)     		AS(E)     		AS(I)    	AS(O) 		AS(BSPC)
+&mt LSHFT PG_UP 			AS(Z)  		AS(X)    	AS(C)    	AS(D)     	AS(V) 					     				AS(K)  		AS(H)     		AS(COMMA) 		AS(DOT)  	AS(FSLH) 	&mt RSHFT PG_DN
+&to 1 						&mm 	    &me         &kp LCTRL	&kp LALT   &mt LCMD GRAVE 		            &mt LC(LS(LALT)) DQT  	&mt RALT SQT    &kp LEFT  		&kp DOWN	&kp UP		&kp RIGHT
+																			&kp SPACE								 &kp RET
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+        };
+
+        lower_layer {
+            bindings = <
+
+    &kp F11              	&kp F1    	&kp F2    	&kp F3    	&kp F4    	&kp F5                                    	&kp F6      &kp F7       	&kp F8       	&kp F9      &kp F10     &kp F12 
+    &none   &bt BT_SEL 0  	&bt BT_SEL 1 	&bt BT_SEL 2  	&bt BT_SEL 3  	&bt BT_CLR                              	&none      &none     		&none     		&none       &none      &none 
+    &none             		&none  	    &none  	    &none 		&kp TILDE 	&none                                   	&none      &none     		&none     		&none       &none      &none 
+    &none             		&none  	    &none  	    &none  	    &none  	    &none                                  	    &none      &none     		&none     		&none       AS(BSLH)    &none 
+    &to 0              		&none  	    &none  	    &none 		&none 		&none                           			&none      &kp C_PP     	&kp C_PREV    	&kp C_VOL_DN   &kp C_VOL_UP   &kp C_NEXT 
+                                                                    		&none               						&none
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+        };
+
+    };
+};
