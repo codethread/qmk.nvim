@@ -108,7 +108,7 @@ describe('qmk', function()
 			qmk.setup({
 				name = 'meh',
 				variant = 'zmk',
-				comment_preview = { position = 'none' },
+				comment_preview = { position = 'top' },
 				layout = {
 					'x x x x x x x x x x x x',
 					'x x x x x x x x x x x x',
@@ -121,12 +121,6 @@ describe('qmk', function()
 			qmk.format(T.buff)
 
 			assert.combinators.match(T.expected, T.buff_content())
-		end)
-	end)
-
-	describe('display', function()
-		it('displays the keymap in a popup', function()
-			assert.is_true(true)
 		end)
 	end)
 end)

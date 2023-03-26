@@ -41,7 +41,7 @@ local function get_keymaps(root, content)
 					if child:type() == 'reference' or vim.startswith(text, '_') then
 						-- this is the start of a new key code
 						vim.list_extend(keys, { { text } })
-					else
+					elseif child:type() ~= 'comment' then
 						vim.list_extend(keys[#keys], { text })
 					end
 				end

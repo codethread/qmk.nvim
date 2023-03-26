@@ -31,8 +31,7 @@ end
 ---@param parser fun(content: string, options: qmk.Config): qmk.Keymaps
 ---@return qmk.Keymaps
 function M.parse(content, options, parser)
-	local board_parser = parser
-	local keymaps = board_parser(content, options)
+	local keymaps = parser(content, options)
 	validate(keymaps)
 	return keymaps
 end
