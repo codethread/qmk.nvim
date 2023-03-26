@@ -7,9 +7,10 @@ local M = {}
 ---the buffer content can then be retrieved via `buff_content` (at which point the output will also
 ---be written to `input`_actual for comparison)
 ---@param input string #name of the file, the expected result must be of the same filename appended with '_out'
+---@param fixture_dir? string #directory to look in, defaults to 'qmk'
 ---@return { expected: string[], buff: number, buff_content: fun(): string[] }
-function M.snapshot(input, _dir)
-	local dir = _dir or 'qmk'
+function M.snapshot(input, fixture_dir)
+	local dir = fixture_dir or 'qmk'
 	local parts = vim.split(input, '.', { plain = true })
 	local filename = parts[1]
 	local extension = '.' .. parts[2]
