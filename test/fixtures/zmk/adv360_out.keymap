@@ -1,0 +1,117 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+
+/* THIS FILE WAS GENERATED!
+ *
+ * This file was generated automatically. You may or may not want to
+ * edit it directly.
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/backlight.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define _AA_S(keycode) &as LS(keycode) keycode
+
+&mt {
+   tapping-term-ms = <200>;
+};
+/ {
+  behaviors {
+    #include "macros.dtsi"
+
+    as: auto_shift {
+        compatible = "zmk,behavior-hold-tap";
+        label = "AUTO_SHIFT";
+        #binding-cells = <2>;
+        tapping_term_ms = <200>;
+        quick_tap_ms = <0>;
+        flavor = "tap-preferred";
+        bindings = <&kp>, <&kp>;
+    };
+    ht: hold_tap{
+        compatible = "zmk,behavior-hold-tap";
+        label = "HOLD_TAP";
+        #binding-cells = <2>;
+        tapping-term-ms = <150>;
+        quick_tap_ms = <0>;
+        flavor = "tap-preferred";
+        bindings = <&kp>, <&kp>;
+    };
+    me: multi_equal {
+        compatible = "zmk,behavior-tap-dance";
+        label = "MULTI_EQUAL";
+        #binding-cells = <0>;
+        tapping-term-ms = <200>;
+        bindings = <&ht LG(EQUAL) EQUAL>, <&kp LS(EQUAL)>;
+    };
+    mm: multi_minus {
+        compatible = "zmk,behavior-tap-dance";
+        label = "MULTI_MINUS";
+        #binding-cells = <0>;
+        tapping-term-ms = <200>;
+        bindings = <&ht LG(MINUS) MINUS>, <&kp LA(LS(MINUS))>;
+    };
+    cpy: copy_paste  {
+        compatible = "zmk,behavior-tap-dance";
+        label = "CPY_PST";
+        #binding-cells = <0>;
+        tapping-term-ms = <200>;
+        bindings = <&kp LG(C)>, <&kp LG(V)>;
+    };
+  };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &mt LC(LG(LS(LALT))) ESC	_AS(N1)			_AS(N2)
+                &mt LSHFT PG_UP				_AS(Z)			&none
+            >;
+        };
+
+        default_layer {
+            bindings = <
+                &mt LC(LG(LS(LALT))) ES C  /*|*/  AS(N1)  /*|*/	 AS(N2)
+                &mt LSHFT PG_UP	           /*|*/  AS(Z)	  /*|*/	 &none
+            >;
+        };
+
+        layer_keypad {
+            bindings = <
+                &none        &kp F1        &kp F2        &kp F3        &kp F4            &kp F5            &kp F11  &kp F12  &kp F6  &kp F7  &kp F8      &kp F9            &kp F10            &none
+                &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2 /*|*/ &bt BT_SEL 3 /*|*/        &bt BT_SEL 4       &bt BT_SEL 5 &none   &none   &none   &none       &none              &none            &none
+                &none         &none         &none         &none         &none             &none              &none    &none   &none                       &none              &none            &none       &none       &none   &none   &none   &none   &none
+                &none         &none         &none         &none         &none             &none              &none    &none   &none   &none   &none       &none              &none            &none       &none       &none   &none   &none   AS(BSLH)   &none
+                &mo 0         &none         &none         &none         &none  &kp C_PLAY_PAUSE              &none    &none   &none   &none   &none  &kp C_PREV  &kp C_VOLUME_DOWN  &kp C_VOLUME_UP  &kp C_NEXT  &none
+            >;
+        };
+
+        default_layer {
+            bindings = <
+&mt LC(LG(LS(LALT))) ESC	_AS(N1)			AS(N2)			AS(N3)			AS(N4)			AS(N5)			AS(F11)																																	AS(F12)			AS(N6)			AS(N7)			AS(N8)			AS(N9)			AS(N0)			AS(LBKT)
+AS(TAB)						AS(Q)			AS(W)			AS(F)			AS(P)			AS(B)			AS(BSLH)																																&bl BL_TOG		AS(J)			AS(L)			AS(U)			AS(Y)			AS(SEMI)		AS(RBKT)
+&kp DEL						AS(A)			AS(R)			AS(S)			AS(T)			AS(G)			&mm				&kp LCTRL			&cpy					&kp RCMD														&kp RCTRL   &me				AS(M)			AS(N)			AS(E)			AS(I)			AS(O)			&kp BSPC
+&mt LSHFT PG_UP				AS(Z)			AS(X)			AS(C)			AS(D)			AS(V)			&none			&none               &kp HOME				&none					&none					&kp END			&none		&none			AS(K)			AS(H)			AS(COMMA)		AS(DOT)			AS(FSLH)		&mt RSHFT PG_DN
+&mo 1						&none			&kp LCTRL		&kp LALT		&mt LCMD GRAVE  &kp RET       &kp LA(BSPC)			&mt LC(LG(LS(LALT))) SQT																	&mt RALT DQT		&kp RET		&kp SPACE			&kp LEFT		&kp DOWN		&kp UP			&kp RIGHT		&kp TILDE
+            >;
+        };
+
+        layer_keypad {
+            bindings = <
+                &none        &kp F1        &kp F2        &kp F3        &kp F4            &kp F5            &kp F11  &kp F12  &kp F6  &kp F7  &kp F8      &kp F9            &kp F10            &none
+                &bt BT_CLR  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2 /*|*/ &bt BT_SEL 3 /*|*/        &bt BT_SEL 4       &bt BT_SEL 5 &none   &none   &none   &none       &none              &none            &none
+                &none         &none         &none         &none         &none             &none              &none    &none   &none                       &none              &none            &none       &none       &none   &none   &none   &none   &none
+                &none         &none         &none         &none         &none             &none              &none    &none   &none   &none   &none       &none              &none            &none       &none       &none   &none   &none   AS(BSLH)   &none
+                &mo 0         &none         &none         &none         &none  &kp C_PLAY_PAUSE              &none    &none   &none   &none   &none  &kp C_PREV  &kp C_VOLUME_DOWN  &kp C_VOLUME_UP  &kp C_NEXT  &none
+            >;
+        };
+
+    };
+};

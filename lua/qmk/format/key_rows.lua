@@ -26,11 +26,14 @@ local function align(span, key)
 end
 
 ---@param layout qmk.LayoutGrid
+---@param separator? string
+---@param ending? string
 ---@return string[]
-local function print_rows(layout)
+local function print_rows(layout, separator, ending)
 	local output = {}
 
-	local comma = ' , '
+	local comma = separator or ' , '
+	local trailing = ending or ','
 	-- the final key won't have a comma, this allows it to be added in the rows
 	-- later on (omitting the final row)
 	local end_pad = ''
@@ -80,7 +83,7 @@ local function print_rows(layout)
 
 	local final = {}
 	for i, row in pairs(output) do
-		table.insert(final, table.concat(row) .. (i == #output and '' or ','))
+		table.insert(final, table.concat(row) .. (i == #output and '' or trailing))
 	end
 	return final
 end

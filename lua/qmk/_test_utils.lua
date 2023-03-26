@@ -8,14 +8,15 @@ local M = {}
 ---be written to `input`_actual for comparison)
 ---@param input string #name of the file, the expected result must be of the same filename appended with '_out'
 ---@return { expected: string[], buff: number, buff_content: fun(): string[] }
-function M.snapshot(input)
+function M.snapshot(input, _dir)
+	local dir = _dir or 'qmk'
 	local parts = vim.split(input, '.', { plain = true })
 	local filename = parts[1]
 	local extension = '.' .. parts[2]
 
-	local content = Path:new('test', 'fixtures', input):read()
-	local out = Path:new('test', 'fixtures', filename .. '_out' .. extension):read()
-	local actual = Path:new('test', 'fixtures', filename .. '_actual' .. extension)
+	local content = Path:new('test', 'fixtures', dir, input):read()
+	local out = Path:new('test', 'fixtures', dir, filename .. '_out' .. extension):read()
+	local actual = Path:new('test', 'fixtures', dir, filename .. '_actual' .. extension)
 
 	local buff = vim.api.nvim_create_buf(true, false)
 	vim.api.nvim_buf_set_lines(buff, 0, -1, false, vim.split(content, '\n', {}))
@@ -35,12 +36,14 @@ function M.snapshot(input)
 end
 
 ---@param layout qmk.UserLayout
+---@param variant? string
 ---@return qmk.Config
-function M.create_options(layout)
+function M.create_options(layout, variant)
 	return config.parse({
 		name = 'test',
 		comment_preview = { position = 'none' },
 		layout = layout,
+		variant = variant or 'qmk',
 	})
 end
 

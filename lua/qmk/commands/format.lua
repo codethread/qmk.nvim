@@ -10,7 +10,15 @@ local for_hardware = {
 	zmk = function(options, content, bufnr)
 		local keymaps = parser.parse(table.concat(content, '\n'), options, parser.zmk)
 		local formatted = require('qmk.format.zmk')(keymaps, options)
-		api.nvim_buf_set_lines(bufnr, keymaps.pos.start + 1, keymaps.pos.final, false, formatted)
+		for _, keymap in ipairs(formatted) do
+			api.nvim_buf_set_lines(
+				bufnr,
+				keymap.pos.start + 1,
+				keymap.pos.final,
+				false,
+				keymap.keys
+			)
+		end
 	end,
 }
 
