@@ -88,8 +88,9 @@ return M
 
 ---The users config after parsing
 ---@class qmk.Config
----@field timeout number # if using nvim-notify, this will be the duration of the notification
 ---@field name string # name of the layout macro, this is used to find the layout in the keymap
+---@field timeout number # if using nvim-notify, this will be the duration of the notification
+---@field variant 'qmk' | 'zmk' # the hardware being targeted, defaults to 'qmk'
 ---@field auto_format_pattern string # autocommand pattern to match against for auto formatting, e.g. '*keymap.c'
 ---@field layout qmk.LayoutPlan
 ---@field comment_preview qmk.Preview
@@ -118,9 +119,10 @@ return M
 
 ---The users config passed to qmk before parsing
 ---@class qmk.UserConfig
----@field timeout number # if using nvim-notify, this will be the duration of the notification
 ---@field name string # name of the layout macro, this is used to find the layout in the keymap
 ---@field layout qmk.UserLayout
+---@field variant? 'qmk' | 'zmk' # the hardware being targeted, defaults to 'qmk'
+---@field timeout? number # if using nvim-notify, this will be the duration of the notification
 ---@field auto_format_pattern? string # autocommand pattern to match against for auto formatting, e.g. '*keymap.c'
 ---@field comment_preview? qmk.UserPreview
 
