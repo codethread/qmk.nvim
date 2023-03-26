@@ -6,9 +6,9 @@ local format_keymap = require('qmk.format.keymap')
 local function format_keymaps(keymaps, options)
 	local result = {}
 
-	for key, keymap in pairs(keymaps.keymaps) do
+	for i, keymap in ipairs(keymaps.keymaps) do
 		local row = { format_keymap(options, keymap) }
-		if key == #keymaps.keymaps then
+		if i == #keymaps.keymaps then
 			table.insert(row, ')')
 		else
 			---@diagnostic disable-next-line: missing-parameter

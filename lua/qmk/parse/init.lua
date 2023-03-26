@@ -42,10 +42,10 @@ return M
 --------------------------------------------------------------------------------
 
 ---@class qmk.Keymaps
----@field keymaps qmk.KeymapDict
+---@field keymaps qmk.KeymapsList
 ---@field pos qmk.Position
 
----@alias qmk.KeymapDict { [string]: qmk.Keymap } # dictionary of keymaps
+---@alias qmk.KeymapsList qmk.Keymap[]
 
 ---@class qmk.Keymap
 ---@field layer_name string

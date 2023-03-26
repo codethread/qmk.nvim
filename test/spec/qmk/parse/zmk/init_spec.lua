@@ -22,7 +22,7 @@ local function create_keymap(keys)
     ]]
 end
 
----@param keymaps qmk.Keymap[]
+---@param keymaps qmk.KeymapsList
 ---@return qmk.Keymaps
 local function create_output(keymaps)
 	return {

@@ -13,9 +13,9 @@ local function join(list)
 	return table.concat(list, ' ')
 end
 
----@return qmk.KeymapDict
+---@return qmk.KeymapsList
 local function get_keymaps(root, content)
-	---@type qmk.KeymapDict
+	---@type qmk.KeymapsList
 	local keymaps = {}
 
 	local current_keymap = empty_keymap()
@@ -60,9 +60,8 @@ end
 
 ---get all keymaps from the current buffer
 ---@param content string
----@param options qmk.Config
 ---@return qmk.Keymaps
-local function get_keymap(content, options)
+local function get_keymap(content)
 	local parser = ts.get_string_parser(content, 'devicetree', {})
 	local root = parser:parse()[1]:root()
 
