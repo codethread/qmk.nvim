@@ -37,12 +37,16 @@ function M.shallow_copy(t)
 	return t2
 end
 
+function M.len(str)
+	return vim.fn.strdisplaywidth(str)
+end
+
 -- center a string within a span
 function M.center(span, text, space_symbol)
-	local remainder = span - #text
+	local remainder = span - M.len(text)
 	local half = math.floor(remainder / 2)
 	local centered = string.rep(space_symbol, half) .. text .. string.rep(space_symbol, half)
-	local padding = string.rep(space_symbol, span - string.len(centered))
+	local padding = string.rep(space_symbol, span - M.len(centered))
 	return centered .. padding
 end
 

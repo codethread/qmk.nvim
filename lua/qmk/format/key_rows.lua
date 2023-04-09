@@ -15,10 +15,10 @@ local function align(span, key)
 	--TODO: handle other alignments like 2/5
 	if nom == 1 then
 		-- left align
-		return key.key .. string.rep(space, span - #key.key)
+		return key.key .. string.rep(space, span - utils.len(key.key))
 	elseif nom == denom then
 		-- right align
-		return string.rep(space, span - #key.key) .. key.key
+		return string.rep(space, span - utils.len(key.key)) .. key.key
 	else
 		-- center align
 		return utils.center(span, key.key, space)
@@ -54,7 +54,7 @@ local function print_rows(layout)
 		local is_last = ctx.is_final_key
 
 		if key.type == 'key' then
-			add(key.key .. string.rep(space, key.span - #key.key))
+			add(key.key .. string.rep(space, key.span - utils.len(key.key)))
 			add(is_last and end_pad or comma)
 		end
 

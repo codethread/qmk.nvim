@@ -49,8 +49,9 @@ local function larget_per_column(grid)
 		for row = 1, height do
 			local key = grid[row][col]
 			if key.type == 'key' then
-				if #key.key > longest_key then
-					longest_key = #key.key
+				local len = vim.fn.strdisplaywidth(key.key)
+				if len > longest_key then
+					longest_key = len
 				end
 			end
 		end
