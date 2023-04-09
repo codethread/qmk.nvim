@@ -45,13 +45,14 @@ function M.create_options(layout)
 end
 
 ---@param layout qmk.UserLayout
+---@param options? qmk.UserConfig
 ---@return qmk.Config
-function M.create_options_preview(layout)
-	return config.parse({
+function M.create_options_preview(layout, options)
+	return config.parse(vim.tbl_deep_extend('force', {
 		name = 'test',
 		layout = layout,
 		comment_preview = { position = 'top' },
-	})
+	}, options or {}))
 end
 
 return M

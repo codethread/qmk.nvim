@@ -306,6 +306,70 @@ describe('keymaps', function()
 			},
 		},
 		{
+			msg = 'multi width chars',
+			input = {
+				options = testy.create_options_preview({
+					'x x x',
+					'x x x',
+					'x x x',
+				}, {
+					comment_preview = {
+						position = 'top',
+						keymap_overrides = {
+							B = 'ñ',
+							C = '😃',
+						},
+					},
+				}),
+				keys = { 'AAA', 'B', 'C', 'D', 'E', 'F', '7', '8', '9' },
+			},
+			output = {
+				'//    ┌─────┬───┬─────┐',
+				'//    │ AAA │ ñ │ 😃 │',
+				'//    ├─────┼───┼─────┤',
+				'//    │  D  │ E │  F  │',
+				'//    ├─────┼───┼─────┤',
+				'//    │  7  │ 8 │  9  │',
+				'//    └─────┴───┴─────┘',
+				'[_FOO] = LAYOUT(',
+				'  AAA , B , C,',
+				'  D   , E , F,',
+				'  7   , 8 , 9',
+			},
+		},
+		{
+			msg = 'multi width chars staggerd',
+			input = {
+				options = testy.create_options_preview({
+					'x xx^',
+					'x^x x',
+					'xx^xx',
+				}, {
+					comment_preview = {
+						position = 'top',
+						keymap_overrides = {
+							B = 'ñ',
+							C = '😃',
+						},
+					},
+				}),
+				keys = { 'AA', 'B', 'C', 'D', 'E' },
+			},
+			output = {
+				'//    ┌────┬───────┐',
+				'//    │ AA │   ñ   │',
+				'//    ├────┴───┬───┤',
+				'//    │   😃   │ D │',
+				'//    ├────────┴───┤',
+				'//    │     E      │',
+				'//    └────────────┘',
+				'[_FOO] = LAYOUT(',
+				'  AA ,     B,',
+				'    C    , D,',
+				'      E     ',
+			},
+		},
+		{
 			msg = 'long keys with overlap',
 			input = {
 				options = testy.create_options_preview({
