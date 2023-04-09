@@ -307,7 +307,6 @@ describe('keymaps', function()
 		},
 		{
 			msg = 'multi width chars',
-			only = true,
 			input = {
 				options = testy.create_options_preview({
 					'x x x',
@@ -448,7 +447,7 @@ describe('keymaps', function()
 	}
 
 	for _, test in pairs(tests) do
-		if test.only then
+		if not test.only then
 			it(test.msg, function()
 				local keymap = {
 					layer_name = '_FOO',
