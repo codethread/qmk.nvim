@@ -1,3 +1,4 @@
 .luarc.json
 *_actual.c
+*_actual.keymap
 scratch.lua
