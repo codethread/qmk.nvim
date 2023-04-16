@@ -1,4 +1,3 @@
-local ts = vim.treesitter
 local visitor = require('qmk.parse.visitor').visitor
 local parse_query = require('qmk.parse.visitor').parse_query
 
