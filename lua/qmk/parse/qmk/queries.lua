@@ -1,5 +1,6 @@
 local ts = vim.treesitter
 local visitor = require('qmk.parse.visitor').visitor
+local parse_query = require('qmk.parse.visitor').parse_query
 
 local M = {}
 
@@ -7,7 +8,7 @@ local M = {}
 ---the keymap name and a list of all keys for formatting
 ---@return Query
 local function keymap_query_for(name)
-	return ts.parse_query('c', [[
+	return parse_query('c', [[
 (initializer_pair
     designator: (subscript_designator (identifier) @keymap_name)
     value: (call_expression
@@ -33,7 +34,7 @@ end
 
 ---get all individual keys inside a layout
 ---@type Query
-local key_query = ts.parse_query(
+local key_query = parse_query(
 	'c',
 	[[
 (initializer_pair
@@ -59,7 +60,7 @@ M.declaration_ids = {
 ---get the entire keymap declaration
 ---the intention is to use this for identifying the start and end
 ---@type Query
-local keymap_declaration_query = ts.parse_query(
+local keymap_declaration_query = parse_query(
 	'c',
 	[[
 (init_declarator

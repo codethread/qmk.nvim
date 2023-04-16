@@ -1,5 +1,6 @@
 local ts = vim.treesitter
 local visitor = require('qmk.parse.visitor').visitor
+local parse_query = require('qmk.parse.visitor').parse_query
 
 local M = {}
 
@@ -9,7 +10,7 @@ local M = {}
 ---everything in the bindings node and iterate through the
 ---children
 ---@type Query
-local keymap_query = ts.parse_query(
+local keymap_query = parse_query(
 	'devicetree',
 	[[
 (node

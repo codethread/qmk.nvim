@@ -1,3 +1,5 @@
+local ts = vim.treesitter
+
 ---@class tsnode
 ---@field range fun(): number, number, number, number #Get the range of the node. Return four values: the row, column of the start position, then the row, column of the end position.
 
@@ -19,4 +21,7 @@ local function visitor(query, root, visitors, content, start, final)
 	end
 end
 
-return { visitor = visitor }
+return {
+	visitor = visitor,
+	parse_query = vim.version().minor < 9 and ts.parse_query or ts.query.parse,
+}
