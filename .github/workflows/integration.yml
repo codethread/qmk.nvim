@@ -43,6 +43,9 @@ jobs:
         git clone --depth 1 https://github.com/m00qek/matcher_combinators.lua ~/.local/share/nvim/site/pack/vendor/start/matcher_combinators.lua
         ln -s $(pwd) ~/.local/share/nvim/site/pack/vendor/start
 
+    - name: Compile parsers
+      run: nvim --headless -c "packadd nvim-treesitter" -c "TSInstallSync devicetree" -c "q"
+
     - name: Install dependencies
       run: make prepare
 
