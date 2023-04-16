@@ -1,4 +1,4 @@
-*qmk.txt*              For NVIM v0.8.0              Last change: 2023 April 09
+*qmk.txt*              For NVIM v0.8.0              Last change: 2023 April 16
 
 ==============================================================================
 Table of Contents                                      *qmk-table-of-contents*
@@ -26,6 +26,16 @@ FEATURES                                               *qmk-qmk.nvim-features*
 
 - automatically align your keymaps
 - create a comment string of your keymap
+- supports QMK and ZMK*
+    - note any preprocessor macros must start with `_` if they are to be identified as the start of a key, e.g
+    >c
+        #define _AS(keycode) &as LS(keycode) keycode
+        // ...etc
+        default_layer {
+            &kp TAB        _AS(Q) SOME_OTHER
+        }
+    <
+    - ZMK is still experiemental, please report any bugs
 
 For a simple example of the following keymap
 
@@ -83,7 +93,9 @@ REQUIREMENTS                                       *qmk-qmk.nvim-requirements*
 
 
 - Neovim >= 0.7
-- Treesitter `c` parser available (e.g through nvim-treesitter <https://github.com/nvim-treesitter/nvim-treesitter#quickstart>)
+- QMK: Treesitter `c` parser available (e.g through nvim-treesitter <https://github.com/nvim-treesitter/nvim-treesitter#quickstart>)
+- ZMK: Treesitter `devicetree` parser available (e.g through nvim-treesitter <https://github.com/nvim-treesitter/nvim-treesitter#quickstart>)
+    - this can be used for .keymap files with `set ft=dts`
 
 
 INSTALLATION                                       *qmk-qmk.nvim-installation*
@@ -119,25 +131,28 @@ CONFIGURATION                                     *qmk-qmk.nvim-configuration*
 
 qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
 
-  -----------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
   setting                            type                    descritpion
-  ---------------------------------- ----------------------- ------------------------------------------------------
-  name                               string required         the name of your layout, for example
-                                                             LAYOUT_preonic_grid for the preonic keyboard
+  ---------------------------------- ----------------------- ---------------------------------------------------------
+  name                               string required         the name of your layout, for example LAYOUT_preonic_grid
+                                                             for the preonic keyboard, for zmk this can just be
+                                                             anything, it won’t be used
 
   layout                             string[] required       the keyboard key layout, see Layout for more details
+
+  variant                            qmk,zmk                 (default qmk) chooses the expected hardware target
 
   timeout                            number                  (default 5000) duration of vim.notify timeout if using
                                                              nvim-notify
 
-  auto_format_pattern                string                  (default *keymap.c) the autocommand file pattern to
-                                                             use when applying QMKFormat on save
+  auto_format_pattern                string                  (default *keymap.c) the autocommand file pattern to use
+                                                             when applying QMKFormat on save
 
-  comment_preview                    table                   table of properties for rendering a pretty comment
-                                                             string of each keymap
+  comment_preview                    table                   table of properties for rendering a pretty comment string
+                                                             of each keymap
 
-  comment_preview.position           top,bottom,inside, none (default top) control the position of the preview, set
-                                                             to none to disable
+  comment_preview.position           top,bottom,inside, none (default top) control the position of the preview, set to
+                                                             none to disable
 
   comment_preview.keymap_overrides   table<string, string>   a dictionary of key codes to text replacements, any
                                                              provided value will be merged with the existing
@@ -145,7 +160,7 @@ qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
 
   comment_preview.symbols            table<string, string>   a dictionary of symbols used for the preview comment
                                                              border chars see default.lua for details
-  -----------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------
 
 EXAMPLES ~
 
@@ -161,6 +176,16 @@ Disabling most features ~
         comment_preview = {
             position = 'none'
         }
+    }
+<
+
+using ZMK ~
+
+>lua
+    {
+        name = 'meh',
+        layout = { { 'x', 'x' } },
+        variant = 'zmk'
     }
 <
 

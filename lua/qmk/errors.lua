@@ -6,7 +6,7 @@ local E = {
 
 	keymaps_none = 'qmk.nvim: [E01] No keymaps found',
 	keymaps_too_many = 'qmk.nvim: [E02] Found more than one keymap declaration',
-	keymaps_overlap = 'qmk.nvim: [E03] One ore more keymap declarations overlap with the start and or end of the keymaps "const" declaration',
+	keymaps_overlap = 'qmk.nvim: [E03] One ore more keymap declarations overlap with the start and or end of the keymaps declaration',
 	keymap_empty = function(name)
 		return 'qmk.nvim: [E04] No keys found in keymap ' .. name
 	end,

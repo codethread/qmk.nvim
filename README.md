@@ -8,6 +8,16 @@
 
 - automatically align your keymaps
 - create a comment string of your keymap
+- supports QMK and ZMK\*
+  - note any preprocessor macros must start with `_` if they are to be identified as the start of a key, e.g
+  ```c
+  #define _AS(keycode) &as LS(keycode) keycode
+  // ...etc
+  default_layer {
+      &kp TAB        _AS(Q) SOME_OTHER
+  }
+  ```
+  - ZMK is still experiemental, please report any bugs
 
 For a simple example of the following keymap
 
@@ -62,7 +72,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ## Requirements
 
 - Neovim >= 0.7
-- Treesitter `c` parser available (e.g through [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter#quickstart))
+- QMK: Treesitter `c` parser available (e.g through [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter#quickstart))
+- ZMK: Treesitter `devicetree` parser available (e.g through [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter#quickstart))
+  - this can be used for .keymap files with `set ft=dts`
 
 ## Installation
 
@@ -95,16 +107,17 @@ use {
 
 qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
 
-| setting                            | type                            | descritpion                                                                                                                                                                                                             |
-| ---------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                             | `string` **required**           | the name of your layout, for example `LAYOUT_preonic_grid` for the [preonic keyboard](https://github.com/qmk/qmk_firmware/blob/c5b0e3a6a3c5a86273b933c04f5cfdef9a541c9d/keyboards/preonic/keymaps/default/keymap.c#L53) |
-| `layout`                           | `string[]` **required**         | the keyboard key layout, see [Layout](#Layout) for more details                                                                                                                                                         |
-| `timeout`                          | `number`                        | (default `5000`) duration of vim.notify timeout if using [nvim-notify](https://github.com/rcarriga/nvim-notify)                                                                                                         |
-| `auto_format_pattern`              | `string`                        | (default `*keymap.c`) the autocommand file pattern to use when applying [`QMKFormat`](#Commands) on save                                                                                                                |
-| `comment_preview`                  | `table`                         | table of properties for rendering a pretty comment string of each keymap                                                                                                                                                |
-| `comment_preview.position`         | `top`,`bottom`,`inside`, `none` | (default `top`) control the position of the preview, set to `none` to disable                                                                                                                                           |
-| `comment_preview.keymap_overrides` | `table<string, string>`         | a dictionary of key codes to text replacements, any provided value will be merged with the existing dictionary, see [key_map.lua](./lua/qmk/config/key_map.lua) for details                                             |
-| `comment_preview.symbols`          | `table<string, string>`         | a dictionary of symbols used for the preview comment border chars see [default.lua](./lua/qmk/config/default.lua) for details                                                                                           |
+| setting                            | type                            | descritpion                                                                                                                                                                                                                                                                    |
+| ---------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`                             | `string` **required**           | the name of your layout, for example `LAYOUT_preonic_grid` for the [preonic keyboard](https://github.com/qmk/qmk_firmware/blob/c5b0e3a6a3c5a86273b933c04f5cfdef9a541c9d/keyboards/preonic/keymaps/default/keymap.c#L53), for `zmk` this can just be anything, it won't be used |
+| `layout`                           | `string[]` **required**         | the keyboard key layout, see [Layout](#Layout) for more details                                                                                                                                                                                                                |
+| `variant`                          | `qmk`,`zmk`                     | (default `qmk`) chooses the expected hardware target                                                                                                                                                                                                                           |
+| `timeout`                          | `number`                        | (default `5000`) duration of vim.notify timeout if using [nvim-notify](https://github.com/rcarriga/nvim-notify)                                                                                                                                                                |
+| `auto_format_pattern`              | `string`                        | (default `*keymap.c`) the autocommand file pattern to use when applying [`QMKFormat`](#Commands) on save                                                                                                                                                                       |
+| `comment_preview`                  | `table`                         | table of properties for rendering a pretty comment string of each keymap                                                                                                                                                                                                       |
+| `comment_preview.position`         | `top`,`bottom`,`inside`, `none` | (default `top`) control the position of the preview, set to `none` to disable                                                                                                                                                                                                  |
+| `comment_preview.keymap_overrides` | `table<string, string>`         | a dictionary of key codes to text replacements, any provided value will be merged with the existing dictionary, see [key_map.lua](./lua/qmk/config/key_map.lua) for details                                                                                                    |
+| `comment_preview.symbols`          | `table<string, string>`         | a dictionary of symbols used for the preview comment border chars see [default.lua](./lua/qmk/config/default.lua) for details                                                                                                                                                  |
 
 ### examples
 
@@ -121,6 +134,19 @@ Here are some example configurations:
     comment_preview = {
         position = 'none'
     }
+}
+```
+
+</details>
+
+<details>
+  <summary>using ZMK</summary>
+
+```lua
+{
+    name = 'meh',
+    layout = { { 'x', 'x' } },
+    variant = 'zmk'
 }
 ```
 

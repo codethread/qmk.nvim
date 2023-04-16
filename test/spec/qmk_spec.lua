@@ -100,11 +100,27 @@ describe('qmk', function()
 
 			assert.combinators.match(T.expected, T.buff_content())
 		end)
-	end)
 
-	describe('display', function()
-		it('displays the keymap in a popup', function()
-			assert.is_true(true)
+		it('formats zmk keymaps', function()
+			local T = testy.snapshot('dactyl.keymap', 'zmk')
+
+			local qmk = require('qmk')
+			qmk.setup({
+				name = 'meh',
+				variant = 'zmk',
+				comment_preview = { position = 'top' },
+				layout = {
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'_ _ _ _ _ x x _ _ _ _ _',
+				},
+			})
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
 		end)
 	end)
 end)

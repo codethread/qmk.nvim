@@ -11,6 +11,7 @@ M.required_fields = {
 M.default_config = {
 	name = '',
 	layout = { '' },
+	variant = 'qmk',
 	timeout = 5000,
 	auto_format_pattern = '*keymap.c',
 	comment_preview = {

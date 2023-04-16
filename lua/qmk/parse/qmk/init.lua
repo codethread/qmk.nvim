@@ -26,9 +26,9 @@ local function get_keymaps_position(root)
 	return { start = start, final = final }
 end
 
----@return qmk.KeymapDict
+---@return qmk.KeymapsList
 local function get_keymaps(name, root, content)
-	---@type qmk.KeymapDict
+	---@type qmk.KeymapsList
 	local keymaps = {}
 
 	---@type qmk.Keymap

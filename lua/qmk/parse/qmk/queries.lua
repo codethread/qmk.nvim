@@ -1,25 +1,5 @@
-local ts = vim.treesitter
-
----@class tsnode
----@field range fun(): number, number, number, number #Get the range of the node. Return four values: the row, column of the start position, then the row, column of the end position.
-
----@param query Query
----@param root tsnode
----@param visitors table<string, fun(node: tsnode): nil>
----@param content? string
----@param start? integer,
----@param final? integer
-local function visitor(query, root, visitors, content, start, final)
-	---@diagnostic disable-next-line: param-type-mismatch
-	for id, n in query:iter_captures(root, content, start, final) do
-		local capture_name = query.captures[id]
-		local node = n
-
-		if visitors[capture_name] then
-			visitors[capture_name](node)
-		end
-	end
-end
+local visitor = require('qmk.parse.visitor').visitor
+local parse_query = require('qmk.parse.visitor').parse_query
 
 local M = {}
 
@@ -27,7 +7,7 @@ local M = {}
 ---the keymap name and a list of all keys for formatting
 ---@return Query
 local function keymap_query_for(name)
-	return ts.parse_query('c', [[
+	return parse_query('c', [[
 (initializer_pair
     designator: (subscript_designator (identifier) @keymap_name)
     value: (call_expression
@@ -53,7 +33,7 @@ end
 
 ---get all individual keys inside a layout
 ---@type Query
-local key_query = ts.parse_query(
+local key_query = parse_query(
 	'c',
 	[[
 (initializer_pair
@@ -79,7 +59,7 @@ M.declaration_ids = {
 ---get the entire keymap declaration
 ---the intention is to use this for identifying the start and end
 ---@type Query
-local keymap_declaration_query = ts.parse_query(
+local keymap_declaration_query = parse_query(
 	'c',
 	[[
 (init_declarator

@@ -1,8 +1,10 @@
 local E = require('qmk.errors')
-local parse_qmk = require('qmk.parse.qmk')
 local check = require('qmk.utils').check
 
-local M = {}
+local M = {
+	qmk = require('qmk.parse.qmk'),
+	zmk = require('qmk.parse.zmk'),
+}
 
 ---assert all keymaps don't overlap with the declaration itself
 ---@param keymaps qmk.Keymaps
@@ -26,11 +28,10 @@ end
 ---currenly only supports qmk keymaps, but in theory could support anything that parses to a qmk.Keymaps
 ---@param content string
 ---@param options qmk.Config
----@param parser? fun(content: string, options: qmk.Config): qmk.Keymaps
+---@param parser fun(content: string, options: qmk.Config): qmk.Keymaps
 ---@return qmk.Keymaps
 function M.parse(content, options, parser)
-	local board_parser = parser or parse_qmk
-	local keymaps = board_parser(content, options)
+	local keymaps = parser(content, options)
 	validate(keymaps)
 	return keymaps
 end
@@ -42,10 +43,10 @@ return M
 --------------------------------------------------------------------------------
 
 ---@class qmk.Keymaps
----@field keymaps qmk.KeymapDict
+---@field keymaps qmk.KeymapsList
 ---@field pos qmk.Position
 
----@alias qmk.KeymapDict { [string]: qmk.Keymap } # dictionary of keymaps
+---@alias qmk.KeymapsList qmk.Keymap[]
 
 ---@class qmk.Keymap
 ---@field layer_name string
