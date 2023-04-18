@@ -31,17 +31,6 @@ function M.keymap_visitor(name, root, content, visitors)
 	visitor(query, root, visitors, content)
 end
 
----get all individual keys inside a layout
----@type Query
-local key_query = parse_query(
-	'c',
-	[[
-(initializer_pair
-	value: (call_expression
-	arguments: (argument_list [(identifier) (call_expression)] @key)))
-	]]
-)
-
 M.key_ids = {
 	key = 'key',
 }
@@ -49,6 +38,16 @@ M.key_ids = {
 ---@param root tsnode
 ---@param visitors table<string, fun(node: tsnode): nil>
 function M.key_visitor(root, visitors) --
+	---get all individual keys inside a layout
+	---@type Query
+	local key_query = parse_query(
+		'c',
+		[[
+(initializer_pair
+	value: (call_expression
+	arguments: (argument_list [(identifier) (call_expression)] @key)))
+	]]
+	)
 	visitor(key_query, root, visitors)
 end
 
@@ -56,12 +55,15 @@ M.declaration_ids = {
 	declaration = 'declaration',
 }
 
----get the entire keymap declaration
----the intention is to use this for identifying the start and end
----@type Query
-local keymap_declaration_query = parse_query(
-	'c',
-	[[
+---@param root tsnode
+---@param visitors table<string, fun(node: tsnode): nil>
+function M.declaration_visitor(root, visitors) --
+	---get the entire keymap declaration
+	---the intention is to use this for identifying the start and end
+	---@type Query
+	local keymap_declaration_query = parse_query(
+		'c',
+		[[
 (init_declarator
     declarator: (array_declarator
         declarator: (array_declarator
@@ -69,11 +71,7 @@ local keymap_declaration_query = parse_query(
                 declarator: (identifier))))
     value: (initializer_list) @declaration)
 ]]
-)
-
----@param root tsnode
----@param visitors table<string, fun(node: tsnode): nil>
-function M.declaration_visitor(root, visitors) --
+	)
 	visitor(keymap_declaration_query, root, visitors)
 end
 
