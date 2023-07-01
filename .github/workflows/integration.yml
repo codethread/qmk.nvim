@@ -2,9 +2,9 @@ name: Integration
 
 on:
   push:
-    branches: [ main, alpha ]
+    branches: [main, alpha]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
@@ -14,44 +14,41 @@ jobs:
 
     strategy:
       matrix:
-        nvim-versions: ['stable', 'nightly', 'v0.8.3']
+        nvim-versions: ["stable", "nightly", "v0.8.3"]
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: true
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
 
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.nvim-versions }}
 
-    - uses: rhysd/action-setup-vim@v1
-      with:
-        neovim: true
-        version: ${{ matrix.nvim-versions }}
+      - name: Setup ‘lua’
+        uses: leafo/gh-actions-lua@v8
+        with:
+          luaVersion: "5.1.5"
 
-    - name: Setup ‘lua’
-      uses: leafo/gh-actions-lua@v8
-      with:
-        luaVersion: "5.1.5"
+      - name: Setup ‘luarocks’
+        uses: leafo/gh-actions-luarocks@v4
 
-    - name: Setup ‘luarocks’
-      uses: leafo/gh-actions-luarocks@v4
+      - name: Install dependencies
+        run: make prepare
 
-    - name: Setup Vendors
-      run: |
-        mkdir -p ~/.local/share/nvim/site/pack/vendor/start
-        git clone --depth 1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/vendor/start/plenary.nvim
-        git clone --depth 1 https://github.com/m00qek/matcher_combinators.lua ~/.local/share/nvim/site/pack/vendor/start/matcher_combinators.lua
-        git clone --depth 1 https://github.com/nvim-treesitter/nvim-treesitter.git ~/.local/share/nvim/site/pack/vendor/start/nvim-treesitter
-        ln -s $(pwd) ~/.local/share/nvim/site/pack/vendor/start
+      - name: Setup Treesitter
+        run: |
+          mkdir -p ~/.local/share/nvim/site/pack/vendor/start
+          git clone --depth 1 https://github.com/nvim-treesitter/nvim-treesitter.git ~/.local/share/nvim/site/pack/vendor/start/nvim-treesitter
+          ln -s $(pwd) ~/.local/share/nvim/site/pack/vendor/start
 
-    - name: Compile parsers
-      run: nvim --headless -c "packadd nvim-treesitter" -c "TSInstallSync devicetree" -c "q"
+      - name: Compile parsers
+        run: nvim --headless -c "packadd nvim-treesitter" -c "TSInstallSync devicetree" -c "q"
 
-    - name: Install dependencies
-      run: make prepare
+      - name: Run linter
+        run: make lint
 
-    - name: Run linter
-      run: make lint
-
-    - name: Run tests
-      run: make test
+      - name: Run tests
+        run: make test

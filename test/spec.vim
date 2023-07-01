@@ -1,7 +1,9 @@
-set rtp^=../../vendor/plenary.nvim/
-set rtp^=../../vendor/matcher_combinators.lua/
-set rtp^=~/.local/share/nvim/site/pack/vendor/start/plenary.nvim
-set rtp^=~/.local/share/nvim/site/pack/vendor/start/matcher_combinators.lua
+set rtp^=./test/vendor/plenary.nvim/
+set rtp^=./test/vendor/matcher_combinators/
+" adjust per machine
+set rtp^=~/.local/share/nvim/lazy/nvim-treesitter
+" CI
+set rtp^=~/.local/share/nvim/site/pack/vendor/start/nvim-treesitter
 set rtp^=./
 
 runtime plugin/plenary.vim
