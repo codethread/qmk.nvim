@@ -1,4 +1,4 @@
-*qmk.txt*              For NVIM v0.8.0              Last change: 2023 April 19
+*qmk.txt*               For NVIM v0.8.0              Last change: 2023 July 01
 
 ==============================================================================
 Table of Contents                                      *qmk-table-of-contents*
@@ -22,7 +22,6 @@ hobbyist keyboards.
 
 
 FEATURES                                               *qmk-qmk.nvim-features*
-
 
 - automatically align your keymaps
 - create a comment string of your keymap
@@ -91,7 +90,6 @@ string
 
 REQUIREMENTS                                       *qmk-qmk.nvim-requirements*
 
-
 - Neovim >= 0.7
 - QMK: Treesitter `c` parser available (e.g through nvim-treesitter <https://github.com/nvim-treesitter/nvim-treesitter#quickstart>)
 - ZMK: Treesitter `devicetree` parser available (e.g through nvim-treesitter <https://github.com/nvim-treesitter/nvim-treesitter#quickstart>)
@@ -99,7 +97,6 @@ REQUIREMENTS                                       *qmk-qmk.nvim-requirements*
 
 
 INSTALLATION                                       *qmk-qmk.nvim-installation*
-
 
 - install with your favourite package manager, e.g packer <https://github.com/wbthomason/packer.nvim>
 - call `setup` with your layout name and your layout configuration
@@ -354,7 +351,6 @@ align to what your keymap looks like.
 
 Valid keys are
 
-
 - `x`: indicates presence of key
 - ``: space used to separate keys (must be used, and only use single spaces)
 - `_`: indicates an empty space (e.g to split left and right, or adding padding)
@@ -459,19 +455,16 @@ USAGE                                                     *qmk-qmk.nvim-usage*
 
 COMMANDS ~
 
-
 - `QMKFormat`: format the current buffer
 
 
 LUA ~
-
 
 - `:lua require('qmk').setup( <config> )`: setup qmk using your |qmk-config| (must be called before format, can be called repeatedly)
 - `:lua require('qmk').format( <buf id ?> )`: format a given buffer, or the current if  is not provided
 
 
 AUTOCOMMANDS ~
-
 
 - A `BufWritePre` autocmd will format buffers on save matching `config.auto_format_pattern` (defaults to `*keymap.c`, set to `nil` to disable)
 
@@ -480,7 +473,6 @@ DEBUGGING                                             *qmk-qmk.nvim-debugging*
 
 Getting your layout right may be a slightly iterative process, so I recommend
 the following:
-
 
 - open a scratch buffer next to your `keymap.c` file
 - get the buffer id of your `keymap.c` file with `:lua print(vim.api.nvim_get_current_buf())`
@@ -512,7 +504,6 @@ clear (or you get an `QMK: E00`, as that’s definitely on me).
 
 
 THANKS                                                   *qmk-qmk.nvim-thanks*
-
 
 - go-qmk-keymap <https://github.com/jurgen-kluft/go-qmk-keymap>: this looks cool but still alpha.
 - 2hwk/Q2K <https://github.com/2hwk/Q2K>: same idea, in python, didn’t work for me for some reason, but I stole the keycode map <https://github.com/2hwk/Q2K/blob/master/q2k/reference.py>, thanks!
