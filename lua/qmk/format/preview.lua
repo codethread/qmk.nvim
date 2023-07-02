@@ -1,4 +1,4 @@
-local E = 'qmk.errors'
+local E = require('qmk.errors')
 local Seen = require('qmk.data.Seen')
 local utils = require('qmk.utils')
 

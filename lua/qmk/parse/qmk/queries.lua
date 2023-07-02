@@ -75,4 +75,10 @@ function M.declaration_visitor(root, visitors) --
 	visitor(keymap_declaration_query, root, visitors)
 end
 
+---@param root tsnode
+---@param visitors table<string, fun(node: tsnode): nil>
+function M.comment_visitor(root, visitors)
+	visitor(parse_query('c', [[(comment) @comment]]), root, visitors)
+end
+
 return M

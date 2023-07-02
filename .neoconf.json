@@ -1,0 +1,21 @@
+{
+  "neodev": {
+    "library": {
+      "enabled": true,
+      "plugins": ["qmk.nvim"]
+    }
+  },
+  "neoconf": {
+    "plugins": {
+      "lua_ls": {
+        "enabled": true,
+        "diagnostics": {
+          "globals": ["vim", "describe", "it", "before_each", "after_each"]
+        }
+      }
+    }
+  },
+  "lspconfig": {
+    "sumneko_lua": {}
+  }
+}

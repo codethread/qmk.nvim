@@ -37,4 +37,10 @@ function M.keymap_visitor(root, content, visitors)
 	visitor(keymap_query, root, visitors, content)
 end
 
+---@param root tsnode
+---@param visitors table<string, fun(node: tsnode): nil>
+function M.comment_visitor(root, visitors)
+	visitor(parse_query('devicetree', [[(comment) @comment]]), root, visitors)
+end
+
 return M

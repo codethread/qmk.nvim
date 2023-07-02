@@ -8,6 +8,7 @@
 
 - automatically align your keymaps
 - create a comment string of your keymap
+- use inline JSON comments to make quick easy changes
 - supports QMK and ZMK\*
   - note any preprocessor macros must start with `_` if they are to be identified as the start of a key, e.g
   ```c
@@ -307,6 +308,50 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                         KC_BSPC , KC_DEL  , KC_END  ,                                  KC_PGDN , KC_ENTER , KC_SPC
 )
 };
+```
+
+</details>
+
+<details>
+  <summary>Using inline JSON</summary>
+
+A comment block can be added at the bottom of your config file (for both QMK and ZMK). Inline configs will be reparsed on every call to QMK functions, and then merged with your main config.
+
+**It must**
+
+- be a block comment to avoid extra comment symbols
+- be surrounded with`qmk:json:start` and end with `qmk:json:end`
+
+e.g.:
+
+```c
+// clang-format off
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+[_QWERTY] = MY_LAYOUT(
+      KC_1 , KC_2 , KC_3 , BAR , KC_5
+),
+
+[_SOMETHING] = MY_LAYOUT(
+      KC_1 , KC_2 , FOO , KC_4 , KC_5
+)
+};
+
+/*
+qmk:json:start
+{
+  "layout": [
+    "x x x _",
+    "x _ ^xx"
+  ],
+  "comment_preview": {
+    "keymap_overrides": {
+      "BAR": "BUTTER",
+      "FOO": "😎"
+    }
+  }
+}
+qmk:json:end
+*/
 ```
 
 </details>

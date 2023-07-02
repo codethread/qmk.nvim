@@ -1,4 +1,5 @@
 local queries = require('qmk.parse.qmk.queries')
+local get_inline_config = require('qmk.parse.get_inline_config')
 local check = require('qmk.utils').check
 local E = require('qmk.errors')
 local ts = vim.treesitter
@@ -35,6 +36,7 @@ local function get_keymaps(name, root, content)
 	local current_keymap = {
 		layout_name = name,
 		keys = {},
+		config = {},
 	}
 	local ids = queries.keymap_ids
 
@@ -73,15 +75,18 @@ end
 ---get all keymaps from the current buffer
 ---@param content string
 ---@param options qmk.Config
----@return qmk.Keymaps
+---@return qmk.Keymaps, qmk.InlineConfig | nil
 local function get_keymap(content, options)
 	local parser = ts.get_string_parser(content, 'c', {})
 	local root = parser:parse()[1]:root()
 
+	local inline_config = get_inline_config(queries.comment_visitor, root, content)
+
 	return {
 		pos = get_keymaps_position(root),
 		keymaps = get_keymaps(options.name, root, content),
-	}
+	},
+		inline_config
 end
 
 return get_keymap
