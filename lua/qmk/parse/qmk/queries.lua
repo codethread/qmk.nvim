@@ -9,7 +9,7 @@ local M = {}
 local function keymap_query_for(name)
 	return parse_query('c', [[
 (initializer_pair
-    designator: (subscript_designator (identifier) @keymap_name)
+	designator: (subscript_designator [(number_literal) (identifier)] @keymap_name)
     value: (call_expression
              function: (identifier) @id (#eq? @id ]] .. name .. [[)
              arguments: (argument_list ")" @final))) @key_list

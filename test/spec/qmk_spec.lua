@@ -78,6 +78,20 @@ describe('qmk', function()
 			assert.combinators.match(T.expected, T.buff_content())
 		end)
 
+		it('formats numbers in keymaps', function()
+			local T = testy.snapshot('numbers.c')
+
+			local qmk = require('qmk')
+			qmk.setup({
+				name = 'LAYOUT_preonic_grid',
+				comment_preview = { position = 'none' },
+				layout = { '_ x x x x x' },
+			})
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
+
 		it('formats a complex design', function()
 			local T = testy.snapshot('kinesis.c')
 
