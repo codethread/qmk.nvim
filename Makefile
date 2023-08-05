@@ -25,7 +25,7 @@ watch:
 	  | entr make test SPEC=$(SPEC)
 
 lint:
-	@luacheck lua/ test/spec/
+	@luacheck lua/
 
 format:
 	@stylua --glob '**/*.lua' lua

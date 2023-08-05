@@ -1,6 +1,4 @@
-local E = require('qmk.errors')
 local match = assert.combinators.match
-local match_string = require('matcher_combinators.matchers.string')
 local zmk_parser = require('qmk.parse.zmk')
 local parser = require('qmk.parse').parse
 
@@ -125,75 +123,6 @@ describe('parse zmk keymaps:', function()
 	end
 end)
 
-pending('parse zmk keymaps abuse:', function()
-	---@type { msg: string, err: string, input: string }[]
-	local tests = {
-		{
-			msg = 'no code',
-			err = E.keymaps_none,
-			input = '',
-		},
-		{
-			msg = 'no keymaps, but the overlap triggers first',
-			err = E.keymaps_overlap,
-			input = 'const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = { };',
-		},
-		{
-			msg = 'no keymaps',
-			err = E.keymaps_none,
-			input = 'const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {\n};',
-		},
-		{
-			msg = 'malformed',
-			err = E.keymaps_none,
-			input = 'const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =  };',
-		},
-		{
-			msg = 'empty keymap',
-			err = E.keymap_empty('_FOO'),
-			input = [[
-              const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =  {
-              [_FOO] = LAYOUT()
-              }; ]],
-		},
-		{
-			msg = 'empty keymap amoungst valid ones',
-			err = E.keymap_empty('_FOO'),
-			input = [[
-              const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] =  {
-              [_OO] = LAYOUT(A),
-              [_FOO] = LAYOUT(),
-              [_FO] = LAYOUT(B),
-              }; ]],
-		},
-		{
-			msg = 'start line overlaps',
-			err = E.keymaps_overlap,
-			input = [[
-            const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = { [_FOO] = LAYOUT(KC_A),
-            };
-            ]],
-		},
-		{
-			msg = 'last line overlaps',
-			err = E.keymaps_overlap,
-			input = [[
-            const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-            [_FOO] = LAYOUT(KC_A), };
-            ]],
-		},
-		{
-			msg = 'both lines overlap',
-			err = E.keymaps_overlap,
-			input = 'const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = { [_FOO] = LAYOUT(KC_A), };',
-		},
-	}
-
-	for _, test in pairs(tests) do
-		it('should fail when ' .. test.msg, function()
-			local ok, err = pcall(parser, test.input, { name = 'LAYOUT' }, zmk_parser)
-			assert(not ok, 'no error thrown')
-			match(match_string.equals(test.err), err)
-		end)
-	end
-end)
+-- TODO
+-- describe('parse zmk keymaps abuse:', function()
+-- end)
