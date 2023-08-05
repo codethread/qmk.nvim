@@ -2,8 +2,8 @@ local parser = require('qmk.parse')
 local api = vim.api
 
 local function qmk(options, content, bufnr)
-	local keymaps = parser.parse(table.concat(content, '\n'), options, parser.qmk)
-	local formatted = require('qmk.format.qmk')(keymaps, options)
+	local keymaps, config = parser.parse(table.concat(content, '\n'), options, parser.qmk)
+	local formatted = require('qmk.format.qmk')(keymaps, config)
 	api.nvim_buf_set_lines(bufnr, keymaps.pos.start + 1, keymaps.pos.final, false, formatted)
 end
 

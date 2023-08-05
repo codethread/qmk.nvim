@@ -1,5 +1,6 @@
 local E = require('qmk.errors')
 local check = require('qmk.utils').check
+local merge_configs = require('qmk.config.merge')
 
 local M = {
 	qmk = require('qmk.parse.qmk'),
@@ -28,12 +29,14 @@ end
 ---currenly only supports qmk keymaps, but in theory could support anything that parses to a qmk.Keymaps
 ---@param content string
 ---@param options qmk.Config
----@param parser fun(content: string, options: qmk.Config): qmk.Keymaps
----@return qmk.Keymaps
+---@param parser fun(content: string, options: qmk.Config): qmk.Keymaps, qmk.InlineConfig | nil
+---@return qmk.Keymaps, qmk.Config
 function M.parse(content, options, parser)
-	local keymaps = parser(content, options)
+	local keymaps, inline_config = parser(content, options)
 	validate(keymaps)
-	return keymaps
+	local final_config = inline_config and merge_configs(options, inline_config) or options
+
+	return keymaps, final_config
 end
 
 return M

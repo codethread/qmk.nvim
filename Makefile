@@ -14,26 +14,20 @@ nvim:
 
 test:
 ifeq ($(strip $(SPEC)),) # a.k.a. $(SPEC) is empty
-	@$(RUN) -c "PlenaryBustedDirectory test/spec/ { minimal_init = 'test/spec.vim' }"
+	@$(RUN) -c "PlenaryBustedDirectory lua/ { minimal_init = 'test/spec.vim' }"
 else
 	@$(RUN) -c "PlenaryBustedFile $(SPEC)"
 endif
 
 watch:
-	@echo -e '\nRunning tests on "test/spec/**/*_spec.lua" when any Lua file on "lua" and "test/spec" changes\n'
+	@echo -e '\nRunning tests on "lua/qmk/**/*_spec.lua" when any Lua file on "lua" and "test/spec" changes\n'
 	@find ./test/spec/ ./lua/ -name '*.lua' \
 	  | entr make test SPEC=$(SPEC)
 
 lint:
-	@luacheck lua/ test/spec/
+	@luacheck lua/
 
 format:
-	@make format-code format-test
-
-format-code:
 	@stylua --glob '**/*.lua' lua
-
-format-test:
-	@stylua --glob '**/*.lua' test/spec
 
 all: prepare test

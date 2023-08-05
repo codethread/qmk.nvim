@@ -125,7 +125,7 @@ describe('parse qmk keymaps:', function()
                     A(
                      B, C(
                         D   , E() )
-                        )
+                        ),
                     KC_C,),
                 };
                 ]],
@@ -147,7 +147,7 @@ describe('parse qmk keymaps:', function()
 						layer_name = '_BOO',
 						layout_name = 'LAYOUT',
 						keys = { 'KC_A', 'KC_B', 'A(B, C(D, E()))', 'KC_C' },
-						pos = { start = 9, final = 14 },
+						pos = { start = 9, final = 18 },
 					},
 				},
 			},

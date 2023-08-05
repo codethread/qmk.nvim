@@ -136,5 +136,43 @@ describe('qmk', function()
 
 			assert.combinators.match(T.expected, T.buff_content())
 		end)
+
+		it('formats inline config', function()
+			local T = testy.snapshot('inline_config.c', 'qmk')
+
+			local qmk = require('qmk')
+			qmk.setup({
+				name = 'MY_LAYOUT',
+				layout = {
+					'x x x',
+					'x x _',
+				},
+			})
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
+
+		it('formats inline zmk keymaps', function()
+			local T = testy.snapshot('dactyl_inline.keymap', 'zmk')
+
+			local qmk = require('qmk')
+			qmk.setup({
+				name = 'meh',
+				variant = 'zmk',
+				comment_preview = { position = 'top' },
+				layout = {
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'_ _ _ _ _ x x _ _ _ _ _',
+				},
+			})
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
 	end)
 end)

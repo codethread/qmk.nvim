@@ -1,6 +1,6 @@
 local E = require('qmk.errors')
 local check = require('qmk.utils').check
-local validator = require('qmk.validator')
+local validator = require('qmk.config.validator')
 local config = require('qmk.config.default')
 local key_map = require('qmk.config.key_map')
 
@@ -8,7 +8,7 @@ local M = {}
 
 ---@param layout qmk.UserLayout
 ---@return qmk.LayoutPlan
-local function parse_layout(layout)
+function M.parse_layout(layout)
 	check(#layout > 0, E.layout_empty)
 
 	local result = {}
@@ -65,13 +65,13 @@ end
 function M.parse(user_config)
 	check(user_config, E.config_missing)
 	check(user_config.name and user_config.layout, E.config_missing_required)
-
 	---@type qmk.Config
 	local merged_config = merge(config.default_config, user_config)
 
-	validator(merged_config, config.default_config)
+	merged_config.layout = M.parse_layout(merged_config.layout)
 
-	merged_config.layout = parse_layout(merged_config.layout)
+	--TODO: DI the validator
+	validator(merged_config, config.default_config)
 
 	local keymaps = merge(key_map.key_map, merged_config.comment_preview.keymap_overrides or {})
 	local merged_sorted_config =
@@ -132,3 +132,7 @@ return M
 ---@field position? 'top' | 'bottom' | 'inside' | 'none'
 ---@field keymap_overrides? table<string, string> # table of keymap overrides, e.g. { KC_ESC = 'Esc' }
 ---@field symbols? qmk.PreviewSymbols
+
+---@class qmk.InlineConfig
+---@field layout? qmk.UserLayout
+---@field comment_preview? qmk.UserPreview
