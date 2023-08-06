@@ -375,7 +375,7 @@ Valid keys are
 
 ### examples
 
-_there is [also a test file](./test/spec/qmk/format/keymap_spec.lua) with a great many examples_
+_there is [also a test file](./lua/qmk/format/keymap_spec.lua) with a great many examples_
 
 <details>
   <summary>two rows, two columns</summary>
@@ -520,6 +520,4 @@ I have tried to create useful errors when something is wrong with the config, la
 ## Thanks
 
 - [go-qmk-keymap](https://github.com/jurgen-kluft/go-qmk-keymap): this looks cool but still alpha.
-- [2hwk/Q2K](https://github.com/2hwk/Q2K): same idea, in python, didn't work for me for some reason, but I stole the [keycode map](https://github.com/2hwk/Q2K/blob/master/q2k/reference.py), thanks!
 - [this excellent nvim intro](https://www.youtube.com/watch?v=9gUatBHuXE0&t=0s) by TJ DeVries on how to use a powerful set of neovim's builtin features (which inspired and taught me how to make this).
-- [nvim-tree](https://github.com/nvim-tree/nvim-tree.lua): I stole your approach for validating user config, nice idea!
