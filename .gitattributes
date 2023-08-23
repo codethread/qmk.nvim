@@ -1,1 +1,2 @@
 lua/qmk/lib/lualib_bundle.lua linguist-generated
+doc/* linguist-documentation
