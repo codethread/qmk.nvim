@@ -3,3 +3,6 @@
 *_actual.keymap
 scratch.lua
 test/vendor
+
+node_modules
+.yarn/

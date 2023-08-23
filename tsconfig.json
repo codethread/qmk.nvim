@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TypeScriptToLua/TypeScriptToLua/master/tsconfig-schema.json",
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "compilerOptions": {
+    "types": ["@gkzhb/lua-types-nvim", "lua-types/5.1"],
+    "exactOptionalPropertyTypes": true,
+    "allowUnusedLabels": true, // let eslint handle this
+    "allowUnreachableCode": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "outDir": "lua/qmk/lib",
+    "baseUrl": "src",
+    "paths": {
+      "@@/*": ["*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "tstl": {
+    "noImplicitSelf": true,
+    "luaPlugins": [{ "name": "./tstl/fix-require-path.ts" }],
+    "luaTarget": "JIT"
+  }
+}
