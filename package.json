@@ -16,7 +16,6 @@
     "@tsconfig/node18": "^18.2.0",
     "@types/eslint": "^8",
     "@types/node": "^18.16.1",
-    "@types/prettier": "^3",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
     "eslint": "latest",
