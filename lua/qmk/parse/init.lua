@@ -33,7 +33,7 @@ end
 ---@param parser fun(content: string, options: qmk.Config): qmk.Keymaps, qmk.InlineConfig | nil
 ---@return qmk.Keymaps, qmk.Config
 function M.parse(content, options, parser)
-	vim.print(lib.libTest('hello lib'))
+	vim.pretty_print(lib.libTest('hello lib'))
 	local keymaps, inline_config = parser(content, options)
 	validate(keymaps)
 	local final_config = inline_config and merge_configs(options, inline_config) or options
