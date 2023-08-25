@@ -1,2 +1,3 @@
-lua/qmk/lib/lualib_bundle.lua linguist-generated
+lua/qmk/lib/* linguist-generated
+lua/qmk/lib/** linguist-generated
 doc/* linguist-documentation
