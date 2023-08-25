@@ -446,18 +446,16 @@ describe('keymaps', function()
 		},
 	}
 
-	for _, test in pairs(tests) do
-		if not test.only then
-			it(test.msg, function()
-				local keymap = {
-					layer_name = '_FOO',
-					pos = { start = 1, final = 3 },
-					layout_name = 'LAYOUT',
-					keys = test.input.keys,
-				}
-				local output = format(test.input.options, keymap)
-				match(test.output, output)
-			end)
-		end
-	end
+	require('qmk._test_utils').for_each_test(tests, function(test)
+		it(test.msg, function()
+			local keymap = {
+				layer_name = '_FOO',
+				pos = { start = 1, final = 3 },
+				layout_name = 'LAYOUT',
+				keys = test.input.keys,
+			}
+			local output = format(test.input.options, keymap)
+			match(test.output, output)
+		end)
+	end)
 end)

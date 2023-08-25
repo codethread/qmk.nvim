@@ -1,6 +1,7 @@
 {
   "name": "qmk.nvim",
   "scripts": {
+    "dev": "tstl --watch",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
     "checks": "yarn lint && yarn typecheck",
@@ -9,7 +10,7 @@
   },
   "dependencies": {
     "@codethread/tstl-result": "^0.0.2",
-    "@codethread/tstl-validate": "^0.0.3"
+    "@codethread/tstl-validate": "^0.1.2"
   },
   "devDependencies": {
     "@gkzhb/lua-types-nvim": "^0.0.7",

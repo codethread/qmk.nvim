@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# run unit tests for the project
+#
+# examples:
+#
+# run all test files
+# > scripts/test
+#
+# run a single test file
+# > scripts/test ./lua/qmk/config/init_spec.lua
+
+# if nothing is passed
+if [ $# -eq 0 ]; then
+  nvim --headless --noplugin -u test/spec.vim -c "PlenaryBustedDirectory lua/ { minimal_init = 'test/spec.vim' }"
+else
+  nvim --headless --noplugin -u test/spec.vim -c "PlenaryBustedFile ${1}"
+fi
+

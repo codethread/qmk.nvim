@@ -241,11 +241,11 @@ describe('parse qmk keymaps abuse:', function()
 		},
 	}
 
-	for _, test in pairs(tests) do
+	require('qmk._test_utils').for_each_test(tests, function(test)
 		it('should fail when ' .. test.msg, function()
 			local ok, err = pcall(parser, test.input, { name = 'LAYOUT' }, qmk_parser)
 			assert(not ok, 'no error thrown')
 			match(match_string.equals(test.err), err)
 		end)
-	end
+	end)
 end)

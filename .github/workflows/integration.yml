@@ -22,6 +22,8 @@ jobs:
         with:
           submodules: true
 
+      - uses: extractions/setup-just@v1
+
       - uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
@@ -36,7 +38,7 @@ jobs:
         uses: leafo/gh-actions-luarocks@v4
 
       - name: Install dependencies
-        run: make prepare
+        run: just prepare
 
       - name: Setup Treesitter
         run: |
@@ -48,10 +50,10 @@ jobs:
         run: nvim --headless -c "packadd nvim-treesitter" -c "TSInstallSync devicetree" -c "q"
 
       - name: Run linter
-        run: make lint
+        run: just lint
 
       - name: Run tests
-        run: make test
+        run: just test
 
   ts-test:
     name: Typescript Tests

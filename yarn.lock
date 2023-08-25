@@ -19,12 +19,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codethread/tstl-validate@npm:^0.0.3":
-  version: 0.0.3
-  resolution: "@codethread/tstl-validate@npm:0.0.3"
+"@codethread/tstl-validate@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@codethread/tstl-validate@npm:0.1.2"
   dependencies:
     "@codethread/tstl-result": ^0.0.2
-  checksum: 47f1c9f02a9e59982d4288c270234f8e69b80d9e3778126ca8eb74c373cb92fcd7787a73a088bac7ab92ca8fa7ab6adef8d9e13685bd945954c7bc88ce698a3e
+  checksum: fb24bc1a9c3749c8c83e759fc423a88faebf32d63d4a00737844d27eaf24a7e333cc3a61447786e1239a04c9bf53b14634ec6d0b957b03ab260f4e17a13596d0
   languageName: node
   linkType: hard
 
@@ -1240,7 +1240,7 @@ __metadata:
   resolution: "qmk.nvim@workspace:."
   dependencies:
     "@codethread/tstl-result": ^0.0.2
-    "@codethread/tstl-validate": ^0.0.3
+    "@codethread/tstl-validate": ^0.1.2
     "@gkzhb/lua-types-nvim": ^0.0.7
     "@tsconfig/node18": ^18.2.0
     "@types/eslint": ^8

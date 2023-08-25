@@ -100,7 +100,7 @@ describe('parse zmk keymaps:', function()
 		},
 	}
 
-	for _, test in pairs(tests) do
+	require('qmk._test_utils').for_each_test(tests, function(test)
 		local all_keymaps = parser(test.input, { name = 'ZMK' }, zmk_parser)
 
 		it('for layout "' .. test.msg .. '" gets the correct pos', function()
@@ -120,7 +120,7 @@ describe('parse zmk keymaps:', function()
 				end
 			)
 		end
-	end
+	end)
 end)
 
 -- TODO
