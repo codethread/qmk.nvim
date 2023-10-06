@@ -2,13 +2,13 @@ name: Integration
 
 on:
   push:
-    branches: [main, alpha]
+    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  test:
-    name: Tests
+  lua-test:
+    name: Lua Tests
 
     runs-on: ubuntu-latest
 
@@ -21,6 +21,8 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: true
+
+      - uses: extractions/setup-just@v1
 
       - uses: rhysd/action-setup-vim@v1
         with:
@@ -36,7 +38,7 @@ jobs:
         uses: leafo/gh-actions-luarocks@v4
 
       - name: Install dependencies
-        run: make prepare
+        run: just prepare
 
       - name: Setup Treesitter
         run: |
@@ -48,7 +50,25 @@ jobs:
         run: nvim --headless -c "packadd nvim-treesitter" -c "TSInstallSync devicetree" -c "q"
 
       - name: Run linter
-        run: make lint
+        run: just lint
 
       - name: Run tests
-        run: make test
+        run: just test
+
+  ts-test:
+    name: Typescript Tests
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn --immutable
+      - run: yarn run checks

@@ -63,10 +63,10 @@ describe('format qmk', function()
 		},
 	}
 
-	for _, test in pairs(tests) do
+	require('qmk._test_utils').for_each_test(tests, function(test)
 		it(test.msg, function()
 			local output = format_keymaps(test.input.keymaps, test.input.options)
 			match(test.output, output)
 		end)
-	end
+	end)
 end)

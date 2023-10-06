@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# watch the project and run tests on file changes
+#
+# examples:
+#
+# run all test files anytime a file changes
+# > scripts/watch
+#
+# run a single test file anytime a file changes
+# > scripts/watch ./lua/qmk/config/init_spec.lua
+
+find ./test/spec/ ./lua/ -name '*.lua' | entr ./scripts/test "$1"

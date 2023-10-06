@@ -59,4 +59,39 @@ function M.create_options_preview(layout, options)
 	}, options or {}))
 end
 
+---@generic T
+---@param tests T[]
+---@param fn fun(test: T): nil
+function M.for_each_test(tests, fn)
+	local only_tests = {}
+
+	-- check for 'only' tests
+	for _, test in pairs(tests) do
+		if test.only and not test.skip then
+			table.insert(only_tests, test)
+		end
+	end
+
+	local tests_in_use = tests
+
+	if #only_tests > 0 then
+		tests_in_use = only_tests
+	end
+
+	for _, test in pairs(tests_in_use) do
+		if not test.skip then
+			fn(test)
+		end
+	end
+end
+
+---@alias TestTable Test[]
+
+---@class Test
+---@field msg string
+---@field input string | table | nil
+---@field output string | table
+---@field skip? boolean
+---@field only? boolean
+
 return M
