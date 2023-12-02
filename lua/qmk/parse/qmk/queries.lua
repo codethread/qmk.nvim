@@ -68,7 +68,7 @@ function M.declaration_visitor(root, visitors) --
     declarator: (array_declarator
         declarator: (array_declarator
             declarator: (array_declarator
-                declarator: (identifier))))
+                declarator: (identifier) @id (#eq? @id "keymaps"))))
     value: (initializer_list) @declaration)
 ]]
 	)
