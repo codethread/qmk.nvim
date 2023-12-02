@@ -153,6 +153,24 @@ describe('qmk', function()
 			assert.combinators.match(T.expected, T.buff_content())
 		end)
 
+		it('formats qmk with macros', function()
+			local T = testy.snapshot('macros.c', 'qmk')
+
+			local qmk = require('qmk')
+			qmk.setup({
+				name = 'LAYOUT_split_3x5_2',
+				layout = {
+					'x x x x x _ _ _ _ x x x x x',
+					'x x x x x _ _ _ _ x x x x x',
+					'x x x x x _ _ _ _ x x x x x',
+					'_ _ _ _ x x _ _ x x _ _ _ _',
+				},
+			})
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
+
 		it('formats inline zmk keymaps', function()
 			local T = testy.snapshot('dactyl_inline.keymap', 'zmk')
 
