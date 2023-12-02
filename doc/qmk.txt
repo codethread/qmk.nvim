@@ -1,4 +1,4 @@
-*qmk.txt*              For NVIM v0.8.0             Last change: 2023 August 06
+*qmk.txt*             For NVIM v0.8.0            Last change: 2023 December 02
 
 ==============================================================================
 Table of Contents                                      *qmk-table-of-contents*
