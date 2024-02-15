@@ -1,0 +1,55 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+#define _AS(keycode) &as LS(keycode) keycode
+
+&mt {
+   tapping-term-ms = <200>;
+};
+
+/ {
+    behaviors {
+        as: auto_shift {
+            compatible = "zmk,behavior-hold-tap";
+            label = "AUTO_SHIFT";
+            #binding-cells = <2>;
+            tapping_term_ms = <200>;
+            quick_tap_ms = <0>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+&mt LC(LG(LS(LALT))) ESC   _AS(N1)   _AS(N2)    _AS(N3)    _AS(N4)     _AS(N5)                          _AS(N6)   _AS(N7)      _AS(N8)      _AS(N9)    _AS(N0)    _AS(LBKT)
+&kp TAB        _AS(Q)    _AS(W)     _AS(F)     _AS(P)      _AS(B)                           _AS(J)    _AS(L)       _AS(U)       _AS(Y)     _AS(SEMI)  _AS(RBKT)
+&kp DEL                     _AS(A)    _AS(R)     _AS(S)     _AS(T)      _AS(G)                           _AS(M)    _AS(N)       _AS(E)       _AS(I)     _AS(O)   _AS(BSPC)
+&mt LSHFT PG_UP    _AS(Z)    _AS(X)     _AS(C)     _AS(D)      _AS(V)               _AS(K)    _AS(H)       _AS(COMMA)   _AS(DOT)   _AS(FSLH)  &mt RSHFT PG_DN
+&to 1       &mm      &me         &kp LCTRL &kp LALT   &mt LCMD GRAVE               &mt LC(LS(LALT)) DQT   &mt RALT SQT    &kp LEFT    &kp DOWN &kp UP  &kp RIGHT
+                   &kp SPACE         &kp RET
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+        };
+
+        lower_layer {
+            bindings = <
+
+    &kp F11               &kp F1     &kp F2     &kp F3     &kp F4     &kp F5                                     &kp F6      &kp F7        &kp F8        &kp F9      &kp F10     &kp F12 
+    &none   &bt BT_SEL 0   &bt BT_SEL 1  &bt BT_SEL 2   &bt BT_SEL 3   &bt BT_CLR                               &none      &none       &none       &none       &none      &none 
+    &none               &none       &none       &none   &kp TILDE  &none                                    &none      &none       &none       &none       &none      &none 
+    &none               &none       &none       &none       &none       &none                                       &none      &none       &none       &none       _AS(BSLH)    &none 
+    &to 0                &none       &none       &none   &none   &none                              &none      &kp C_PP      &kp C_PREV     &kp C_VOL_DN   &kp C_VOL_UP   &kp C_NEXT 
+                                                                      &none                     &none
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN &inc_dec_kp PG_UP PG_DN>;
+        };
+
+    };
+};

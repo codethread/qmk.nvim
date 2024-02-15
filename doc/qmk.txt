@@ -1,4 +1,4 @@
-*qmk.txt*              For NVIM v0.8.0             Last change: 2023 August 06
+*qmk.txt*             For NVIM v0.8.0            Last change: 2024 February 15
 
 ==============================================================================
 Table of Contents                                      *qmk-table-of-contents*
@@ -150,7 +150,7 @@ qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
                                                              of each keymap
 
   comment_preview.position           top,bottom,inside, none (default top) control the position of the preview, set to
-                                                             none to disable
+                                                             none to disable (inside is only valid for variant=qmk)
 
   comment_preview.keymap_overrides   table<string, string>   a dictionary of key codes to text replacements, any
                                                              provided value will be merged with the existing
