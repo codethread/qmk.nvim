@@ -21,7 +21,9 @@ local function zmk(options, content, bufnr, last_keymap)
 	local keymap = keymaps[keymap_id]
 	if keymap ~= nil then
 		local out = require('qmk.format.zmk')(keymap, options)
-		if options.comment_preview.position == 'bottom' then
+		if not out.preview then
+			api.nvim_buf_set_lines(bufnr, out.pos.start + 1, out.pos.final, false, out.keys)
+		elseif options.comment_preview.position == 'bottom' then
 			vim.list_extend(out.keys, out.preview)
 			api.nvim_buf_set_lines(bufnr, out.pos.start + 1, out.pos.final, false, out.keys)
 		else

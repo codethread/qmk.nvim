@@ -1,6 +1,6 @@
 # qmk.nvim
 
-**qmk.nvim** is a 100% lua plugin for Neovim that formats [QMK](https://docs.qmk.fm/#/newbs) keymaps, used in a large number of mechanical and hobbyist keyboards.
+**qmk.nvim** is a 100% lua plugin for Neovim that formats [QMK](https://docs.qmk.fm/#/newbs) and [ZMK](https://zmk.dev/) keymaps, used in a large number of mechanical and hobbyist keyboards.
 
 ![qmk](https://user-images.githubusercontent.com/10004500/226140459-6a37f7c9-1154-4a7c-899a-5fa6943e6002.gif)
 
@@ -9,7 +9,7 @@
 - automatically align your keymaps
 - create a comment string of your keymap
 - use inline JSON comments to make quick easy changes
-- supports QMK and ZMK\*
+- supports QMK and ZMK\* (though I highly recommend [keymap-editor](https://nickcoutsos.github.io/keymap-editor/))
   - note any preprocessor macros must start with `_` if they are to be identified as the start of a key, e.g
   ```c
   #define _AS(keycode) &as LS(keycode) keycode
