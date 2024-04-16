@@ -73,7 +73,12 @@ function M.parse(user_config)
 	--TODO: DI the validator
 	validator(merged_config, config.default_config)
 
-	local keymaps = merge(key_map.key_map, merged_config.comment_preview.keymap_overrides or {})
+	local base_keymap = key_map.key_map
+	if merged_config.variant == 'zmk' then
+		base_keymap = require('qmk.config.zmk_key_map').zmk_key_map
+	end
+
+	local keymaps = merge(base_keymap, merged_config.comment_preview.keymap_overrides or {})
 	local merged_sorted_config =
 		merge(merged_config, { comment_preview = { keymap_overrides = key_map.sort(keymaps) } })
 
