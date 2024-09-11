@@ -24,10 +24,13 @@ watch:
 	@find ./test/spec/ ./lua/ -name '*.lua' \
 	  | entr make test SPEC=$(SPEC)
 
+types:
+	@nvim -l test/types.lua --skip-tests=true 
+
 lint:
 	@luacheck lua/
 
 format:
 	@stylua --glob '**/*.lua' lua
 
-all: prepare test
+all: prepare lint test types
