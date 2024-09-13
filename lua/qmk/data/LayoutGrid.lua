@@ -61,12 +61,8 @@ local function larget_per_column(grid)
 end
 
 ---@class qmk.LayoutGrid
----@field new fun(self, layout: qmk.LayoutPlan, keys: string[]): qmk.LayoutGrid
----@field for_each fun(self, fn: fun(key: qmk.LayoutGridCell, context: qmk.LayoutGridContext): nil): nil
----@field cells fun(): qmk.LayoutGridCell[][]
+---@field cells fun(self: qmk.LayoutGrid): qmk.LayoutGridCell[][]
 ---@field private grid qmk.LayoutGridCell[][]
-
----@type qmk.LayoutGrid
 local LayoutGrid = {}
 
 ---@param layout qmk.LayoutPlan
@@ -148,6 +144,8 @@ end
 ---@field is_sibling_bridge_down boolean
 ---@field is_sibling_bridge_vert boolean
 
+---iterate through the grid
+---@param fn fun(key: qmk.LayoutGridCell, context: qmk.LayoutGridContext):nil
 function LayoutGrid:for_each(fn)
 	for row_i, row in ipairs(self.grid) do
 		local found_final_key = false

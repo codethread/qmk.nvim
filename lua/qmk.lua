@@ -40,7 +40,7 @@ function qmk.is_configured()
 end
 
 -- format all QMK keymaps in the current buffer
----@param buf? buffer number
+---@param buf? number buffer #default current
 function qmk.format(buf)
 	if not qmk.is_configured() then
 		utils.notify(configured_warning)

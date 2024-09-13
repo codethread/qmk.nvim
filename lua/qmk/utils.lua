@@ -50,4 +50,11 @@ function M.center(span, text, space_symbol)
 	return centered .. padding
 end
 
+---Remove all `false`s from an iterator, expected in `vim.iter():filter()`
+---@param item any
+---@return boolean
+function M.remove_false(item)
+	return not not item
+end
+
 return M
