@@ -16,7 +16,13 @@ local function format_keymaps(keymaps, options)
 		end
 		table.insert(result, row)
 	end
-	return vim.tbl_flatten(result)
+
+	if vim.version().minor >= 10 then
+		return vim.iter(result):flatten(2):totable()
+	else
+		---@diagnostic disable-next-line: deprecated
+		return vim.tbl_flatten(result)
+	end
 end
 
 return format_keymaps

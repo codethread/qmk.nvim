@@ -9,9 +9,9 @@ M.keymap_ids = {
 	final = 'final',
 }
 
----@param root tsnode
+---@param root TSNode
 ---@param content string
----@param visitors table<string, fun(node: tsnode): nil>
+---@param visitors table<string, fun(node: TSNode): nil>
 function M.keymap_visitor(root, content, visitors)
 	--TODO: pull out and memo later
 
@@ -20,7 +20,7 @@ function M.keymap_visitor(root, content, visitors)
 	---zmk is a little more dynamic than qmk, so we just grab
 	---everything in the bindings node and iterate through the
 	---children
-	---@type Query
+	---@type vim.treesitter.Query
 	local keymap_query = parse_query(
 		'devicetree',
 		[[
@@ -37,8 +37,8 @@ function M.keymap_visitor(root, content, visitors)
 	visitor(keymap_query, root, visitors, content)
 end
 
----@param root tsnode
----@param visitors table<string, fun(node: tsnode): nil>
+---@param root TSNode
+---@param visitors table<string, fun(node: TSNode): nil>
 function M.comment_visitor(root, visitors)
 	visitor(parse_query('devicetree', [[(comment) @comment]]), root, visitors)
 end

@@ -33,6 +33,7 @@ local function get_keymaps(name, root, content)
 	local keymaps = {}
 
 	---@type qmk.Keymap
+	---@diagnostic disable-next-line: missing-fields
 	local current_keymap = {
 		layout_name = name,
 		keys = {},

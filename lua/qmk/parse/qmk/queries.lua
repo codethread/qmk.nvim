@@ -5,7 +5,7 @@ local M = {}
 
 ---look through the keymap file and find all layouts, capturing
 ---the keymap name and a list of all keys for formatting
----@return Query
+---@return vim.treesitter.Query
 local function keymap_query_for(name)
 	return parse_query('c', [[
 (initializer_pair
@@ -23,9 +23,9 @@ M.keymap_ids = {
 }
 
 ---@param name string
----@param root tsnode
+---@param root TSNode
 ---@param content string
----@param visitors table<string, fun(node: tsnode): nil>
+---@param visitors table<string, fun(node: TSNode): nil>
 function M.keymap_visitor(name, root, content, visitors)
 	local query = keymap_query_for(name)
 	visitor(query, root, visitors, content)
@@ -35,11 +35,11 @@ M.key_ids = {
 	key = 'key',
 }
 
----@param root tsnode
----@param visitors table<string, fun(node: tsnode): nil>
+---@param root TSNode
+---@param visitors table<string, fun(node: TSNode): nil>
 function M.key_visitor(root, visitors) --
 	---get all individual keys inside a layout
-	---@type Query
+	---@type vim.treesitter.Query
 	local key_query = parse_query(
 		'c',
 		[[
@@ -55,12 +55,12 @@ M.declaration_ids = {
 	declaration = 'declaration',
 }
 
----@param root tsnode
----@param visitors table<string, fun(node: tsnode): nil>
+---@param root TSNode
+---@param visitors table<string, fun(node: TSNode): nil>
 function M.declaration_visitor(root, visitors) --
 	---get the entire keymap declaration
 	---the intention is to use this for identifying the start and end
-	---@type Query
+	---@type vim.treesitter.Query
 	local keymap_declaration_query = parse_query(
 		'c',
 		[[
@@ -75,8 +75,8 @@ function M.declaration_visitor(root, visitors) --
 	visitor(keymap_declaration_query, root, visitors)
 end
 
----@param root tsnode
----@param visitors table<string, fun(node: tsnode): nil>
+---@param root TSNode
+---@param visitors table<string, fun(node: TSNode): nil>
 function M.comment_visitor(root, visitors)
 	visitor(parse_query('c', [[(comment) @comment]]), root, visitors)
 end

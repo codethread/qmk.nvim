@@ -72,7 +72,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 ## Requirements
 
-- Neovim >= 0.7
+- Neovim >= 0.9
 - QMK: Treesitter `c` parser available (e.g through [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter#quickstart))
 - ZMK: Treesitter `devicetree` parser available (e.g through [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter#quickstart))
   - this can be used for .keymap files with `set ft=dts`

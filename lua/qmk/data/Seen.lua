@@ -1,11 +1,18 @@
+---@class qmk.Seen
+---@field private index qmk.SeenIndex
 local Seen = {}
 
+---Create a new Seen instance
+---@return qmk.Seen
 function Seen:new()
 	local me = { index = {} }
 	self.__index = self
 	return setmetatable(me, self)
 end
 
+---increment
+---@param cell qmk.LayoutGridCell
+---@param ctx qmk.LayoutGridContext
 function Seen:increment(cell, ctx)
 	local seen = self.index[cell.key_index] or { span = 0 }
 	self.index[cell.key_index] = {
@@ -15,17 +22,14 @@ function Seen:increment(cell, ctx)
 	}
 end
 
+---Get stuff
+---@param key_index number
+---@return qmk.SeenSpan | nil
 function Seen:get(key_index)
 	return self.index[key_index]
 end
 
 return Seen
-
----@class qmk.Seen
----@field new fun(): qmk.Seen
----@field increment fun(cell: qmk.LayoutGridCell, ctx: qmk.LayoutGridContext): nil
----@field get fun(key_index: number): qmk.SeenSpan | nil
----@field private index qmk.SeenIndex
 
 ---@alias qmk.SeenIndex table<number, qmk.SeenSpan>
 
