@@ -1,4 +1,4 @@
-if vim.version().minor >= 10 then
+if vim.version().minor < 10 then
 	vim.api.nvim_err_writeln('qmk requires at least nvim v0.10')
 	return
 end
