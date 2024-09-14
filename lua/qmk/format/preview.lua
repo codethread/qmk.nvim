@@ -257,7 +257,23 @@ local function generate(layout, user_symbols)
 	-- trim off padding
 	for index, row in ipairs(comment_rows) do
 		if index > 1 and index < (#comment_rows - 1) then
-			table.insert(final, row)
+			local done = false
+			local trimmed = vim
+				.iter(row)
+				-- double reverse so we can filter out whitespace starting from the end
+				:rev()
+				:filter(function(key)
+					-- just whitespace
+					if not done and key:match('^%s+$') then
+						return false
+					else
+						done = true
+						return true
+					end
+				end)
+				:rev()
+				:totable()
+			table.insert(final, trimmed)
 		end
 	end
 	return final

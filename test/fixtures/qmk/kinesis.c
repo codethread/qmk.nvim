@@ -2,6 +2,7 @@
 
 #define QWERTY 0 // Base qwerty
 
+// clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
  [QWERTY] = LAYOUT_pretty(
@@ -16,4 +17,3 @@ KC_BSPC,KC_DEL, KC_END,KC_PGDN,KC_ENTER, KC_SPC
 )
 
 };
-

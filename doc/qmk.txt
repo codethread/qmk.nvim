@@ -1,4 +1,4 @@
-*qmk.txt*            For NVIM v0.8.0            Last change: 2024 September 13
+*qmk.txt*            For NVIM v0.8.0            Last change: 2024 September 14
 
 ==============================================================================
 Table of Contents                                      *qmk-table-of-contents*
@@ -92,7 +92,7 @@ string
 
 REQUIREMENTS                                       *qmk-qmk.nvim-requirements*
 
-- Neovim >= 0.9
+- Neovim >= 0.10
 - QMK: Treesitter `c` parser available (e.g through nvim-treesitter <https://github.com/nvim-treesitter/nvim-treesitter#quickstart>)
 - ZMK: Treesitter `devicetree` parser available (e.g through nvim-treesitter <https://github.com/nvim-treesitter/nvim-treesitter#quickstart>)
     - this can be used for .keymap files with `set ft=dts`

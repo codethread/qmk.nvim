@@ -29,12 +29,7 @@ local function format_keymap(options, keymap)
 		comment_preview.position == 'bottom' and preview,
 	}
 
-	if vim.version().minor >= 10 then
-		return vim.iter(result):filter(utils.remove_false):flatten(1):totable()
-	else
-		---@diagnostic disable-next-line: deprecated
-		return vim.tbl_flatten(result)
-	end
+	return vim.iter(result):filter(utils.remove_false):flatten(1):totable()
 end
 
 return format_keymap

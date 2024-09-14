@@ -1,3 +1,4 @@
+local format_utils = require('qmk.format.utils')
 local utils = require('qmk.utils')
 local Seen = require('qmk.data.Seen')
 local space = ' '
@@ -83,7 +84,8 @@ local function print_rows(layout, separator, ending)
 
 	local final = {}
 	for i, row in pairs(output) do
-		table.insert(final, table.concat(row) .. (i == #output and '' or trailing))
+		local full_row = table.concat(row) .. (i == #output and '' or trailing)
+		table.insert(final, format_utils.remove_trailing_space(full_row))
 	end
 	return final
 end
