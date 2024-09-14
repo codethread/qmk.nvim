@@ -2,6 +2,7 @@
 
 #define QWERTY 0 // Base qwerty
 
+// clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //    ┌──────┬────┬─────┬──────┬──────┬──────┬──────┬────┬────┬────┬─────┬──────┬──────┬──────┬──────┬──────┬────┬─────────┐
 //    │ esc  │ f1 │ f2  │  f3  │  f4  │  f5  │  f6  │ f7 │ f8 │ f9 │ f10 │ f11  │ f12  │ pscr │ slck │ paus │ no │ QK_BOOT │
@@ -14,14 +15,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //    ├──────┼────┼─────┼──────┼──────┼──────┤                                  ├──────┼──────┼──────┼──────┼────┼─────────┤
 //    │ lsft │ z  │  x  │  c   │  v   │  b   │                                  │  n   │  m   │  ,   │  .   │ /  │  rsft   │
 //    └──────┼────┼─────┼──────┼──────┼──────┘                                  └──────┼──────┼──────┼──────┼────┼─────────┘
-//           │ `  │ ins │ left │ rght │                                                │  up  │ down │  [   │ ]  │          
-//           └────┴─────┴──────┴──────┼──────┬──────┐                    ┌──────┬──────┼──────┴──────┴──────┴────┘          
-//                                    │ lctl │ lalt │                    │ rgui │ rctl │                                    
-//                                    └──────┼──────┤                    ├──────┼──────┘                                    
-//                                           │ home │                    │ pgup │                                           
-//                             ┌──────┬──────┼──────┤                    ├──────┼──────┬──────┐                             
-//                             │ bspc │ del  │ end  │                    │ pgdn │ ent  │ spc  │                             
-//                             └──────┴──────┴──────┘                    └──────┴──────┴──────┘                             
+//           │ `  │ ins │ left │ rght │                                                │  up  │ down │  [   │ ]  │
+//           └────┴─────┴──────┴──────┼──────┬──────┐                    ┌──────┬──────┼──────┴──────┴──────┴────┘
+//                                    │ lctl │ lalt │                    │ rgui │ rctl │
+//                                    └──────┼──────┤                    ├──────┼──────┘
+//                                           │ home │                    │ pgup │
+//                             ┌──────┬──────┼──────┤                    ├──────┼──────┬──────┐
+//                             │ bspc │ del  │ end  │                    │ pgdn │ ent  │ spc  │
+//                             └──────┴──────┴──────┘                    └──────┴──────┴──────┘
 [QWERTY] = LAYOUT_pretty(
   KC_ESC  , KC_F1  , KC_F2  , KC_F3   , KC_F4   , KC_F5   , KC_F6   , KC_F7 , KC_F8 , KC_F9 , KC_F10 , KC_F11  , KC_F12   , KC_PSCR , KC_SLCK , KC_PAUS , KC_NO   , QK_BOOT,
   KC_EQL  , KC_1   , KC_2   , KC_3    , KC_4    , KC_5    ,                                                      KC_6     , KC_7    , KC_8    , KC_9    , KC_0    , KC_MINS,
@@ -31,7 +32,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
             KC_GRV , KC_INS , KC_LEFT , KC_RGHT ,                                                                           KC_UP   , KC_DOWN , KC_LBRC , KC_RBRC          ,
                                                   KC_LCTL , KC_LALT ,                                  KC_RGUI , KC_RCTL                                                   ,
                                                             KC_HOME ,                                  KC_PGUP                                                             ,
-                                        KC_BSPC , KC_DEL  , KC_END  ,                                  KC_PGDN , KC_ENTER , KC_SPC                                         
+                                        KC_BSPC , KC_DEL  , KC_END  ,                                  KC_PGDN , KC_ENTER , KC_SPC
 )
 };
-
