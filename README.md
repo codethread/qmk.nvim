@@ -37,7 +37,7 @@ Setup your [layout](#Layout):
 ```lua
 local qmk = require 'qmk'
 qmk.setup {
-    name = 'LAYOUT_preonic_grid',
+    name = 'LAYOUT_preonic_grid', -- identify your layout name
     comment_preview = {
         keymap_overrides = {
             HERE_BE_A_LONG_KEY = 'Magic', -- replace any long key codes
