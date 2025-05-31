@@ -82,10 +82,11 @@ local function get_keymap(content, options)
 	local root = parser:parse()[1]:root()
 
 	local inline_config = get_inline_config(queries.comment_visitor, root, content)
+	local name = inline_config and inline_config.name or options.name
 
 	return {
 		pos = get_keymaps_position(root),
-		keymaps = get_keymaps(options.name, root, content),
+		keymaps = get_keymaps(name, root, content),
 	},
 		inline_config
 end
