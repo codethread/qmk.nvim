@@ -175,6 +175,22 @@ describe('qmk', function()
 			assert.combinators.match(T.expected, T.buff_content())
 		end)
 
+		it('formats inline config with name', function()
+			local T = testy.snapshot('inline_config_name.c', 'qmk')
+
+			local qmk = require('qmk')
+			qmk.setup({
+				name = '',
+				layout = {
+					'x x x',
+					'x x _',
+				},
+			})
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
+
 		it('formats inline zmk keymaps', function()
 			local T = testy.snapshot('dactyl_inline.keymap', 'zmk')
 

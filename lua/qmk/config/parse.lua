@@ -139,5 +139,6 @@ return M
 ---@field symbols? qmk.PreviewSymbols
 
 ---@class qmk.InlineConfig
+---@field name? qmk.UserLayout
 ---@field layout? qmk.UserLayout
 ---@field comment_preview? qmk.UserPreview
