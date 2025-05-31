@@ -1,4 +1,4 @@
-*qmk.txt*            For NVIM v0.8.0            Last change: 2024 September 14
+*qmk.txt*               For NVIM v0.8.0               Last change: 2025 May 31
 
 ==============================================================================
 Table of Contents                                      *qmk-table-of-contents*
@@ -349,7 +349,7 @@ then merged with your main config.
 **It must**
 
 - be a block comment to avoid extra comment symbols
-- be surrounded with`qmk:json:start` and end with `qmk:json:end`
+- be surrounded with `qmk:json:start` and end with `qmk:json:end`
 
 e.g.:
 
@@ -382,6 +382,16 @@ e.g.:
     qmk:json:end
     */
 <
+
+Tree-sitter syntax highlighting for inline JSON ~
+
+`qmk.nvim` includes `Tree-sitter` language injection query
+<https://tree-sitter.github.io/tree-sitter/3-syntax-highlighting.html?highlight=injection#language-injection>
+that enables syntax highlighting for the inline JSON. If you have `Tree-sitter`
+enabled and `qmk.nvim` is loaded **before** `nvim-treesitter` (e.g. by setting
+`qmk.nvim` as a dependency for `nvim-treesitter`) it will be enabled
+automatically. Alternatively, you can copy the `queries/c/injections.scm` to
+your nvim config (e.g. `~/.config/nvim/after/queries/c/injections.scm`).
 
 
 LAYOUT                                                   *qmk-qmk.nvim-layout*
