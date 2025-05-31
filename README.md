@@ -108,8 +108,6 @@ use {
 
 qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
 
-_for fields valid for inline JSON, use a zero value, e.g `name = ""`_
-
 | setting                            | type                            | json | descritpion                                                                                                                                                                                                                                                                    |
 | ---------------------------------- | ------------------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `name`                             | `string` **required**           | ✓    | the name of your layout, for example `LAYOUT_preonic_grid` for the [preonic keyboard](https://github.com/qmk/qmk_firmware/blob/c5b0e3a6a3c5a86273b933c04f5cfdef9a541c9d/keyboards/preonic/keymaps/default/keymap.c#L53), for `zmk` this can just be anything, it won't be used |
@@ -324,6 +322,7 @@ A comment block can be added at the bottom of your config file (for both QMK and
 - be a block comment to avoid extra comment symbols
 - be surrounded with `qmk:json:start` and end with `qmk:json:end`
 - see [config](#Configuration) for supported fields
+  - for required fields use a zero value in config, e.g `name = ""`
 
 e.g.:
 
