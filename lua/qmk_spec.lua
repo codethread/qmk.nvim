@@ -180,7 +180,7 @@ describe('qmk', function()
 
 			local qmk = require('qmk')
 			qmk.setup({
-				name = '_',
+				name = '',
 				layout = {
 					'x x x',
 					'x x _',

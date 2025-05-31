@@ -107,6 +107,7 @@ use {
 ## Configuration
 
 qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
+
 _for fields valid for inline JSON, use a zero value, e.g `name = ""`_
 
 | setting                            | type                            | json | descritpion                                                                                                                                                                                                                                                                    |
@@ -322,7 +323,7 @@ A comment block can be added at the bottom of your config file (for both QMK and
 
 - be a block comment to avoid extra comment symbols
 - be surrounded with `qmk:json:start` and end with `qmk:json:end`
-- supported config fields: `name`, `layout`, `comment_preview`
+- see [config](#Configuration) for supported fields
 
 e.g.:
 
