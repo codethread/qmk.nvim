@@ -362,6 +362,7 @@ qmk:json:end
 `qmk.nvim` includes [`Tree-sitter` language injection query](https://tree-sitter.github.io/tree-sitter/3-syntax-highlighting.html?highlight=injection#language-injection) that enables syntax highlighting for the inline JSON.
 If you have `Tree-sitter` enabled and `qmk.nvim` is loaded **before** `nvim-treesitter` (e.g. by setting `qmk.nvim` as a dependency for `nvim-treesitter`) it will be enabled automatically.
 Alternatively, you can copy the `queries/c/injections.scm` to your nvim config (e.g. `~/.config/nvim/after/queries/c/injections.scm`).
+
 </details>
 
 ## Layout
