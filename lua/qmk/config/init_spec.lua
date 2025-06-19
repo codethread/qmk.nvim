@@ -95,16 +95,16 @@ describe('config', function()
 			end)
 		end
 
-    -- test auto_format_pattern separately since it needs regex matching instead of simple equality check
-    -- this is because the table ID becomes part of the error string in case the table is invalid
+		-- test auto_format_pattern separately since it needs regex matching instead of simple equality check
+		-- this is because the table ID becomes part of the error string in case the table is invalid
 		local test = {
 			msg = 'invalid param',
 			input = none_missing({ auto_format_pattern = { '*keymap.c', 3 } }),
-      -- escape [] so that regex mathing works
+			-- escape [] so that regex mathing works
 			err = string.gsub(
 				E.parse_invalid('', 'auto_format_pattern', 'string or string[]', 'table'),
 				'([%[%]])',
-				'%1'
+				'%%%1'
 			),
 		}
 		it(test.msg, function()
