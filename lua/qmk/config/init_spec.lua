@@ -31,13 +31,6 @@ describe('config', function()
 				err = E.parse_error_msg(E.parse_unknown('', 'foo')),
 			},
 			{
-				msg = 'invalid param',
-				input = none_missing({ auto_format_pattern = {} }),
-				err = E.parse_error_msg(
-					E.parse_invalid('', 'auto_format_pattern', 'string', 'table')
-				),
-			},
-			{
 				msg = 'invalid nested param',
 				input = none_missing({
 					comment_preview = { keymap_overrides = 0 },
@@ -101,5 +94,23 @@ describe('config', function()
 				match(match_string.equals(test.err), err)
 			end)
 		end
+
+    -- test auto_format_pattern separately since it needs regex matching instead of simple equality check
+    -- this is because the table ID becomes part of the error string in case the table is invalid
+		local test = {
+			msg = 'invalid param',
+			input = none_missing({ auto_format_pattern = { '*keymap.c', 3 } }),
+      -- escape [] so that regex mathing works
+			err = string.gsub(
+				E.parse_invalid('', 'auto_format_pattern', 'string or string[]', 'table'),
+				'([%[%]])',
+				'%1'
+			),
+		}
+		it(test.msg, function()
+			local ok, err = pcall(config.parse, test.input)
+			assert(not ok, 'no error thrown')
+			match(match_string.regex(test.err), err)
+		end)
 	end)
 end)
