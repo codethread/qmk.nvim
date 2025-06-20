@@ -58,7 +58,7 @@ qmk:json:start
 {
   "comment_preview": {
     "keymap_overrides": {
-      "&mt LC%(LG%(LS%(LALT%)%)%) ESC": "HYPER ESC",
+      "&mt LC(LG(LS(LALT))) ESC": "HYPER ESC",
       "&mt LCMD GRAVE": "CYCLE WIN"
     }
   }
