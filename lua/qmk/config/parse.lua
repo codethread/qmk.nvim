@@ -70,7 +70,7 @@ function M.parse(user_config)
 
 	merged_config.layout = M.parse_layout(merged_config.layout)
 
-	--TODO: DI the validator
+	-- TODO: DI the validator
 	validator(merged_config, config.default_config)
 
 	local base_keymap = key_map.key_map
@@ -96,7 +96,7 @@ return M
 ---@field name string # name of the layout macro, this is used to find the layout in the keymap
 ---@field timeout number # if using nvim-notify, this will be the duration of the notification
 ---@field variant 'qmk' | 'zmk' # the hardware being targeted, defaults to 'qmk'
----@field auto_format_pattern string # autocommand pattern to match against for auto formatting, e.g. '*keymap.c'
+---@field auto_format_pattern string | string[] # autocommand pattern to match against for auto formatting, e.g. '*keymap.c'
 ---@field layout qmk.LayoutPlan
 ---@field comment_preview qmk.Preview
 
@@ -128,7 +128,7 @@ return M
 ---@field layout qmk.UserLayout
 ---@field variant? 'qmk' | 'zmk' # the hardware being targeted, defaults to 'qmk'
 ---@field timeout? number # if using nvim-notify, this will be the duration of the notification
----@field auto_format_pattern? string # autocommand pattern to match against for auto formatting, e.g. '*keymap.c'
+---@field auto_format_pattern? string | string[] # autocommand pattern to match against for auto formatting, e.g. '*keymap.c'
 ---@field comment_preview? qmk.UserPreview
 
 ---@alias qmk.UserLayout string[]

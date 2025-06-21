@@ -1,7 +1,7 @@
 local utils = require('qmk.utils')
 local E = require('qmk.errors')
 
--- TODO decouple from config and DI all the goodness
+-- TODO: decouple from config and DI all the goodness
 
 local dic_validator = {
 	position = function(position)
@@ -9,6 +9,24 @@ local dic_validator = {
 		-- check if position is a valid value
 		return vim.tbl_contains(valid, position), 'one of ' .. table.concat(valid, ', ')
 	end,
+  auto_format_pattern = function(pattern)
+    local function only_strings(value)
+      -- check that the value is either a string or a table containing only strings
+      if type(value) == "string" then
+        return true
+      end
+      if type(value) ~= "table" then
+        return false
+      end
+      for _, v in ipairs(value) do
+        if type(v) ~= "string" then
+          return false
+        end
+      end
+      return true
+    end
+    return only_strings(pattern), 'string or string[]'
+  end,
 }
 local FIELD_OVERRIDE_TYPECHECK = {}
 
