@@ -209,9 +209,11 @@ For the configuration
             -- key codes are mapped literally against the entire key in your layout
             -- longer key codes are checked first, and these will replace the value displayed in the preview
             --
-            -- lua magic patterns must be escaped with `%`, sorry, I'll fix this one day
+            -- lua magic patterns used to need escaping with `%` but not anymore
+            -- old escaped patterns should still work thoug
             -- watch out for emojis as they are double width
 			['LSG%(KC_GRAVE%)'] = 'Next Window',
+			['LAG(KC_GRAVE)'] = 'Prev Window',
 		},
 	},
 }
