@@ -1,0 +1,6 @@
+# ripgrep --iglob args
+iglobs = [
+	"**/test/vender",
+	"**/.github",
+]
+
