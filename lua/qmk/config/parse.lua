@@ -2,7 +2,7 @@ local E = require('qmk.errors')
 local check = require('qmk.utils').check
 local validator = require('qmk.config.validator')
 local config = require('qmk.config.default')
-local key_map = require('qmk.config.key_map')
+local key_map = require('qmk.config.qmk_keycodes')
 
 local M = {}
 
@@ -75,7 +75,7 @@ function M.parse(user_config)
 
 	local base_keymap = key_map.key_map
 	if merged_config.variant == 'zmk' then
-		base_keymap = require('qmk.config.zmk_key_map').zmk_key_map
+		base_keymap = require('qmk.config.zmk_keycodes').zmk_key_map
 	end
 
 	local keymaps = merge(base_keymap, merged_config.comment_preview.keymap_overrides or {})

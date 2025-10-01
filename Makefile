@@ -4,8 +4,11 @@ RUN=nvim --headless --noplugin -u test/spec.vim
 
 .PHONY: all nvim test watch prepare
 
+all: lint test types
+
 prepare:
 	luarocks install luacheck --local
+	rm -rf test/vendor
 	git clone --depth 1 https://github.com/nvim-lua/plenary.nvim ./test/vendor/plenary.nvim
 	git clone --depth 1 https://github.com/m00qek/matcher_combinators.lua ./test/vendor/matcher_combinators
 
@@ -20,17 +23,17 @@ else
 endif
 
 watch:
-	@echo -e '\nRunning tests on "lua/qmk/**/*_spec.lua" when any Lua file on "lua" and "test/spec" changes\n'
+	@echo '\nRunning tests on "lua/qmk/**/*_spec.lua" when any Lua file on "lua" and "test/spec" changes\n'
 	@find ./test/spec/ ./lua/ -name '*.lua' \
 	  | entr make test SPEC=$(SPEC)
 
 types:
-	@nvim -l test/types.lua --skip-tests=true 
+	@echo 'Validating types'
+	@nvim -l test/types.lua --skip-tests=true
 
 lint:
+	@echo -e 'linting lua dir'
 	@luacheck lua/
 
 format:
 	@stylua --glob '**/*.lua' lua
-
-all: prepare lint test types

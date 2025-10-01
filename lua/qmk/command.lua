@@ -1,4 +1,4 @@
-local parser = require('qmk.parse')
+local parser = require('qmk.parsing')
 local api = vim.api
 
 ---@param options qmk.Config
@@ -6,7 +6,7 @@ local api = vim.api
 ---@param bufnr number
 local function qmk(options, content, bufnr)
 	local keymaps, config = parser.parse(table.concat(content, '\n'), options, parser.qmk)
-	local formatted = require('qmk.format.qmk')(keymaps, config)
+	local formatted = require('qmk.qmk.format')(keymaps, config)
 	api.nvim_buf_set_lines(bufnr, keymaps.pos.start + 1, keymaps.pos.final, false, formatted)
 end
 
@@ -20,7 +20,7 @@ local function zmk(options, content, bufnr, last_keymap)
 
 	local keymap = keymaps[keymap_id]
 	if keymap ~= nil then
-		local out = require('qmk.format.zmk')(keymap, options)
+		local out = require('qmk.zmk.format')(keymap, options)
 		if not out.preview then
 			api.nvim_buf_set_lines(bufnr, out.pos.start + 1, out.pos.final, false, out.keys)
 		elseif options.comment_preview.position == 'bottom' then

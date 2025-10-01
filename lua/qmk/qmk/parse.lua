@@ -1,5 +1,5 @@
-local queries = require('qmk.parse.qmk.queries')
-local get_inline_config = require('qmk.parse.get_inline_config')
+local queries = require('qmk.qmk.queries')
+local get_inline_config = require('qmk.parsing.inline_config')
 local check = require('qmk.utils').check
 local E = require('qmk.errors')
 local ts = vim.treesitter

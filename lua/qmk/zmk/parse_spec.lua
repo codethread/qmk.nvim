@@ -1,6 +1,6 @@
 local match = assert.combinators.match
-local zmk_parser = require('qmk.parse.zmk')
-local parser = require('qmk.parse').parse
+local zmk_parser = require('qmk.zmk.parse')
+local parser = require('qmk.parsing').parse
 
 local layout_name = 'ZMK'
 

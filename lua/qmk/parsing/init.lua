@@ -3,8 +3,8 @@ local check = require('qmk.utils').check
 local merge_configs = require('qmk.config.merge')
 
 local M = {
-	qmk = require('qmk.parse.qmk'),
-	zmk = require('qmk.parse.zmk'),
+	qmk = require('qmk.qmk.parse'),
+	zmk = require('qmk.zmk.parse'),
 }
 
 ---assert all keymaps don't overlap with the declaration itself

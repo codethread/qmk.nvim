@@ -1,4 +1,4 @@
-local utils = require('qmk.format.utils')
+local utils = require('qmk.formatting.utils')
 
 ---find all matching key codes from the key string and replace them with the keymap value
 ---@param keymap qmk.KeymapList

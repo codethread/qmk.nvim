@@ -1,5 +1,5 @@
-local queries = require('qmk.parse.zmk.queries')
-local get_inline_config = require('qmk.parse.get_inline_config')
+local queries = require('qmk.zmk.queries')
+local get_inline_config = require('qmk.parsing.inline_config')
 local ts = vim.treesitter
 
 ---@return qmk.Keymap

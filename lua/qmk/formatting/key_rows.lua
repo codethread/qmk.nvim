@@ -1,4 +1,4 @@
-local format_utils = require('qmk.format.utils')
+local format_utils = require('qmk.formatting.utils')
 local utils = require('qmk.utils')
 local Seen = require('qmk.data.Seen')
 local space = ' '

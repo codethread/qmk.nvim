@@ -1,5 +1,5 @@
 local match = assert.combinators.match
-local format = require('qmk.format.keymap')
+local format = require('qmk.formatting')
 local testy = require('qmk._test_utils')
 
 describe('keymaps', function()

@@ -1,4 +1,4 @@
-local key_map = require('qmk.config.key_map')
+local key_map = require('qmk.config.qmk_keycodes')
 local parse = require('qmk.config.parse')
 
 ---@param options qmk.Config

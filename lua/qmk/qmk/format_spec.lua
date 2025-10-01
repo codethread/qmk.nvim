@@ -1,6 +1,6 @@
 require('matcher_combinators.luassert')
 local match = assert.combinators.match
-local format_keymaps = require('qmk.format.qmk')
+local format_keymaps = require('qmk.qmk.format')
 local testy = require('qmk._test_utils')
 
 describe('format qmk', function()

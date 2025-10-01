@@ -1,6 +1,6 @@
-local config = require('qmk.config')
+local config = require('qmk.config.parser')
 local utils = require('qmk.utils')
-local format = require('qmk.commands.format')
+local format = require('qmk.command')
 
 local qmk = {}
 local configured_warning = 'QMK plugin is not configured. Please call qmk.setup() first'

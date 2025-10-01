@@ -1,4 +1,4 @@
-local config = require('qmk.config')
+local config = require('qmk.config.parser')
 local Path = require('plenary.path')
 
 local M = {}

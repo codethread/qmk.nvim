@@ -1,7 +1,7 @@
-local generate = require('qmk.format.preview').generate
+local generate = require('qmk.formatting.preview').generate
 local LayoutGrid = require('qmk.data.LayoutGrid')
-local get_key_text = require('qmk.format.get_key_text')
-local print_rows = require('qmk.format.key_rows')
+local get_key_text = require('qmk.formatting.key_text')
+local print_rows = require('qmk.formatting.key_rows')
 
 ---@param options qmk.Config
 ---@param keymap qmk.Keymap

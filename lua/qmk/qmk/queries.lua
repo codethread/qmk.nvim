@@ -1,5 +1,5 @@
-local visitor = require('qmk.parse.visitor').visitor
-local parse_query = require('qmk.parse.visitor').parse_query
+local visitor = require('qmk.parsing.visitor').visitor
+local parse_query = require('qmk.parsing.visitor').parse_query
 
 local M = {}
 

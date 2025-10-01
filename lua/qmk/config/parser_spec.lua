@@ -1,8 +1,8 @@
 local E = require('qmk.errors')
 local match = assert.combinators.match
 local match_string = require('matcher_combinators.matchers.string')
-local config = require('qmk.config')
-local format = require('qmk.format.utils')
+local config = require('qmk.config.parser')
+local format = require('qmk.formatting.utils')
 
 local function none_missing(conf)
 	return vim.tbl_deep_extend('force', { name = 'test', layout = { 'x' } }, conf)
