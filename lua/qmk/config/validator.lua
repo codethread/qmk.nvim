@@ -1,4 +1,4 @@
-local utils = require('qmk.utils')
+local Utils = require('qmk.utils')
 local E = require('qmk.errors')
 
 local M = {}
@@ -83,7 +83,7 @@ function M.validate_options(user_config, default_config)
 	validate(user_config, default_config, '')
 
 	if msg then
-		utils.die(E.parse_error_msg(msg))
+		Utils.die(E.parse_error_msg(msg))
 	end
 end
 

@@ -1,5 +1,5 @@
 local E = require('qmk.errors')
-local check = require('qmk.utils').check
+local Utils = require('qmk.utils')
 local merge_configs = require('qmk.config.merge')
 
 local qmk_parser = require('qmk.qmk.parse')
@@ -16,15 +16,15 @@ local M = {
 local function validate(keymaps)
 	local start, final = keymaps.pos.start, keymaps.pos.final
 
-	check(#keymaps.keymaps > 0, E.keymaps_none)
+	Utils.check(#keymaps.keymaps > 0, E.keymaps_none)
 
 	-- iterate over all keymaps
 	for _, keymap in pairs(keymaps.keymaps) do
 		local keymap_start, keymap_final = keymap.pos.start, keymap.pos.final
-		check(keymap_start > start, E.keymaps_overlap)
-		check(keymap_final < final, E.keymaps_overlap)
+		Utils.check(keymap_start > start, E.keymaps_overlap)
+		Utils.check(keymap_final < final, E.keymaps_overlap)
 
-		check(#keymap.keys > 0, E.keymap_empty(keymap.layer_name))
+		Utils.check(#keymap.keys > 0, E.keymap_empty(keymap.layer_name))
 	end
 end
 

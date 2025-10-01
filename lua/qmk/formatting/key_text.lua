@@ -1,4 +1,4 @@
-local utils = require('qmk.formatting.utils')
+local Utils = require('qmk.utils')
 
 local M = {}
 
@@ -9,7 +9,7 @@ function M.get_key_text(keymap)
 	return function(str)
 		for _, k in ipairs(keymap) do
       -- escape lua magic characters in the matching pattern
-      local key, value = utils.escape_magic_characters(k.key), k.value
+      local key, value = Utils.escape_magic_characters(k.key), k.value
 			-- check if the key is a substring of the current key
 			if string.find(str, key) then
 				-- replace the key with the override

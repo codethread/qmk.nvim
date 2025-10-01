@@ -23,7 +23,7 @@ local function parseArgs()
 	return out
 end
 
--- Color enum
+---@enum Color
 local Color = {
 	RED = '31',
 	GREEN = '32',
@@ -42,26 +42,26 @@ local Level = { --what are these
 	Hint = 'Hint',
 }
 
---- Generates an ANSI escape sequence for setting text color and style.
--- @param color Color The color from the Color enum.
--- @param isBold boolean Whether the text should be bold.
--- @return string The ANSI escape sequence.
+---Generates an ANSI escape sequence for setting text color and style.
+---@param color Color The color from the Color enum.
+---@param isBold boolean? Whether the text should be bold.
+---@return string The ANSI escape sequence.
 local function getColorStyleSequence(color, isBold)
 	local boldCode = isBold and '1;' or ''
 	return string.format('\27[%s%sm', boldCode, color)
 end
 
---- Generates an ANSI escape sequence for resetting text color and style.
--- @return string The ANSI escape sequence for reset.
+---Generates an ANSI escape sequence for resetting text color and style.
+---@return string The ANSI escape sequence for reset.
 local function getResetSequence()
 	return '\27[0m'
 end
 
---- Formats text with color and optional bold styling.
--- @param text string The text to be formatted.
--- @param color Color The color from the Color enum.
--- @param isBold boolean Whether the text should be bold.
--- @return string The formatted text string.
+---Formats text with color and optional bold styling.
+---@param text string | number The text to be formatted.
+---@param color Color The color from the Color enum.
+---@param isBold boolean? Whether the text should be bold.
+---@return string The formatted text string.
 local function c(text, color, isBold)
 	local colorSequence = getColorStyleSequence(color, isBold)
 	local resetSequence = getResetSequence()

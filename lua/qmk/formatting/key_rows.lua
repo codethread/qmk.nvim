@@ -1,5 +1,4 @@
-local format_utils = require('qmk.formatting.utils')
-local utils = require('qmk.utils')
+local Utils = require('qmk.utils')
 local Seen = require('qmk.data.Seen')
 local space = ' '
 
@@ -18,13 +17,13 @@ local function align(span, key)
 	--TODO: handle other alignments like 2/5
 	if nom == 1 then
 		-- left align
-		return key.key .. string.rep(space, span - utils.len(key.key))
+		return key.key .. string.rep(space, span - Utils.len(key.key))
 	elseif nom == denom then
 		-- right align
-		return string.rep(space, span - utils.len(key.key)) .. key.key
+		return string.rep(space, span - Utils.len(key.key)) .. key.key
 	else
 		-- center align
-		return utils.center(span, key.key, space)
+		return Utils.center(span, key.key, space)
 	end
 end
 
@@ -60,7 +59,7 @@ function M.print_rows(layout, separator, ending)
 		local is_last = ctx.is_final_key
 
 		if key.type == 'key' then
-			add(key.key .. string.rep(space, key.span - utils.len(key.key)))
+			add(key.key .. string.rep(space, key.span - Utils.len(key.key)))
 			add(is_last and end_pad or comma)
 		end
 
@@ -87,7 +86,7 @@ function M.print_rows(layout, separator, ending)
 	local final = {}
 	for i, row in pairs(output) do
 		local full_row = table.concat(row) .. (i == #output and '' or trailing)
-		table.insert(final, format_utils.remove_trailing_space(full_row))
+		table.insert(final, Utils.remove_trailing_space(full_row))
 	end
 	return final
 end

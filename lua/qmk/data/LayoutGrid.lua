@@ -1,6 +1,5 @@
 ---@diagnostic disable: invisible
-local check = require('qmk.utils').check
-local utils = require('qmk.utils')
+local Utils = require('qmk.utils')
 local E = require('qmk.errors')
 
 ---comment
@@ -98,20 +97,20 @@ function LayoutGrid:new(layout, keys)
 		end
 
 		-- add padding to start and end of row
-		table.insert(grid[row_i], utils.shallow_copy(padding_cell))
-		table.insert(grid[row_i], 1, utils.shallow_copy(padding_cell))
+		table.insert(grid[row_i], Utils.shallow_copy(padding_cell))
+		table.insert(grid[row_i], 1, Utils.shallow_copy(padding_cell))
 	end
 
-	check(key_idx <= #keys, E.config_too_few_keys)
-	check(key_idx >= #keys, E.config_too_many_keys)
+	Utils.check(key_idx <= #keys, E.config_too_few_keys)
+	Utils.check(key_idx >= #keys, E.config_too_many_keys)
 
 	-- add padding to top and bottom of grid
 	local padding_row = {}
 	for _ = 1, #grid[1] do
-		table.insert(padding_row, utils.shallow_copy(padding_cell))
+		table.insert(padding_row, Utils.shallow_copy(padding_cell))
 	end
-	table.insert(grid, utils.shallow_copy(padding_row))
-	table.insert(grid, 1, utils.shallow_copy(padding_row))
+	table.insert(grid, Utils.shallow_copy(padding_row))
+	table.insert(grid, 1, Utils.shallow_copy(padding_row))
 
 	local largest_in_column = larget_per_column(grid)
 

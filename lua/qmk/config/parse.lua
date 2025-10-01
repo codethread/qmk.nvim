@@ -1,5 +1,5 @@
 local E = require('qmk.errors')
-local check = require('qmk.utils').check
+local Utils = require('qmk.utils')
 local validator = require('qmk.config.validator')
 local config = require('qmk.config.default')
 local key_map = require('qmk.config.qmk_keycodes')
@@ -9,23 +9,23 @@ local M = {}
 ---@param layout qmk.UserLayout
 ---@return qmk.LayoutPlan
 function M.parse_layout(layout)
-	check(#layout > 0, E.layout_empty)
+	Utils.check(#layout > 0, E.layout_empty)
 
 	local result = {}
 	for row_i, row in pairs(layout) do
-		check(#row > 0, E.layout_row_empty)
+		Utils.check(#row > 0, E.layout_row_empty)
 
 		-- check for trailing whitespace
-		check(not vim.startswith(row, ' '), E.layout_trailing_whitespace)
-		check(not vim.endswith(row, ' '), E.layout_trailing_whitespace)
+		Utils.check(not vim.startswith(row, ' '), E.layout_trailing_whitespace)
+		Utils.check(not vim.endswith(row, ' '), E.layout_trailing_whitespace)
 
 		-- check for two white spaces in a row
 		local invalid_whitespace = string.find(row, '  ', 1, true)
-		check(not invalid_whitespace, E.layout_double_whitespace)
+		Utils.check(not invalid_whitespace, E.layout_double_whitespace)
 
 		-- check for uneven rows
 		if row_i > 1 then
-			check(#row == #layout[row_i - 1], E.layout_missing_padding)
+			Utils.check(#row == #layout[row_i - 1], E.layout_missing_padding)
 		end
 
 		---@diagnostic disable-next-line: missing-parameter
@@ -40,9 +40,9 @@ function M.parse_layout(layout)
 			end
 
 			local invalid = string.find(key, '[^x^]')
-			check(not invalid, E.config_invalid_symbol)
+			Utils.check(not invalid, E.config_invalid_symbol)
 			local i = string.find(key, '^', 1, true)
-			check(i, E.config_invalid_span)
+			Utils.check(i, E.config_invalid_span)
 
 			return {
 				width = (string.len(key) + 1) / 2,
@@ -63,8 +63,8 @@ end
 ---@param user_config qmk.UserConfig
 ---@return qmk.Config
 function M.parse(user_config)
-	check(user_config, E.config_missing)
-	check(user_config.name and user_config.layout, E.config_missing_required)
+	Utils.check(user_config, E.config_missing)
+	Utils.check(user_config.name and user_config.layout, E.config_missing_required)
 	---@type qmk.Config
 	local merged_config = merge(config.default_config, user_config)
 

@@ -2,7 +2,7 @@ local E = require('qmk.errors')
 local match = assert.combinators.match
 local match_string = require('matcher_combinators.matchers.string')
 local config = require('qmk.config.parser')
-local format = require('qmk.formatting.utils')
+local Utils = require('qmk.utils')
 
 local function none_missing(conf)
 	return vim.tbl_deep_extend('force', { name = 'test', layout = { 'x' } }, conf)
@@ -102,7 +102,7 @@ describe('config', function()
 			msg = 'invalid param',
 			input = none_missing({ auto_format_pattern = { '*keymap.c', 3 } }),
 			-- escape [] so that regex mathing works
-			err = format.escape_magic_characters(
+			err = Utils.escape_magic_characters(
 				E.parse_invalid('', 'auto_format_pattern', 'string or string[]', 'table')
 			),
 		}

@@ -2,7 +2,7 @@ local generate = require('qmk.formatting.preview').generate
 local LayoutGrid = require('qmk.data.LayoutGrid')
 local key_rows = require('qmk.formatting.key_rows')
 local key_text = require('qmk.formatting.key_text')
-local utils = require('qmk.utils')
+local Utils = require('qmk.utils')
 
 local M = {}
 
@@ -31,7 +31,7 @@ function M.format_keymap(options, keymap)
 		comment_preview.position == 'bottom' and preview,
 	}
 
-	return vim.iter(result):filter(utils.remove_false):flatten(1):totable()
+	return vim.iter(result):filter(Utils.remove_false):flatten(1):totable()
 end
 
 return M

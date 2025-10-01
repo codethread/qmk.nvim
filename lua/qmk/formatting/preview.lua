@@ -1,6 +1,6 @@
 local E = require('qmk.errors')
 local Seen = require('qmk.data.Seen')
-local utils = require('qmk.utils')
+local Utils = require('qmk.utils')
 
 local space = ' '
 
@@ -14,7 +14,7 @@ end
 ---@param right_border string
 local function print_key(span, key, seen_keys, right_border)
 	if key.type == 'key' then
-		local centered = utils.center(key.span, key.key, space)
+		local centered = Utils.center(key.span, key.key, space)
 		local text = space .. centered .. space .. right_border
 		return text
 	end
@@ -35,7 +35,7 @@ local function print_key(span, key, seen_keys, right_border)
 			-- to add our own right border
 			local full_span = seen.span + seen_padding - 1
 
-			local centered = utils.center(full_span, key.key, space)
+			local centered = Utils.center(full_span, key.key, space)
 			local text = centered .. right_border
 			return text
 		else
@@ -89,7 +89,7 @@ local function generate(layout, user_symbols)
 
 		local span = cell.span or 1
 
-		utils.cond({
+		Utils.cond({
 			-- ignore these are they are just padding
 			{ ctx.is_bottom, 'do nothing' },
 			{ ctx.is_last, 'do nothing' },

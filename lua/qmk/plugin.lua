@@ -1,5 +1,5 @@
 local config = require('qmk.config.parser')
-local utils = require('qmk.utils')
+local Utils = require('qmk.utils')
 local format = require('qmk.command')
 
 local qmk = {}
@@ -9,11 +9,11 @@ local configured_warning = 'QMK plugin is not configured. Please call qmk.setup(
 -- creates user commands and autocmds to autoformat
 ---@param options qmk.UserConfig
 function qmk.setup(options)
-	utils.timeout = options and options.timeout or 5000
+	Utils.timeout = options and options.timeout or 5000
 
 	local ok, config_or_error = pcall(config.parse, options)
 	if not ok then
-		utils.notify(config_or_error)
+		Utils.notify(config_or_error)
 		return
 	end
 
@@ -43,13 +43,13 @@ end
 ---@param buf? number buffer #default current
 function qmk.format(buf)
 	if not qmk.is_configured() then
-		utils.notify(configured_warning)
+		Utils.notify(configured_warning)
 		return
 	end
 
 	local ok, err = pcall(format.format_qmk_keymaps, qmk.options, buf)
 	if not ok then
-		utils.notify(err)
+		Utils.notify(err)
 	end
 end
 
