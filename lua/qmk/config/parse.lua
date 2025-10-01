@@ -71,7 +71,7 @@ function M.parse(user_config)
 	merged_config.layout = M.parse_layout(merged_config.layout)
 
 	-- TODO: DI the validator
-	validator(merged_config, config.default_config)
+	validator.validate_options(merged_config, config.default_config)
 
 	local base_keymap = key_map.key_map
 	if merged_config.variant == 'zmk' then

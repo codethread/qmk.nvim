@@ -47,7 +47,7 @@ function qmk.format(buf)
 		return
 	end
 
-	local ok, err = pcall(format, qmk.options, buf)
+	local ok, err = pcall(format.format_qmk_keymaps, qmk.options, buf)
 	if not ok then
 		utils.notify(err)
 	end

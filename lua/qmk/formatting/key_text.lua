@@ -1,9 +1,11 @@
 local utils = require('qmk.formatting.utils')
 
+local M = {}
+
 ---find all matching key codes from the key string and replace them with the keymap value
 ---@param keymap qmk.KeymapList
 ---@return fun (key : string): string
-local function get_key_text(keymap)
+function M.get_key_text(keymap)
 	return function(str)
 		for _, k in ipairs(keymap) do
       -- escape lua magic characters in the matching pattern
@@ -18,4 +20,4 @@ local function get_key_text(keymap)
 	end
 end
 
-return get_key_text
+return M

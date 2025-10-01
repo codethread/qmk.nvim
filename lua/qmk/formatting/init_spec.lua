@@ -482,7 +482,7 @@ describe('keymaps', function()
 					layout_name = 'LAYOUT',
 					keys = test.input.keys,
 				}
-				local output = format(test.input.options, keymap)
+				local output = format.format_keymap(test.input.options, keymap)
 				match(test.output, output)
 			end)
 		end

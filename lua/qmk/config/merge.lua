@@ -1,10 +1,12 @@
 local key_map = require('qmk.config.qmk_keycodes')
 local parse = require('qmk.config.parse')
 
+local M = {}
+
 ---@param options qmk.Config
 ---@param inline_config qmk.InlineConfig
 ---@return qmk.Config
-local function merge_configs(options, inline_config)
+function M.merge_configs(options, inline_config)
 	if inline_config.layout then
 		options.layout = parse.parse_layout(inline_config.layout)
 	end
@@ -32,4 +34,4 @@ local function merge_configs(options, inline_config)
 	return options
 end
 
-return merge_configs
+return M

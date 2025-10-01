@@ -1,6 +1,8 @@
 local utils = require('qmk.utils')
 local E = require('qmk.errors')
 
+local M = {}
+
 -- TODO: decouple from config and DI all the goodness
 
 local dic_validator = {
@@ -31,7 +33,7 @@ local dic_validator = {
 local FIELD_OVERRIDE_TYPECHECK = {}
 
 -- borrowed with love from nvim-tree
-local function validate_options(user_config, default_config)
+function M.validate_options(user_config, default_config)
 	local msg
 
 	local function validate(user, def, prefix)
@@ -85,4 +87,4 @@ local function validate_options(user_config, default_config)
 	end
 end
 
-return validate_options
+return M

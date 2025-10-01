@@ -3,6 +3,8 @@ local utils = require('qmk.utils')
 local Seen = require('qmk.data.Seen')
 local space = ' '
 
+local M = {}
+
 ---@param span number
 ---@param key qmk.LayoutGridCell
 ---@return string
@@ -30,7 +32,7 @@ end
 ---@param separator? string
 ---@param ending? string
 ---@return string[]
-local function print_rows(layout, separator, ending)
+function M.print_rows(layout, separator, ending)
 	local output = {}
 
 	local comma = separator or ' , '
@@ -90,4 +92,4 @@ local function print_rows(layout, separator, ending)
 	return final
 end
 
-return print_rows
+return M

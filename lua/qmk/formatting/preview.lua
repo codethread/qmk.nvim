@@ -278,4 +278,9 @@ local function generate(layout, user_symbols)
 	end
 	return final
 end
-return { generate = generate }
+
+local M = {
+	generate = generate,
+}
+
+return M

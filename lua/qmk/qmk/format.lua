@@ -1,13 +1,15 @@
 local format_keymap = require('qmk.formatting')
 
+local M = {}
+
 ---@param keymaps qmk.Keymaps
 ---@param options qmk.Config
 ---@return string[]
-local function format_keymaps(keymaps, options)
+function M.format_keymaps(keymaps, options)
 	local result = {}
 
 	for i, keymap in ipairs(keymaps.keymaps) do
-		local row = { format_keymap(options, keymap) }
+		local row = { format_keymap.format_keymap(options, keymap) }
 		if i == #keymaps.keymaps then
 			table.insert(row, ')')
 		else
@@ -20,4 +22,4 @@ local function format_keymaps(keymaps, options)
 	return vim.iter(result):flatten(2):totable()
 end
 
-return format_keymaps
+return M

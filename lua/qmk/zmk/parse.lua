@@ -1,6 +1,8 @@
 local queries = require('qmk.zmk.queries')
-local get_inline_config = require('qmk.parsing.inline_config')
+local inline_config = require('qmk.parsing.inline_config')
 local ts = vim.treesitter
+
+local M = {}
 
 ---@return qmk.Keymap
 local function empty_keymap()
@@ -62,18 +64,19 @@ end
 
 ---get all keymaps from the current buffer
 ---@param content string
+---@param options? qmk.Config
 ---@return qmk.Keymaps, qmk.InlineConfig | nil
-local function get_keymap(content)
+function M.parse_keymaps(content, options) -- luacheck: ignore options
 	local parser = ts.get_string_parser(content, 'devicetree', {})
 	local root = parser:parse()[1]:root()
 
-	local inline_config = get_inline_config(queries.comment_visitor, root, content)
+	local inline_cfg = inline_config.get_inline_config(queries.comment_visitor, root, content)
 
 	return {
 		pos = { start = 0, final = 10000000 },
 		keymaps = get_keymaps(root, content),
 	},
-		inline_config
+		inline_cfg
 end
 
-return get_keymap
+return M

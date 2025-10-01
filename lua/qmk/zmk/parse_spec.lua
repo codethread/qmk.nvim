@@ -101,7 +101,7 @@ describe('parse zmk keymaps:', function()
 	}
 
 	for _, test in pairs(tests) do
-		local all_keymaps = parser(test.input, { name = 'ZMK' }, zmk_parser)
+		local all_keymaps = parser(test.input, { name = 'ZMK' }, zmk_parser.parse_keymaps)
 
 		it('for layout "' .. test.msg .. '" gets the correct pos', function()
 			match(test.output.pos, all_keymaps.pos)

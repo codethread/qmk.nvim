@@ -1,7 +1,9 @@
 local ts = vim.treesitter
 
+local M = {}
+
 ---@return qmk.InlineConfig | nil
-local function get_inline_config(visitor, root, content)
+function M.get_inline_config(visitor, root, content)
 	local config = nil
 	local comments = {}
 
@@ -43,4 +45,4 @@ local function get_inline_config(visitor, root, content)
 	return config
 end
 
-return get_inline_config
+return M

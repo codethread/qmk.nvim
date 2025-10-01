@@ -1,20 +1,22 @@
 local generate = require('qmk.formatting.preview').generate
 local LayoutGrid = require('qmk.data.LayoutGrid')
-local print_rows = require('qmk.formatting.key_rows')
-local get_key_text = require('qmk.formatting.key_text')
+local key_rows = require('qmk.formatting.key_rows')
+local key_text = require('qmk.formatting.key_text')
 local utils = require('qmk.utils')
+
+local M = {}
 
 ---@param options qmk.Config
 ---@param keymap qmk.Keymap
 ---@return string[]
-local function format_keymap(options, keymap)
+function M.format_keymap(options, keymap)
 	local keys = keymap.keys
 	local key_layout = LayoutGrid:new(options.layout, keys)
 	local comment_preview = options.comment_preview
 
 	local preview_layout = LayoutGrid:new(
 		options.layout,
-		vim.tbl_map(get_key_text(comment_preview.keymap_overrides), keys)
+		vim.tbl_map(key_text.get_key_text(comment_preview.keymap_overrides), keys)
 	)
 	local comment = comment_preview.position ~= 'none'
 			and generate(preview_layout, comment_preview.symbols)
@@ -25,11 +27,11 @@ local function format_keymap(options, keymap)
 		comment_preview.position == 'top' and preview,
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
 		comment_preview.position == 'inside' and preview,
-		print_rows(key_layout),
+		key_rows.print_rows(key_layout),
 		comment_preview.position == 'bottom' and preview,
 	}
 
 	return vim.iter(result):filter(utils.remove_false):flatten(1):totable()
 end
 
-return format_keymap
+return M

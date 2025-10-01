@@ -155,7 +155,7 @@ describe('parse qmk keymaps:', function()
 	}
 
 	for _, test in pairs(tests) do
-		local all_keymaps = parser(test.input, { name = 'LAYOUT' }, qmk_parser)
+		local all_keymaps = parser(test.input, { name = 'LAYOUT' }, qmk_parser.parse_keymaps)
 
 		it('for layout "' .. test.msg .. '" gets the correct pos', function()
 			match(test.output.pos, all_keymaps.pos)
@@ -243,7 +243,7 @@ describe('parse qmk keymaps abuse:', function()
 
 	for _, test in pairs(tests) do
 		it('should fail when ' .. test.msg, function()
-			local ok, err = pcall(parser, test.input, { name = 'LAYOUT' }, qmk_parser)
+			local ok, err = pcall(parser, test.input, { name = 'LAYOUT' }, qmk_parser.parse_keymaps)
 			assert(not ok, 'no error thrown')
 			match(match_string.equals(test.err), err)
 		end)

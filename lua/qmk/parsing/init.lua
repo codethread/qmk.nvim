@@ -2,9 +2,12 @@ local E = require('qmk.errors')
 local check = require('qmk.utils').check
 local merge_configs = require('qmk.config.merge')
 
+local qmk_parser = require('qmk.qmk.parse')
+local zmk_parser = require('qmk.zmk.parse')
+
 local M = {
-	qmk = require('qmk.qmk.parse'),
-	zmk = require('qmk.zmk.parse'),
+	qmk = qmk_parser.parse_keymaps,
+	zmk = zmk_parser.parse_keymaps,
 }
 
 ---assert all keymaps don't overlap with the declaration itself
@@ -34,7 +37,7 @@ end
 function M.parse(content, options, parser)
 	local keymaps, inline_config = parser(content, options)
 	validate(keymaps)
-	local final_config = inline_config and merge_configs(options, inline_config) or options
+	local final_config = inline_config and merge_configs.merge_configs(options, inline_config) or options
 
 	return keymaps, final_config
 end
