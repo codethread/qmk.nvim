@@ -22,7 +22,7 @@ local function format_keymap(keymap, options)
 	return {
 		layer_name = keymap.layer_name,
 		pos = keymap.pos,
-		keys = print_rows(key_layout, '   ', ''),
+		keys = print_rows(key_layout, options.zmk_key_padding, ''),
 		preview = preview and vim.tbl_map(table.concat, preview) or nil,
 	}
 end

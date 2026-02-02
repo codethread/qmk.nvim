@@ -14,6 +14,7 @@ M.default_config = {
 	variant = 'qmk',
 	timeout = 5000,
 	auto_format_pattern = { '*keymap.c', '*.keymap' },
+	zmk_key_padding = '   ',
 	comment_preview = {
 		position = 'top',
 		keymap_overrides = {},
