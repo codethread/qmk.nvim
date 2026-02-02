@@ -1,4 +1,4 @@
-*qmk.txt*               For NVIM v0.8.0               Last change: 2025 May 31
+*qmk.txt*             For NVIM v0.8.0            Last change: 2026 February 02
 
 ==============================================================================
 Table of Contents                                      *qmk-table-of-contents*
@@ -130,12 +130,12 @@ CONFIGURATION                                     *qmk-qmk.nvim-configuration*
 
 qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
 
-  --------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------
   setting                            type                    json   descritpion
-  ---------------------------------- ----------------------- ------ --------------------------------------------------------
-  name                               string required         ✓      the name of your layout, for example LAYOUT_preonic_grid
-                                                                    for the preonic keyboard, for zmk this can just be
-                                                                    anything, it won’t be used
+  ---------------------------------- ----------------------- ------ -------------------------------------------------------
+  name                               string required         ✓      the name of your layout, for example
+                                                                    LAYOUT_preonic_grid for the preonic keyboard, for zmk
+                                                                    this can just be anything, it won’t be used
 
   layout                             string[] required       ✓      the keyboard key layout, see Layout for more details
 
@@ -144,8 +144,8 @@ qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
   timeout                            number                         (default 5000) duration of vim.notify timeout if using
                                                                     nvim-notify
 
-  auto_format_pattern                string                         (default *keymap.c) the autocommand file pattern to use
-                                                                    when applying QMKFormat on save
+  auto_format_pattern                string,string[]                (default { '*keymap.c', '*.keymap' }) the autocommand
+                                                                    file pattern to use when applying QMKFormat on save
 
   comment_preview                    table                   ✓      table of properties for rendering a pretty comment
                                                                     string of each keymap
@@ -160,7 +160,7 @@ qmk.nvim takes the following configuration (`---@type qmk.UserConfig`):
 
   comment_preview.symbols            table<string, string>   ✓      a dictionary of symbols used for the preview comment
                                                                     border chars see default.lua for details
-  --------------------------------------------------------------------------------------------------------------------------
+  -------------------------------------------------------------------------------------------------------------------------
 
 EXAMPLES ~
 
@@ -243,9 +243,11 @@ For the configuration
                 -- key codes are mapped literally against the entire key in your layout
                 -- longer key codes are checked first, and these will replace the value displayed in the preview
                 --
-                -- lua magic patterns must be escaped with `%`, sorry, I'll fix this one day
+                -- lua magic patterns used to need escaping with `%` but not anymore
+                -- old escaped patterns should still work thoug
                 -- watch out for emojis as they are double width
                 ['LSG%(KC_GRAVE%)'] = 'Next Window',
+                ['LAG(KC_GRAVE)'] = 'Prev Window',
             },
         },
     }
