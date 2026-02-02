@@ -221,7 +221,7 @@ describe('qmk', function()
 				name = 'meh',
 				variant = 'zmk',
 				comment_preview = { position = 'top' },
-				zmk_key_padding = '     ',
+				zmk_key_padding = '🚀',
 				layout = {
 					'x x x x x x x x x x x x',
 					'x x x x x x x x x x x x',
