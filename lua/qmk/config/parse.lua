@@ -97,6 +97,7 @@ return M
 ---@field timeout number # if using nvim-notify, this will be the duration of the notification
 ---@field variant 'qmk' | 'zmk' # the hardware being targeted, defaults to 'qmk'
 ---@field auto_format_pattern string | string[] # autocommand pattern to match against for auto formatting, e.g. '*keymap.c'
+---@field zmk_key_padding string # spacing between keys for ZMK keymaps, defaults to '   ' (three spaces)
 ---@field layout qmk.LayoutPlan
 ---@field comment_preview qmk.Preview
 
@@ -129,6 +130,7 @@ return M
 ---@field variant? 'qmk' | 'zmk' # the hardware being targeted, defaults to 'qmk'
 ---@field timeout? number # if using nvim-notify, this will be the duration of the notification
 ---@field auto_format_pattern? string | string[] # autocommand pattern to match against for auto formatting, e.g. '*keymap.c'
+---@field zmk_key_padding? string # spacing between keys for ZMK keymaps, defaults to '   ' (three spaces)
 ---@field comment_preview? qmk.UserPreview
 
 ---@alias qmk.UserLayout string[]
@@ -141,4 +143,5 @@ return M
 ---@class qmk.InlineConfig
 ---@field name? qmk.UserLayout
 ---@field layout? qmk.UserLayout
+---@field zmk_key_padding? string
 ---@field comment_preview? qmk.UserPreview
