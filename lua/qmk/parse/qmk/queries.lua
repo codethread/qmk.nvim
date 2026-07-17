@@ -56,8 +56,9 @@ M.declaration_ids = {
 }
 
 ---@param root TSNode
+---@param content string
 ---@param visitors table<string, fun(node: TSNode): nil>
-function M.declaration_visitor(root, visitors) --
+function M.declaration_visitor(root, content, visitors) --
 	---get the entire keymap declaration
 	---the intention is to use this for identifying the start and end
 	---@type vim.treesitter.Query
@@ -68,11 +69,11 @@ function M.declaration_visitor(root, visitors) --
     declarator: (array_declarator
         declarator: (array_declarator
             declarator: (array_declarator
-                declarator: (identifier))))
+                declarator: (identifier) @id (#eq? @id "keymaps"))))
     value: (initializer_list) @declaration)
 ]]
 	)
-	visitor(keymap_declaration_query, root, visitors)
+	visitor(keymap_declaration_query, root, visitors, content)
 end
 
 ---@param root TSNode

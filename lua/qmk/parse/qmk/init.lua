@@ -5,11 +5,11 @@ local E = require('qmk.errors')
 local ts = vim.treesitter
 
 ---@return qmk.Position
-local function get_keymaps_position(root)
+local function get_keymaps_position(root, content)
 	local start, final = nil, nil
 	local count = 0
 
-	queries.declaration_visitor(root, {
+	queries.declaration_visitor(root, content, {
 		[queries.declaration_ids.declaration] = function(node)
 			count = count + 1
 
@@ -85,7 +85,7 @@ local function get_keymap(content, options)
 	local name = inline_config and inline_config.name or options.name
 
 	return {
-		pos = get_keymaps_position(root),
+		pos = get_keymaps_position(root, content),
 		keymaps = get_keymaps(name, root, content),
 	},
 		inline_config
