@@ -118,6 +118,11 @@ return M
 ---@field align? string
 ---@field type 'key' | 'span' | 'gap'
 
+---Struct to represent the users desired indentation
+---@class qmk.Indentation
+---@field enabled boolean
+---@field width number
+
 ---------------------------------------------------------------------------------
 ---- USER CONFIG
 ---------------------------------------------------------------------------------
@@ -142,3 +147,7 @@ return M
 ---@field name? qmk.UserLayout
 ---@field layout? qmk.UserLayout
 ---@field comment_preview? qmk.UserPreview
+
+---@class qmk.UserIndentation
+---@field enabled? boolean
+---@field width? number
