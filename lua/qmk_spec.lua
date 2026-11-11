@@ -142,9 +142,8 @@ describe('qmk', function()
 
 			local qmk = require('qmk')
 			qmk.setup({
-				name = 'meh',
-				variant = 'zmk',
-				comment_preview = { position = 'bottom' },
+				name = '',
+				comment_preview = { position = 'top' },
 				layout = {
 					'x x x x x x x x x x x x',
 					'x x x x x x x x x x x x',
@@ -152,6 +151,9 @@ describe('qmk', function()
 					'x x x x x x x x x x x x',
 					'x x x x x x x x x x x x',
 					'_ _ _ _ _ x x _ _ _ _ _',
+				},
+				indentation = {
+					enabled = true,
 				},
 			})
 			qmk.format(T.buff)
@@ -206,6 +208,29 @@ describe('qmk', function()
 					'x x x x x x x x x x x x',
 					'x x x x x x x x x x x x',
 					'_ _ _ _ _ x x _ _ _ _ _',
+				},
+			})
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
+
+		it('formats the buffer with global indentation', function()
+			local T = testy.snapshot('global_indentation.c', 'qmk')
+
+			local qmk = require('qmk')
+			qmk.setup({
+				name = 'LAYOUT_preonic_grid',
+				layout = {
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+				},
+				comment_preview = { position = 'top' },
+				indentation = {
+					enabled = true,
 				},
 			})
 			qmk.format(T.buff)
