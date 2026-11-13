@@ -444,33 +444,58 @@ describe('keymaps', function()
 				'            31 , 32 , 33 ,                 34 , 35 , 36',
 			},
 		},
-    --------------------------------------------------------------------------
-    -- with magic patterns preview
-    --------------------------------------------------------------------------
-    {
-      msg = 'keymaps with magic lua patterns, also respects escapes for back-compat',
-      input = {
-        options = testy.create_options_preview({
-          'x x x',
-        }, {
-          comment_preview = {
-            position = 'top',
-            keymap_overrides = {
-              ['LSG(A)'] = 'magic', -- magic characters are escaped
-              ['C%(KC_B%)'] = 'also magic', -- already escaped, so respected (back-compat)
-            },
-          },
-        }),
-        keys = { 'C(KC_B)', 'LSG(A)', 'KC_PERC' },
-      },
-      output = {
-        '//    ┌────────────┬───────┬───┐',
-        '//    │ also magic │ magic │ % │',
-        '//    └────────────┴───────┴───┘',
-        '[_FOO] = LAYOUT(',
-        '  C(KC_B) , LSG(A) , KC_PERC',
-      },
-    },
+
+		--------------------------------------------------------------------------
+		-- with magic patterns preview
+		--------------------------------------------------------------------------
+		{
+			msg = 'keymaps with magic lua patterns, also respects escapes for back-compat',
+			input = {
+				options = testy.create_options_preview({
+					'x x x',
+				}, {
+					comment_preview = {
+						position = 'top',
+						keymap_overrides = {
+							['LSG(A)'] = 'magic', -- magic characters are escaped
+							['C%(KC_B%)'] = 'also magic', -- already escaped, so respected (back-compat)
+						},
+					},
+				}),
+				keys = { 'C(KC_B)', 'LSG(A)', 'KC_PERC' },
+			},
+			output = {
+				'//    ┌────────────┬───────┬───┐',
+				'//    │ also magic │ magic │ % │',
+				'//    └────────────┴───────┴───┘',
+				'[_FOO] = LAYOUT(',
+				'  C(KC_B) , LSG(A) , KC_PERC',
+			},
+		},
+
+		--------------------------------------------------------------------------
+		-- with global indentation
+		--------------------------------------------------------------------------
+		{
+			msg = 'keymaps with global indentation',
+			input = {
+				options = testy.create_options_preview({
+					'x x',
+					'x^x',
+				}, { indentation = { enabled = true } }),
+				keys = { 'KC_A', 'KC_B', 'KC_C' },
+			},
+			output = {
+				'  //    ┌───┬───┐',
+				'  //    │ a │ b │',
+				'  //    ├───┴───┤',
+				'  //    │   c   │',
+				'  //    └───────┘',
+				'  [_FOO] = LAYOUT(',
+				'    KC_A , KC_B,',
+				'       KC_C',
+			},
+		},
 	}
 
 	for _, test in pairs(tests) do
