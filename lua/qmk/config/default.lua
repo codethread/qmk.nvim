@@ -32,6 +32,10 @@ M.default_config = {
 			br = '┘',
 		},
 	},
+	indentation = {
+		enabled = false,
+		width = 2,
+	},
 }
 
 return M

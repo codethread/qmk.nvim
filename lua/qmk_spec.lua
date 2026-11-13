@@ -212,5 +212,79 @@ describe('qmk', function()
 
 			assert.combinators.match(T.expected, T.buff_content())
 		end)
+
+		it('formats the simple buffer with global indentation', function()
+			local T = testy.snapshot('global_indentation_simple.c', 'qmk')
+
+			local qmk = require('qmk')
+			qmk.setup({
+				name = 'LAYOUT_preonic_grid',
+				layout = {
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+					'_ x x x x x x x x x x x x',
+				},
+				comment_preview = { position = 'top' },
+				indentation = {
+					enabled = true,
+				},
+			})
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
+
+		it('formats the complex buffer with global indentation', function()
+			local T = testy.snapshot('global_indentation_complex.c', 'qmk')
+
+			local qmk = require('qmk')
+			qmk.setup({
+				name = 'LAYOUT_pretty',
+				layout = {
+					'x x x x x x x x x x x x x x x x x x',
+					'x x x x x x _ _ _ _ _ _ x x x x x x',
+					'x x x x x x _ _ _ _ _ _ x x x x x x',
+					'x x x x x x _ _ _ _ _ _ x x x x x x',
+					'x x x x x x _ _ _ _ _ _ x x x x x x',
+					'_ x x x x _ _ _ _ _ _ _ _ x x x x _',
+					'_ _ _ _ _ x x _ _ _ _ x x _ _ _ _ _',
+					'_ _ _ _ _ _ x _ _ _ _ x _ _ _ _ _ _',
+					'_ _ _ _ x x x _ _ _ _ x x x _ _ _ _',
+				},
+				indentation = {
+					enabled = true,
+				},
+			})
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
+
+		it('formats zmk keymaps without global indentation despite enabled', function()
+			local T = testy.snapshot('dactyl-bottom.keymap', 'zmk')
+
+			local qmk = require('qmk')
+			qmk.setup({
+				name = 'meh',
+				variant = 'zmk',
+				comment_preview = { position = 'bottom' },
+				layout = {
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'_ _ _ _ _ x x _ _ _ _ _',
+				},
+				indentation = {
+					enabled = true,
+				},
+			})
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
 	end)
 end)

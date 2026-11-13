@@ -3,6 +3,7 @@ local LayoutGrid = require('qmk.data.LayoutGrid')
 local print_rows = require('qmk.format.key_rows')
 local get_key_text = require('qmk.format.get_key_text')
 local utils = require('qmk.utils')
+local format_utils = require('qmk.format.utils')
 
 ---@param options qmk.Config
 ---@param keymap qmk.Keymap
@@ -21,7 +22,7 @@ local function format_keymap(options, keymap)
 		or {}
 	local preview = vim.tbl_map(table.concat, comment) or {}
 
-	local result = {
+	local composition = {
 		comment_preview.position == 'top' and preview,
 		'[' .. keymap.layer_name .. '] = ' .. keymap.layout_name .. '(',
 		comment_preview.position == 'inside' and preview,
@@ -29,7 +30,14 @@ local function format_keymap(options, keymap)
 		comment_preview.position == 'bottom' and preview,
 	}
 
-	return vim.iter(result):filter(utils.remove_false):flatten(1):totable()
+	local result = vim.iter(composition):filter(utils.remove_false):flatten(1):totable()
+
+	local indent = format_utils.get_indent_string(options)
+	for index, row in ipairs(result) do
+		result[index] = indent .. row
+	end
+
+	return result
 end
 
 return format_keymap
