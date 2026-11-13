@@ -39,13 +39,12 @@ end
 ---@param layout qmk.UserLayout
 ---@param variant? string
 ---@return qmk.Config
-function M.create_options(layout, variant)
-	return config.parse({
+function M.create_options(layout, options)
+	return config.parse(vim.tbl_deep_extend('force', {
 		name = 'test',
 		comment_preview = { position = 'none' },
 		layout = layout,
-		variant = variant or 'qmk',
-	})
+	}, options or {}))
 end
 
 ---@param layout qmk.UserLayout
