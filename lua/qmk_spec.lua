@@ -261,5 +261,30 @@ describe('qmk', function()
 
 			assert.combinators.match(T.expected, T.buff_content())
 		end)
+
+		it('formats zmk keymaps without global indentation despite enabled', function()
+			local T = testy.snapshot('dactyl-bottom.keymap', 'zmk')
+
+			local qmk = require('qmk')
+			qmk.setup({
+				name = 'meh',
+				variant = 'zmk',
+				comment_preview = { position = 'bottom' },
+				layout = {
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'x x x x x x x x x x x x',
+					'_ _ _ _ _ x x _ _ _ _ _',
+				},
+				indentation = {
+					enabled = true,
+				},
+			})
+			qmk.format(T.buff)
+
+			assert.combinators.match(T.expected, T.buff_content())
+		end)
 	end)
 end)
