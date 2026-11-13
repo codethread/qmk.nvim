@@ -142,8 +142,9 @@ describe('qmk', function()
 
 			local qmk = require('qmk')
 			qmk.setup({
-				name = '',
-				comment_preview = { position = 'top' },
+				name = 'meh',
+				variant = 'zmk',
+				comment_preview = { position = 'bottom' },
 				layout = {
 					'x x x x x x x x x x x x',
 					'x x x x x x x x x x x x',
@@ -151,9 +152,6 @@ describe('qmk', function()
 					'x x x x x x x x x x x x',
 					'x x x x x x x x x x x x',
 					'_ _ _ _ _ x x _ _ _ _ _',
-				},
-				indentation = {
-					enabled = true,
 				},
 			})
 			qmk.format(T.buff)
